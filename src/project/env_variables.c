@@ -21,8 +21,8 @@ char	**create_env(char **env)
 
 char	*get_env(char *variable, char **env_arr)
 {
-	int	i;
-	int	l;
+	int	    i;
+	size_t	l;
 
 	i = 0;
 	while (env_arr[i])
