@@ -44,29 +44,29 @@ char	*get_hostname(void)
 	return (hostname);
 }
 
-char	*get_username(void)
+char	*get_username(char **env)
 {
 	char	*username;
 
-	username = getenv("USER");
+	username = get_env("USER", env);
 	username = ft_strjoin(username, "@");
 	return (username);
 }
 
 // needs more testing for dirs above home
-char	*get_directory(void)
+char	*get_directory(char **env)
 {
 	char	*abs_path;
 	char	*home;
 	char	*env_home;
-	char	*username;
+	//char	*username;
 	char	*home_dollar;
-	int		i;
+	//int		i;
 
-	i = 0;
-	username = getenv("USER");
+	//i = 0;
+	//username = get_env("USER", env);
 	abs_path = getcwd(NULL, 0);
-	env_home = getenv("HOME");
+	env_home = get_env("HOME", env);
 	if (!strncmp(abs_path, env_home, ft_strlen(env_home)))
 		home = abs_path + ft_strlen(env_home);
 	else
@@ -84,7 +84,7 @@ char	*get_directory(void)
 	return (home_dollar);
 }
 
-int	main(void)
+int	main(int argc, char ** argv, char **envp)
 {
 	char	*line;
 	char	*username;
@@ -92,10 +92,15 @@ int	main(void)
 	char	*specs;
 	char	*dir;
 	char	*prompt;
+	char	**env;
 
-	username = get_username();
+	(void)argc;
+	(void)argv;
+
+	env = create_env(envp);
+	username = get_username(env);
 	hostname = get_hostname();
-	dir = get_directory();
+	dir = get_directory(env);
 	specs = ft_strjoin(username, hostname);
 	prompt = ft_strjoin(specs, dir);
 	while (1)

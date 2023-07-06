@@ -28,7 +28,10 @@
 # include <sys/resource.h>
 # include <sys/wait.h>
 
+//Environment variables handling
 
+char	**create_env(char **env);
+char	*get_env(char *variable, char **env_arr);
 
 
 

@@ -11,7 +11,7 @@
 # **************************************************************************** #
 
 NAME = minishell
-SRCS =	project/main.c
+SRCS =	project/main.c project/env_variables.c
 
 BUILD_DIR = ./obj
 OBJS = $(addprefix $(BUILD_DIR)/, $(SRCS))
@@ -37,7 +37,7 @@ $(NAME): $(OBJS)
 	@make --no-print-directory -C $(LIBFTPRINTF)
 	@mv libftprintf/libftprintf.a .
 	@echo "$(YELLOW)Linking objects...$(RESET)"
-	@$(CC) $(FLAGS) $(OBJS) $(LIBFTPRINTF).a -o $(NAME)
+	@$(CC) $(OBJS) $(LIBFTPRINTF).a -o $(NAME) $(FLAGS)
 	@echo "$(GREEN)Compilation successful.$(RESET)"
 
 obj/%.o: src/%.c | objdir
