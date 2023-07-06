@@ -37,6 +37,7 @@ char	*get_hostname(void)
 
 	fd = open("/etc/hostname", O_RDONLY);
 	hostname_line = get_next_line(fd);
+	hostname_line[ft_strlen(hostname_line) - 1] = '\0';
 	hostname_raw = ft_substr(hostname_line, 0, get_hostname_len(hostname_line));
 	hostname = ft_strjoin(hostname_raw, ":");
 	free(hostname_line);
@@ -67,7 +68,9 @@ char	*get_directory(char **env)
 	//username = get_env("USER", env);
 	abs_path = getcwd(NULL, 0);
 	env_home = get_env("HOME", env);
-	if (!strncmp(abs_path, env_home, ft_strlen(env_home)))
+	if (env_home == NULL)
+		home = NULL;
+	else if (!strncmp(abs_path, env_home, ft_strlen(env_home)))
 		home = abs_path + ft_strlen(env_home);
 	else
 		home = NULL;
@@ -97,6 +100,8 @@ int	main(int argc, char ** argv, char **envp)
 	(void)argc;
 	(void)argv;
 
+	if (!getenv("USER"))
+		return (printf("No...\n"), 0);
 	env = create_env(envp);
 	username = get_username(env);
 	hostname = get_hostname();
@@ -117,6 +122,7 @@ int	main(int argc, char ** argv, char **envp)
 	free(specs);
 	free(dir);
 	free(prompt);
+	free_env(env);
 	write(1, "Goodbye!\n", 10);
 	return (0);
 }

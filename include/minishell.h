@@ -32,6 +32,7 @@
 
 char	**create_env(char **env);
 char	*get_env(char *variable, char **env_arr);
+void	free_env(char **env);
 
 
 
