@@ -6,7 +6,7 @@
 /*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 10:15:35 by plouda            #+#    #+#             */
-/*   Updated: 2023/07/06 12:05:55 by plouda           ###   ########.fr       */
+/*   Updated: 2023/07/06 14:15:08 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ char	*get_directory(char **env)
 	//username = get_env("USER", env);
 	abs_path = getcwd(NULL, 0);
 	env_home = get_env("HOME", env);
-	if (!strncmp(abs_path, env_home, ft_strlen(env_home)))
+	if (env_home != NULL && !strncmp(abs_path, env_home, ft_strlen(env_home)))
 		home = abs_path + ft_strlen(env_home);
 	else
 		home = NULL;
