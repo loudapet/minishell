@@ -6,7 +6,7 @@
 /*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 10:15:35 by plouda            #+#    #+#             */
-/*   Updated: 2023/07/06 16:07:10 by plouda           ###   ########.fr       */
+/*   Updated: 2023/07/12 14:31:47 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ char	*get_hostname(void)
 
 	fd = open("/etc/hostname", O_RDONLY);
 	hostname_line = get_next_line(fd);
+	hostname_line[ft_strlen(hostname_line) - 1] = '\0'; // newline in prompt fix
 	hostname_raw = ft_substr(hostname_line, 0, get_hostname_len(hostname_line));
 	hostname = ft_strjoin(hostname_raw, ":");
 	free(hostname_line);
