@@ -3,15 +3,15 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: plouda <plouda@student.42.fr>              +#+  +:+       +#+         #
+#    By: plouda <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/03 15:05:09 by plouda            #+#    #+#              #
-#    Updated: 2023/07/03 12:01:50 by plouda           ###   ########.fr        #
+#    Updated: 2023/07/12 13:55:30 by plouda           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
-SRCS =	project/main.c project/env_variables.c
+SRCS =	project/main.c project/env_variables.c project/parser.c
 
 BUILD_DIR = ./obj
 OBJS = $(addprefix $(BUILD_DIR)/, $(SRCS))
