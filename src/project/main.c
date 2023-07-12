@@ -6,7 +6,7 @@
 /*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 10:15:35 by plouda            #+#    #+#             */
-/*   Updated: 2023/07/12 14:06:24 by plouda           ###   ########.fr       */
+/*   Updated: 2023/07/12 15:41:47 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,7 @@ int	main(int argc, char ** argv, char **envp)
 	{
 		line = readline((const char *)prompt);
 		add_history(line);
+		parser(line);
 		if (!ft_strncmp(line, "q", ft_strlen(line)))
 			break ;
 		free(line);
