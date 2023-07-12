@@ -20,7 +20,7 @@ SRCS := $(addprefix $(SRCS_DIR)/, $(SRCS))
 
 LIBFTPRINTF = libftprintf
 AR = ar rc
-CC = cc -Wall -Wextra -Werror
+CC = cc -g -Wall -Wextra -Werror
 FLAGS = -lreadline
 
 HEADERS = -I ./include/

@@ -70,7 +70,7 @@ char	*get_directory(char **env)
 	abs_path = getcwd(NULL, 0);
 	env_home = get_env("HOME", env);
 	if (env_home != NULL && !strncmp(abs_path, env_home, ft_strlen(env_home)))
-		home = abs_path + ft_strlen(env_home);
+	home = abs_path + ft_strlen(env_home);
 	else
 		home = NULL;
 	if (home == NULL)
@@ -99,6 +99,8 @@ int	main(int argc, char ** argv, char **envp)
 	(void)argc;
 	(void)argv;
 
+	if (!getenv("USER"))
+		return (printf("No...\n"), 0);
 	env = create_env(envp);
 	username = get_username(env);
 	hostname = get_hostname();
@@ -120,6 +122,7 @@ int	main(int argc, char ** argv, char **envp)
 	free(specs);
 	free(dir);
 	free(prompt);
+	free_env(env);
 	write(1, "Goodbye!\n", 10);
 	return (0);
 }

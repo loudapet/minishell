@@ -23,6 +23,7 @@ char	*get_env(char *variable, char **env_arr)
 {
 	int	    i;
 	size_t	l;
+	char	*cpy;
 
 	i = 0;
 	while (env_arr[i])
@@ -36,11 +37,25 @@ char	*get_env(char *variable, char **env_arr)
 	}
 	if (!env_arr[i])
 		return (NULL);
-	while (*(env_arr[i]) != '=')
-		(env_arr[i])++;
-	(env_arr[i])++;
-	if (*(env_arr[i]))
-		return (env_arr[i]);
+	cpy = env_arr[i];
+	while (*cpy != '=')
+		cpy++;
+	cpy++;
+	if (*cpy)
+		return cpy;
 	else
 		return (NULL);
+}
+
+void	free_env(char **env)
+{
+	int	i;
+
+	i = 0;
+	while (env[i])
+	{
+		free(env[i]);
+		i++;
+	}
+	free(env);
 }
