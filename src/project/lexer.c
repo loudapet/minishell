@@ -1,26 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser.c                                           :+:      :+:    :+:   */
+/*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 14:53:16 by plouda            #+#    #+#             */
-/*   Updated: 2023/07/12 13:47:58 by plouda           ###   ########.fr       */
+/*   Updated: 2023/07/13 14:06:58 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	parser(const char *line)
+void	lexer(const char *line)
 {
-	int	i;
+	char	**av;
+	int		ac;
+	int		i;
 
-	i = 0;
-	while (line[i])
+	av = minisplit(line, ' ');
+	ac = 0;
+	while (av[ac])
 	{
-		write(1, &line[i], 1);
-		i++;
+		i = 0;
+		while (av[ac][i])
+		{
+			write(1, &av[ac][i], 1);
+			i++;
+		}
+		write(1, "\n", 1);
+		ac++;
 	}
-	write(1, "\n", 1);
 }

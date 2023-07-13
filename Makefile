@@ -6,12 +6,15 @@
 #    By: plouda <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/03 15:05:09 by plouda            #+#    #+#              #
-#    Updated: 2023/07/12 13:55:30 by plouda           ###   ########.fr        #
+#    Updated: 2023/07/13 14:05:48 by plouda           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
-SRCS =	project/main.c project/env_variables.c project/parser.c
+SRCS =	project/main.c \
+		project/env_variables.c \
+		project/lexer.c \
+		project/minisplit.c
 
 BUILD_DIR = ./obj
 OBJS = $(addprefix $(BUILD_DIR)/, $(SRCS))
