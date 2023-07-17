@@ -6,7 +6,7 @@
 /*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 10:15:59 by plouda            #+#    #+#             */
-/*   Updated: 2023/07/06 15:09:52 by plouda           ###   ########.fr       */
+/*   Updated: 2023/07/13 14:06:06 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ char	*get_env(char *variable, char **env_arr);
 void	free_env(char **env);
 
 // Parsers
-void	parser(const char *line);
+void	lexer(const char *line);
+char	**minisplit(char const *s, char c);
 
 #endif
