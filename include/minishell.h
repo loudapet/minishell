@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 10:15:59 by plouda            #+#    #+#             */
-/*   Updated: 2023/07/13 14:06:06 by plouda           ###   ########.fr       */
+/*   Updated: 2023/07/17 10:54:36 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,10 @@
 
 char	**create_env(char **env);
 char	*get_env(char *variable, char **env_arr);
+void	display_env(char **env);
 
 // Parsers
-void	lexer(const char *line);
+void	lexer(const char *line, char **env);
 char	**minisplit(char const *s, char c);
 
 #endif

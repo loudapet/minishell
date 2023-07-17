@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 10:15:35 by plouda            #+#    #+#             */
-/*   Updated: 2023/07/13 13:05:10 by plouda           ###   ########.fr       */
+/*   Updated: 2023/07/17 10:19:45 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ int	main(int argc, char ** argv, char **envp)
 	{
 		line = readline((const char *)prompt);
 		add_history(line);
-		lexer(line);
+		lexer(line, env);
 		if (!ft_strncmp(line, "q", ft_strlen(line)))
 			break ;
 		free(line);
