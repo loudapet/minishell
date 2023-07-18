@@ -6,7 +6,7 @@
 /*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 14:53:16 by plouda            #+#    #+#             */
-/*   Updated: 2023/07/17 11:10:31 by plouda           ###   ########.fr       */
+/*   Updated: 2023/07/18 11:02:18 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ char	*get_env_var_name(char *str, int start)
 
 	i = 0;
 	pos = start + 1;
-	while (str[pos] != '\0' && str[pos] != ' ' && str[pos] != '$')
+	while (str[pos] != '\0' && str[pos] != ' ' && str[pos] != '$') // upgrade to any metacharacter
 	{
 		//ft_printf("COUNTING...\n");
 		i++;
@@ -61,16 +61,26 @@ void	display_env(char **env)
 	}
 }
 
+
+
 char	*expand_env(char *str, char **env)
 {
 	int		i;
 	char	*var_name;
 	char	*var;
+	int		quote;
+	int		single_quote;
 
 	i = 0;
+	quote = 0;
+	single_quote = 0;
 	while (str[i])
 	{
-		if (str[i] == '$')
+		if (str[i] == '\'' && !(quote % 2))
+			single_quote++;
+		if (str[i] == '"' && !(single_quote % 2))
+			quote++;
+		if (str[i] == '$' && !(single_quote % 2))
 		{
 			var_name = get_env_var_name(str, i);
 			ft_printf("Variable name: %s\n", var_name);
@@ -89,21 +99,19 @@ char	*sanitize_double_quotes(const char *str)
 	int		j;
 	int		quote_counter;
 
-	i = 0;
 	quote_counter = 0;
-	while (str[i])
-	{
-		if (str[i] == '"')
-			quote_counter++;
-		i++;
-	}
 	i = 0;
-	str_san = malloc(sizeof(char *) * (ft_strlen(str) - quote_counter + 1)); // protecc
 	j = 0;
+	str_san = malloc(sizeof(char *) * (ft_strlen(str) - 2 + 1)); // protecc
 	while (str[i])
 	{
-		while (str[i] == '"')
+		while (str[i] == '"' && quote_counter != 2)
+		{
+			quote_counter++;
 			i++;
+		}
+		if (!str[i])
+			break;
 		str_san[j] = str[i];
 		i++;
 		j++;
@@ -120,21 +128,19 @@ char	*sanitize_single_quotes(const char *str)
 	int		j;
 	int		quote_counter;
 
-	i = 0;
 	quote_counter = 0;
-	while (str[i])
-	{
-		if (str[i] == '\'')
-			quote_counter++;
-		i++;
-	}
 	i = 0;
-	str_san = malloc(sizeof(char *) * (ft_strlen(str) - quote_counter + 1)); // protecc
+	str_san = malloc(sizeof(char *) * (ft_strlen(str) - 2 + 1)); // protecc
 	j = 0;
 	while (str[i])
 	{
-		while (str[i] == '\'')
+		while (str[i] == '\'' && quote_counter != 2)
+		{
+			quote_counter++;
 			i++;
+		}
+		if (!str[i])
+			break;
 		str_san[j] = str[i];
 		i++;
 		j++;
@@ -144,38 +150,45 @@ char	*sanitize_single_quotes(const char *str)
 	return (str_san);
 }
 
+// jjj """j"'j'j j'j'j"" "" > should expand to jjj jjj jjj
 char	**sanitizer(int ac, char **av, char **env)
 {
 	int	i;
 	int	j;
 	char	**argv;
-	int	flag;
+	int	quote;
+	int	single_quote;
 
 	i = 0;
-	flag = 0;
-	argv = malloc(sizeof(char **) * ac);
+	argv = malloc(sizeof(char *) * ac);
 	while (av[i])
 	{
+		quote = 0;
+		single_quote = 0;
+		expand_env(av[i], env);
 		j = 0;
-		while (av[i][j] && !flag)
+		while (av[i][j])
 		{
-			if (av[i][j] == '\'')
+			if (av[i][j] == '\'' && !(quote % 2))
+				single_quote++;
+			else if (av[i][j] == '"' && !(single_quote % 2))
+				quote++;
+			if (quote == 2)
 			{
-				argv[i] = sanitize_single_quotes(av[i]);
-				flag = 1;
+				av[i] = sanitize_double_quotes(av[i]);
+				j -= 2;
+				quote = 0;
 			}
-			else if (av[i][j] == '"')
+			if (single_quote == 2)
 			{
-				argv[i] = sanitize_double_quotes(av[i]);
-				flag = 2;
+				av[i] = sanitize_single_quotes(av[i]);
+				j -= 2;
+				single_quote = 0;
 			}
 			j++;
 		}
-		if (!flag)
-			argv[i] = ft_strdup(av[i]);
-		if (!flag || flag == 2)
-			expand_env(argv[i], env);
-		flag = 0;
+		ft_printf("SANITIZING...\n");
+		argv[i] = ft_strdup(av[i]);
 		i++;
 	}
 	argv[i] = NULL;
@@ -207,7 +220,7 @@ void	lexer(const char *line, char **env)
 
 	ft_printf("Sanitizing...\n");
 	// free av after sanitizing!
-	display_env(env);
+	//display_env(env);
 	argv = sanitizer(ac, av, env);
 	i = 0;
 	while (argv[i])
