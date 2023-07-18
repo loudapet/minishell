@@ -6,7 +6,7 @@
 /*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 14:53:16 by plouda            #+#    #+#             */
-/*   Updated: 2023/07/18 11:02:18 by plouda           ###   ########.fr       */
+/*   Updated: 2023/07/18 11:51:51 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,17 +92,25 @@ char	*expand_env(char *str, char **env)
 	return (str);
 }
 
-char	*sanitize_double_quotes(const char *str)
+char	*sanitize_double_quotes(const char *str, int index)
 {
 	char	*str_san;
 	int		i;
 	int		j;
+	int		k;
 	int		quote_counter;
 
 	quote_counter = 0;
-	i = 0;
+	i = index;
 	j = 0;
+	k = 0;
 	str_san = malloc(sizeof(char *) * (ft_strlen(str) - 2 + 1)); // protecc
+	while (k < index)
+	{
+		str_san[j] = str[k];
+		k++;
+		j++;
+	}
 	while (str[i])
 	{
 		while (str[i] == '"' && quote_counter != 2)
@@ -121,17 +129,25 @@ char	*sanitize_double_quotes(const char *str)
 	return (str_san);
 }
 
-char	*sanitize_single_quotes(const char *str)
+char	*sanitize_single_quotes(const char *str, int index)
 {
 	char	*str_san;
 	int		i;
 	int		j;
+	int		k;
 	int		quote_counter;
 
 	quote_counter = 0;
-	i = 0;
+	i = index;
 	str_san = malloc(sizeof(char *) * (ft_strlen(str) - 2 + 1)); // protecc
 	j = 0;
+	k = 0;
+	while (k < index)
+	{
+		str_san[j] = str[k];
+		k++;
+		j++;
+	}
 	while (str[i])
 	{
 		while (str[i] == '\'' && quote_counter != 2)
@@ -158,9 +174,11 @@ char	**sanitizer(int ac, char **av, char **env)
 	char	**argv;
 	int	quote;
 	int	single_quote;
+	int	index;
 
 	i = 0;
 	argv = malloc(sizeof(char *) * ac);
+	index = 0;
 	while (av[i])
 	{
 		quote = 0;
@@ -175,19 +193,25 @@ char	**sanitizer(int ac, char **av, char **env)
 				quote++;
 			if (quote == 2)
 			{
-				av[i] = sanitize_double_quotes(av[i]);
+				av[i] = sanitize_double_quotes(av[i], index);
 				j -= 2;
+				index = j;
+				if (j < 0)
+					index = 0;
 				quote = 0;
 			}
 			if (single_quote == 2)
 			{
-				av[i] = sanitize_single_quotes(av[i]);
+				av[i] = sanitize_single_quotes(av[i], index);
 				j -= 2;
+				index = j;
+				if (j < 0)
+					index = 0;
 				single_quote = 0;
 			}
 			j++;
 		}
-		ft_printf("SANITIZING...\n");
+		//ft_printf("SANITIZING...\n");
 		argv[i] = ft_strdup(av[i]);
 		i++;
 	}
