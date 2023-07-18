@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
+/*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 14:53:16 by plouda            #+#    #+#             */
-/*   Updated: 2023/07/18 11:51:51 by plouda           ###   ########.fr       */
+/*   Updated: 2023/07/18 16:24:15 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,9 +178,9 @@ char	**sanitizer(int ac, char **av, char **env)
 
 	i = 0;
 	argv = malloc(sizeof(char *) * ac);
-	index = 0;
 	while (av[i])
 	{
+		index = 0;
 		quote = 0;
 		single_quote = 0;
 		expand_env(av[i], env);
@@ -195,7 +195,7 @@ char	**sanitizer(int ac, char **av, char **env)
 			{
 				av[i] = sanitize_double_quotes(av[i], index);
 				j -= 2;
-				index = j;
+				index = j + 1;
 				if (j < 0)
 					index = 0;
 				quote = 0;
@@ -204,7 +204,7 @@ char	**sanitizer(int ac, char **av, char **env)
 			{
 				av[i] = sanitize_single_quotes(av[i], index);
 				j -= 2;
-				index = j;
+				index = j + 1;
 				if (j < 0)
 					index = 0;
 				single_quote = 0;
@@ -213,9 +213,11 @@ char	**sanitizer(int ac, char **av, char **env)
 		}
 		//ft_printf("SANITIZING...\n");
 		argv[i] = ft_strdup(av[i]);
+		free(av[i]);
 		i++;
 	}
 	argv[i] = NULL;
+	free(av);
 	return (argv);
 }
 
@@ -243,7 +245,6 @@ void	lexer(const char *line, char **env)
 	ac++;
 
 	ft_printf("Sanitizing...\n");
-	// free av after sanitizing!
 	//display_env(env);
 	argv = sanitizer(ac, av, env);
 	i = 0;
