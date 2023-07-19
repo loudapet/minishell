@@ -6,7 +6,7 @@
 /*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 14:53:16 by plouda            #+#    #+#             */
-/*   Updated: 2023/07/18 16:24:15 by plouda           ###   ########.fr       */
+/*   Updated: 2023/07/19 14:08:04 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,9 @@ char	*get_env_var_name(char *str, int start)
 
 	i = 0;
 	pos = start + 1;
-	while (str[pos] != '\0' && str[pos] != ' ' && str[pos] != '$') // upgrade to any metacharacter
+	while (str[pos] != '\0' && str[pos] != ' ' && str[pos] != '$'
+			&& str[pos] != '"' && str[pos] != '\'') // upgrade to any metacharacter
 	{
-		//ft_printf("COUNTING...\n");
 		i++;
 		pos++;
 	}
@@ -33,7 +33,6 @@ char	*get_env_var_name(char *str, int start)
 	start++; // no $ needed anymore
 	while (start < pos)
 	{
-		//ft_printf("EXPANDING...\n");
 		name[i] = str[start];
 		start++;
 		i++;
@@ -61,7 +60,45 @@ void	display_env(char **env)
 	}
 }
 
+char	*expand_and_join(char *str, char *var_name, char *var_value, int index)
+{
+	int	i;
+	int	j;
+	int	fin_len;
+	char	*str_exp;
 
+	fin_len = ft_strlen(str) - (ft_strlen(var_name) + 1) + ft_strlen(var_value);
+	//ft_printf("Final length: %i\n", fin_len);
+	str_exp = malloc(fin_len + 1); // protecc
+	j = 0;
+	// copying until $
+	while (j < index)
+	{
+		str_exp[j] = str[j];
+		j++;
+	}
+	// importing value of the variable
+	i = 0;
+	while (var_value != NULL && var_value[i])
+	{
+		str_exp[j] = var_value[i];
+		i++;
+		j++;
+	}
+	// shifting pointer of the original string to the first char behind the variable name, then copying until 0
+	index += ft_strlen(var_name) + 1;
+	while (str[index])
+	{
+		str_exp[j] = str[index];
+		j++;
+		index++;
+	}
+	str_exp[j] = '\0';
+	/* free(var_name);
+	free(var_value);
+	free(str); */
+	return (str_exp);
+}
 
 char	*expand_env(char *str, char **env)
 {
@@ -83,9 +120,11 @@ char	*expand_env(char *str, char **env)
 		if (str[i] == '$' && !(single_quote % 2))
 		{
 			var_name = get_env_var_name(str, i);
-			ft_printf("Variable name: %s\n", var_name);
+			//ft_printf("Variable name: %s\n", var_name);
 			var = get_env(var_name, env);
-			ft_printf("Expanded variable: %s\n", var);
+			//ft_printf("Expanded variable: %s\n", var);
+			str = expand_and_join(str, var_name, var, i);
+			i = -1;
 		}
 		i++;
 	}
@@ -183,7 +222,7 @@ char	**sanitizer(int ac, char **av, char **env)
 		index = 0;
 		quote = 0;
 		single_quote = 0;
-		expand_env(av[i], env);
+		av[i] = expand_env(av[i], env);
 		j = 0;
 		while (av[i][j])
 		{
@@ -243,8 +282,7 @@ void	lexer(const char *line, char **env)
 		ac++;
 	}
 	ac++;
-
-	ft_printf("Sanitizing...\n");
+	ft_printf("-----------EXPANDING AND SANITIZING----------- \n");
 	//display_env(env);
 	argv = sanitizer(ac, av, env);
 	i = 0;
