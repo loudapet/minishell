@@ -6,7 +6,7 @@
 /*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 14:53:16 by plouda            #+#    #+#             */
-/*   Updated: 2023/07/19 14:08:04 by plouda           ###   ########.fr       */
+/*   Updated: 2023/07/19 14:32:23 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,6 +125,8 @@ char	*expand_env(char *str, char **env)
 			//ft_printf("Expanded variable: %s\n", var);
 			str = expand_and_join(str, var_name, var, i);
 			i = -1;
+			quote = 0;
+			single_quote = 0;
 		}
 		i++;
 	}
