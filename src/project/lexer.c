@@ -6,11 +6,19 @@
 /*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 14:53:16 by plouda            #+#    #+#             */
-/*   Updated: 2023/07/21 15:02:12 by plouda           ###   ########.fr       */
+/*   Updated: 2023/07/21 17:15:11 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	quote_counter(char *c, int *quote, int *single_quote)
+{
+	if (*c == '\'' && !(*quote % 2))
+		(*single_quote)++;
+	else if (*c == '"' && !(*single_quote % 2))
+		(*quote)++;
+}
 
 void	display_env(char **env)
 {
@@ -93,7 +101,7 @@ char	*expand_and_join(char *str, char *var_name, char *var_value, int index)
 		index++;
 	}
 	str_exp[j] = '\0';
-	free(str); // why does this not work
+	free(str);
 	return (str_exp);
 }
 
@@ -110,20 +118,16 @@ char	*expand_env(char *str, char **env)
 	single_quote = 0;
 	while (str[i])
 	{
-		if (str[i] == '\'' && !(quote % 2))
-			single_quote++;
-		if (str[i] == '"' && !(single_quote % 2))
-			quote++;
+		quote_counter(&str[i], &quote, &single_quote);
 		if (str[i] == '$' && !(single_quote % 2))
 		{
 			var_name = get_env_var_name(str, i);
-			var = get_env(var_name, env); // does this allocate?
+			var = get_env(var_name, env);
 			str = expand_and_join(str, var_name, var, i);
 			i = -1;
 			quote = 0;
 			single_quote = 0;
 			free(var_name);
-			//free(var);
 		}
 		i++;
 	}
@@ -204,58 +208,61 @@ char	*sanitize_single_quotes(const char *str, int index)
 	return (str_san);
 }
 
+t_sanitizer	reset_sanitizer(void)
+{
+	t_sanitizer	sanitizer;
+
+	sanitizer.index = 0;
+	sanitizer.quote = 0;
+	sanitizer.single_quote = 0;
+	return (sanitizer);
+}
+
+void	index_checker(t_sanitizer *san, char **av, int i, int *j)
+{
+	if (san->quote == 2)
+	{
+		av[i] = sanitize_double_quotes(av[i], san->index);
+		*j -= 2;
+		san->index = *j + 1;
+		if (*j < 0)
+			san->index = 0;
+		san->quote = 0;
+	}
+	if (san->single_quote == 2)
+	{
+		av[i] = sanitize_single_quotes(av[i], san->index);
+		*j -= 2;
+		san->index = *j + 1;
+		if (*j < 0)
+			san->index = 0;
+		san->single_quote = 0;
+	}
+}
+
 // jjj """j"'j'j j'j'j"" "" > should expand to jjj jjj jjj
 char	**sanitizer(int ac, char **av, char **env)
 {
 	int	i;
 	int	j;
-	char	**argv;
-	int	quote;
-	int	single_quote;
-	int	index;
+	t_sanitizer	san;
 
 	i = 0;
-	argv = malloc(sizeof(char *) * (ac + 1));
-	while (av[i])
+	while (av[i] && ac)
 	{
-		index = 0;
-		quote = 0;
-		single_quote = 0;
+		san = reset_sanitizer();
 		av[i] = expand_env(av[i], env);
 		j = 0;
 		while (av[i][j])
 		{
-			if (av[i][j] == '\'' && !(quote % 2))
-				single_quote++;
-			else if (av[i][j] == '"' && !(single_quote % 2))
-				quote++;
-			if (quote == 2)
-			{
-				av[i] = sanitize_double_quotes(av[i], index);
-				j -= 2;
-				index = j + 1;
-				if (j < 0)
-					index = 0;
-				quote = 0;
-			}
-			if (single_quote == 2)
-			{
-				av[i] = sanitize_single_quotes(av[i], index);
-				j -= 2;
-				index = j + 1;
-				if (j < 0)
-					index = 0;
-				single_quote = 0;
-			}
+			quote_counter(&av[i][j], &san.quote, &san.single_quote);
+			index_checker(&san, av, i, &j);
 			j++;
 		}
-		argv[i] = ft_strdup(av[i]);
-		free(av[i]);
 		i++;
 	}
-	argv[i] = NULL;
-	free(av);
-	return (argv);
+	av[i] = NULL;
+	return (av);
 }
 
 void	free_args(t_args args)
@@ -271,6 +278,7 @@ void	free_args(t_args args)
 	free(args.av);
 }
 
+// norm compliant, just delete helper output loops
 t_args	lexer(const char *line, char **env)
 {
 	char	**av;
@@ -282,16 +290,7 @@ t_args	lexer(const char *line, char **env)
 	args.ac = 0;
 	i = 0;
 	while (av[args.ac])
-	{
-		i = 0;
-		while (av[args.ac][i])
-		{
-			write(1, &av[args.ac][i], 1);
-			i++;
-		}
-		write(1, "\n", 1);
 		args.ac++;
-	}
 	ft_printf("ARGC: %i\n", args.ac);
 	args.av = sanitizer(args.ac, av, env);
 	i = 0;

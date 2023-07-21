@@ -6,7 +6,7 @@
 /*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 10:15:59 by plouda            #+#    #+#             */
-/*   Updated: 2023/07/21 15:01:48 by plouda           ###   ########.fr       */
+/*   Updated: 2023/07/21 16:23:17 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,14 @@ typedef struct s_args
 	char	**av;
 	int		ac;
 }			t_args;
+
+typedef struct s_sanitizer
+{
+	int	index;
+	int	quote;
+	int	single_quote;
+}				t_sanitizer;
+
 
 //Environment variables handling
 

@@ -1,6 +1,6 @@
 
 {
-   <insert_a_suppression_name_here>
+   <readline>
    Memcheck:Leak
    match-leak-kinds: reachable
    fun:malloc
@@ -13,7 +13,7 @@
    fun:main
 }
 {
-   <insert_a_suppression_name_here>
+   <readline>
    Memcheck:Leak
    match-leak-kinds: reachable
    fun:realloc
@@ -25,7 +25,7 @@
    fun:main
 }
 {
-   <insert_a_suppression_name_here>
+   <readline>
    Memcheck:Leak
    match-leak-kinds: reachable
    fun:malloc
@@ -35,7 +35,7 @@
    fun:main
 }
 {
-   <insert_a_suppression_name_here>
+   <readline>
    Memcheck:Leak
    match-leak-kinds: reachable
    fun:malloc
@@ -46,7 +46,7 @@
    fun:main
 }
 {
-   <insert_a_suppression_name_here>
+   <readline>
    Memcheck:Leak
    match-leak-kinds: reachable
    fun:realloc
@@ -61,7 +61,7 @@
    fun:main
 }
 {
-   <insert_a_suppression_name_here>
+   <readline>
    Memcheck:Leak
    match-leak-kinds: reachable
    fun:malloc
@@ -74,7 +74,7 @@
    fun:main
 }
 {
-   <insert_a_suppression_name_here>
+   <readline>
    Memcheck:Leak
    match-leak-kinds: reachable
    fun:malloc
@@ -83,7 +83,7 @@
    fun:main
 }
 {
-   <insert_a_suppression_name_here>
+   <readline>
    Memcheck:Leak
    match-leak-kinds: reachable
    fun:malloc
@@ -100,7 +100,7 @@
    fun:main
 }
 {
-   <insert_a_suppression_name_here>
+   <readline>
    Memcheck:Leak
    match-leak-kinds: reachable
    fun:malloc
@@ -113,7 +113,7 @@
    fun:main
 }
 {
-   <insert_a_suppression_name_here>
+   <readline>
    Memcheck:Leak
    match-leak-kinds: reachable
    fun:malloc
@@ -129,7 +129,7 @@
    fun:main
 }
 {
-   <insert_a_suppression_name_here>
+   <readline>
    Memcheck:Leak
    match-leak-kinds: reachable
    fun:malloc
@@ -145,7 +145,7 @@
    fun:main
 }
 {
-   <insert_a_suppression_name_here>
+   <readline>
    Memcheck:Leak
    match-leak-kinds: reachable
    fun:malloc
@@ -154,7 +154,7 @@
    fun:main
 }
 {
-   <insert_a_suppression_name_here>
+   <readline>
    Memcheck:Leak
    match-leak-kinds: reachable
    fun:malloc
@@ -164,7 +164,7 @@
    fun:main
 }
 {
-   <insert_a_suppression_name_here>
+   <readline>
    Memcheck:Leak
    match-leak-kinds: reachable
    fun:malloc
@@ -176,7 +176,7 @@
    fun:main
 }
 {
-   <insert_a_suppression_name_here>
+   <readline>
    Memcheck:Leak
    match-leak-kinds: reachable
    fun:realloc
@@ -193,7 +193,7 @@
    fun:readline
 }
 {
-   <insert_a_suppression_name_here>
+   <readline>
    Memcheck:Leak
    match-leak-kinds: reachable
    fun:malloc
@@ -206,7 +206,7 @@
    fun:main
 }
 {
-   <insert_a_suppression_name_here>
+   <readline>
    Memcheck:Leak
    match-leak-kinds: reachable
    fun:calloc
@@ -221,7 +221,7 @@
    fun:main
 }
 {
-   <insert_a_suppression_name_here>
+   <readline>
    Memcheck:Leak
    match-leak-kinds: reachable
    fun:malloc
@@ -237,7 +237,7 @@
    fun:main
 }
 {
-   <insert_a_suppression_name_here>
+   <readline>
    Memcheck:Leak
    match-leak-kinds: reachable
    fun:malloc
@@ -253,7 +253,7 @@
    fun:main
 }
 {
-   <insert_a_suppression_name_here>
+   <readline>
    Memcheck:Leak
    match-leak-kinds: reachable
    fun:malloc
@@ -268,7 +268,7 @@
    fun:main
 }
 {
-   <insert_a_suppression_name_here>
+   <readline>
    Memcheck:Leak
    match-leak-kinds: reachable
    fun:calloc
@@ -283,7 +283,7 @@
    fun:main
 }
 {
-   <insert_a_suppression_name_here>
+   <readline>
    Memcheck:Leak
    match-leak-kinds: reachable
    fun:malloc
@@ -293,7 +293,7 @@
    fun:main
 }
 {
-   <insert_a_suppression_name_here>
+   <readline>
    Memcheck:Leak
    match-leak-kinds: reachable
    fun:calloc
@@ -310,7 +310,7 @@
    fun:main
 }
 {
-   <insert_a_suppression_name_here>
+   <readline>
    Memcheck:Leak
    match-leak-kinds: reachable
    fun:calloc
@@ -322,7 +322,7 @@
    fun:main
 }
 {
-   <insert_a_suppression_name_here>
+   <readline>
    Memcheck:Leak
    match-leak-kinds: reachable
    fun:malloc
@@ -339,7 +339,7 @@
    fun:main
 }
 {
-   <insert_a_suppression_name_here>
+   <readline>
    Memcheck:Leak
    match-leak-kinds: reachable
    fun:malloc
@@ -352,7 +352,7 @@
    fun:main
 }
 {
-   <insert_a_suppression_name_here>
+   <readline>
    Memcheck:Leak
    match-leak-kinds: reachable
    fun:malloc
@@ -364,7 +364,7 @@
    fun:main
 }
 {
-   <insert_a_suppression_name_here>
+   <readline>
    Memcheck:Leak
    match-leak-kinds: reachable
    fun:realloc
@@ -376,7 +376,7 @@
    fun:main
 }
 {
-   <insert_a_suppression_name_here>
+   <readline>
    Memcheck:Leak
    match-leak-kinds: reachable
    fun:malloc
@@ -387,7 +387,7 @@
    fun:main
 }
 {
-   <insert_a_suppression_name_here>
+   <readline>
    Memcheck:Leak
    match-leak-kinds: reachable
    fun:malloc
@@ -399,7 +399,7 @@
    fun:main
 }
 {
-   <insert_a_suppression_name_here>
+   <readline>
    Memcheck:Leak
    match-leak-kinds: reachable
    fun:malloc
@@ -414,7 +414,7 @@
    fun:main
 }
 {
-   <insert_a_suppression_name_here>
+   <readline>
    Memcheck:Leak
    match-leak-kinds: reachable
    fun:malloc
@@ -428,7 +428,7 @@
    fun:main
 }
 {
-   <insert_a_suppression_name_here>
+   <readline>
    Memcheck:Leak
    match-leak-kinds: reachable
    fun:calloc
@@ -441,7 +441,7 @@
    fun:main
 }
 {
-   <insert_a_suppression_name_here>
+   <readline>
    Memcheck:Leak
    match-leak-kinds: reachable
    fun:malloc
@@ -454,7 +454,7 @@
    fun:main
 }
 {
-   <insert_a_suppression_name_here>
+   <readline>
    Memcheck:Leak
    match-leak-kinds: reachable
    fun:malloc
