@@ -6,7 +6,7 @@
 /*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 10:15:59 by plouda            #+#    #+#             */
-/*   Updated: 2023/07/17 11:34:26 by plouda           ###   ########.fr       */
+/*   Updated: 2023/07/21 15:01:48 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,12 @@
 # include <sys/resource.h>
 # include <sys/wait.h>
 
+typedef struct s_args
+{
+	char	**av;
+	int		ac;
+}			t_args;
+
 //Environment variables handling
 
 char	**create_env(char **env);
@@ -36,7 +42,8 @@ void	free_env(char **env);
 void	display_env(char **env);
 
 // Parsers
-void	lexer(const char *line, char **env);
+t_args	lexer(const char *line, char **env);
+void	free_args(t_args args);
 char	**minisplit(char const *s, char c);
 
 #endif

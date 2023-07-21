@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minisplit.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 13:29:48 by plouda            #+#    #+#             */
-/*   Updated: 2023/07/14 14:26:34 by plouda           ###   ########.fr       */
+/*   Updated: 2023/07/21 12:31:14 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ static int	ft_word_count(const char *s, char c)
 		//ft_printf("Quote: %i\n", quote);
 		i++;
 	}
-	ft_printf("Words: %i\n", count);
+	//ft_printf("Words: %i\n", count);
 	return (count);
 }
 

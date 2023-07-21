@@ -3,14 +3,33 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 14:53:16 by plouda            #+#    #+#             */
-/*   Updated: 2023/07/19 14:32:23 by plouda           ###   ########.fr       */
+/*   Updated: 2023/07/21 15:02:12 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	display_env(char **env)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	while (env[i])
+	{
+		j = 0;
+		while (env[i][j])
+		{
+			write(1, &env[i][j], 1);
+			j++;
+		}
+		write(1, "\n", 1);
+		i++;
+	}
+}
 
 char	*get_env_var_name(char *str, int start)
 {
@@ -41,25 +60,6 @@ char	*get_env_var_name(char *str, int start)
 	return (name);
 }
 
-void	display_env(char **env)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	while (env[i])
-	{
-		j = 0;
-		while (env[i][j])
-		{
-			write(1, &env[i][j], 1);
-			j++;
-		}
-		write(1, "\n", 1);
-		i++;
-	}
-}
-
 char	*expand_and_join(char *str, char *var_name, char *var_value, int index)
 {
 	int	i;
@@ -68,7 +68,6 @@ char	*expand_and_join(char *str, char *var_name, char *var_value, int index)
 	char	*str_exp;
 
 	fin_len = ft_strlen(str) - (ft_strlen(var_name) + 1) + ft_strlen(var_value);
-	//ft_printf("Final length: %i\n", fin_len);
 	str_exp = malloc(fin_len + 1); // protecc
 	j = 0;
 	// copying until $
@@ -94,9 +93,7 @@ char	*expand_and_join(char *str, char *var_name, char *var_value, int index)
 		index++;
 	}
 	str_exp[j] = '\0';
-	/* free(var_name);
-	free(var_value);
-	free(str); */
+	free(str); // why does this not work
 	return (str_exp);
 }
 
@@ -120,13 +117,13 @@ char	*expand_env(char *str, char **env)
 		if (str[i] == '$' && !(single_quote % 2))
 		{
 			var_name = get_env_var_name(str, i);
-			//ft_printf("Variable name: %s\n", var_name);
-			var = get_env(var_name, env);
-			//ft_printf("Expanded variable: %s\n", var);
+			var = get_env(var_name, env); // does this allocate?
 			str = expand_and_join(str, var_name, var, i);
 			i = -1;
 			quote = 0;
 			single_quote = 0;
+			free(var_name);
+			//free(var);
 		}
 		i++;
 	}
@@ -218,7 +215,7 @@ char	**sanitizer(int ac, char **av, char **env)
 	int	index;
 
 	i = 0;
-	argv = malloc(sizeof(char *) * ac);
+	argv = malloc(sizeof(char *) * (ac + 1));
 	while (av[i])
 	{
 		index = 0;
@@ -252,7 +249,6 @@ char	**sanitizer(int ac, char **av, char **env)
 			}
 			j++;
 		}
-		//ft_printf("SANITIZING...\n");
 		argv[i] = ft_strdup(av[i]);
 		free(av[i]);
 		i++;
@@ -262,41 +258,54 @@ char	**sanitizer(int ac, char **av, char **env)
 	return (argv);
 }
 
-void	lexer(const char *line, char **env)
+void	free_args(t_args args)
+{
+	int	i;
+
+	i = 0;
+	while (i < args.ac)
+	{
+		free(args.av[i]);
+		i++;
+	}
+	free(args.av);
+}
+
+t_args	lexer(const char *line, char **env)
 {
 	char	**av;
-	int		ac;
 	int		i;
 	int		j;
-	char	**argv;
+	t_args	args;
 
 	av = minisplit(line, ' ');
-	ac = 0;
-	while (av[ac])
+	args.ac = 0;
+	i = 0;
+	while (av[args.ac])
 	{
 		i = 0;
-		while (av[ac][i])
+		while (av[args.ac][i])
 		{
-			write(1, &av[ac][i], 1);
+			write(1, &av[args.ac][i], 1);
 			i++;
 		}
 		write(1, "\n", 1);
-		ac++;
+		args.ac++;
 	}
-	ac++;
-	ft_printf("-----------EXPANDING AND SANITIZING----------- \n");
-	//display_env(env);
-	argv = sanitizer(ac, av, env);
+	ft_printf("ARGC: %i\n", args.ac);
+	args.av = sanitizer(args.ac, av, env);
 	i = 0;
-	while (argv[i])
+	while (args.av[i])
 	{
 		j = 0;
-		while (argv[i][j])
+		while (args.av[i][j])
 		{
-			write(1, &argv[i][j], 1);
+			write(1, &args.av[i][j], 1);
 			j++;
 		}
-		write(1, "\n", 1);
-		i++;
+		write(1, " ", 1);
+		i++;	
 	}
+	write(1, "\n", 1);
+	return (args);
 }

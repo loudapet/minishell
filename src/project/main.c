@@ -6,7 +6,7 @@
 /*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 10:15:35 by plouda            #+#    #+#             */
-/*   Updated: 2023/07/17 10:19:45 by plouda           ###   ########.fr       */
+/*   Updated: 2023/07/21 15:02:00 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ char	*get_directory(char **env)
 	return (home_dollar);
 }
 
-int	main(int argc, char ** argv, char **envp)
+int	main(int argc, char **argv, char **envp)
 {
 	char	*line;
 	char	*username;
@@ -95,6 +95,7 @@ int	main(int argc, char ** argv, char **envp)
 	char	*dir;
 	char	*prompt;
 	char	**env;
+	t_args	args;
 
 	(void)argc;
 	(void)argv;
@@ -111,7 +112,8 @@ int	main(int argc, char ** argv, char **envp)
 	{
 		line = readline((const char *)prompt);
 		add_history(line);
-		lexer(line, env);
+		args = lexer(line, env);
+		free_args(args);
 		if (!ft_strncmp(line, "q", ft_strlen(line)))
 			break ;
 		free(line);
