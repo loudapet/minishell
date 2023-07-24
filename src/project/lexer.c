@@ -6,19 +6,11 @@
 /*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 14:53:16 by plouda            #+#    #+#             */
-/*   Updated: 2023/07/21 17:15:11 by plouda           ###   ########.fr       */
+/*   Updated: 2023/07/24 10:15:37 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	quote_counter(char *c, int *quote, int *single_quote)
-{
-	if (*c == '\'' && !(*quote % 2))
-		(*single_quote)++;
-	else if (*c == '"' && !(*single_quote % 2))
-		(*quote)++;
-}
 
 void	display_env(char **env)
 {
@@ -41,14 +33,14 @@ void	display_env(char **env)
 
 char	*get_env_var_name(char *str, int start)
 {
-	int	i;
-	int pos;
-	char *name;
+	int		i;
+	int		pos;
+	char	*name;
 
 	i = 0;
 	pos = start + 1;
 	while (str[pos] != '\0' && str[pos] != ' ' && str[pos] != '$'
-			&& str[pos] != '"' && str[pos] != '\'') // upgrade to any metacharacter
+		&& str[pos] != '"' && str[pos] != '\'') // upgrade to any metacharacter
 	{
 		i++;
 		pos++;
@@ -70,9 +62,9 @@ char	*get_env_var_name(char *str, int start)
 
 char	*expand_and_join(char *str, char *var_name, char *var_value, int index)
 {
-	int	i;
-	int	j;
-	int	fin_len;
+	int		i;
+	int		j;
+	int		fin_len;
 	char	*str_exp;
 
 	fin_len = ft_strlen(str) - (ft_strlen(var_name) + 1) + ft_strlen(var_value);
@@ -134,137 +126,6 @@ char	*expand_env(char *str, char **env)
 	return (str);
 }
 
-char	*sanitize_double_quotes(const char *str, int index)
-{
-	char	*str_san;
-	int		i;
-	int		j;
-	int		k;
-	int		quote_counter;
-
-	quote_counter = 0;
-	i = index;
-	j = 0;
-	k = 0;
-	str_san = malloc(sizeof(char *) * (ft_strlen(str) - 2 + 1)); // protecc
-	while (k < index)
-	{
-		str_san[j] = str[k];
-		k++;
-		j++;
-	}
-	while (str[i])
-	{
-		while (str[i] == '"' && quote_counter != 2)
-		{
-			quote_counter++;
-			i++;
-		}
-		if (!str[i])
-			break;
-		str_san[j] = str[i];
-		i++;
-		j++;
-	}
-	str_san[j] = '\0';
-	free((char *)str);
-	return (str_san);
-}
-
-char	*sanitize_single_quotes(const char *str, int index)
-{
-	char	*str_san;
-	int		i;
-	int		j;
-	int		k;
-	int		quote_counter;
-
-	quote_counter = 0;
-	i = index;
-	str_san = malloc(sizeof(char *) * (ft_strlen(str) - 2 + 1)); // protecc
-	j = 0;
-	k = 0;
-	while (k < index)
-	{
-		str_san[j] = str[k];
-		k++;
-		j++;
-	}
-	while (str[i])
-	{
-		while (str[i] == '\'' && quote_counter != 2)
-		{
-			quote_counter++;
-			i++;
-		}
-		if (!str[i])
-			break;
-		str_san[j] = str[i];
-		i++;
-		j++;
-	}
-	str_san[j] = '\0';
-	free((char *)str);
-	return (str_san);
-}
-
-t_sanitizer	reset_sanitizer(void)
-{
-	t_sanitizer	sanitizer;
-
-	sanitizer.index = 0;
-	sanitizer.quote = 0;
-	sanitizer.single_quote = 0;
-	return (sanitizer);
-}
-
-void	index_checker(t_sanitizer *san, char **av, int i, int *j)
-{
-	if (san->quote == 2)
-	{
-		av[i] = sanitize_double_quotes(av[i], san->index);
-		*j -= 2;
-		san->index = *j + 1;
-		if (*j < 0)
-			san->index = 0;
-		san->quote = 0;
-	}
-	if (san->single_quote == 2)
-	{
-		av[i] = sanitize_single_quotes(av[i], san->index);
-		*j -= 2;
-		san->index = *j + 1;
-		if (*j < 0)
-			san->index = 0;
-		san->single_quote = 0;
-	}
-}
-
-// jjj """j"'j'j j'j'j"" "" > should expand to jjj jjj jjj
-char	**sanitizer(int ac, char **av, char **env)
-{
-	int	i;
-	int	j;
-	t_sanitizer	san;
-
-	i = 0;
-	while (av[i] && ac)
-	{
-		san = reset_sanitizer();
-		av[i] = expand_env(av[i], env);
-		j = 0;
-		while (av[i][j])
-		{
-			quote_counter(&av[i][j], &san.quote, &san.single_quote);
-			index_checker(&san, av, i, &j);
-			j++;
-		}
-		i++;
-	}
-	av[i] = NULL;
-	return (av);
-}
-
 void	free_args(t_args args)
 {
 	int	i;
@@ -303,7 +164,7 @@ t_args	lexer(const char *line, char **env)
 			j++;
 		}
 		write(1, " ", 1);
-		i++;	
+		i++;
 	}
 	write(1, "\n", 1);
 	return (args);
