@@ -6,7 +6,7 @@
 /*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 10:15:59 by plouda            #+#    #+#             */
-/*   Updated: 2023/07/24 11:27:49 by plouda           ###   ########.fr       */
+/*   Updated: 2023/07/24 12:27:26 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,6 @@ typedef struct s_quotes
 char	**create_env(char **env);
 char	*get_env(char *variable, char **env_arr);
 void	free_env(char **env);
-void	display_env(char **env);
 
 // Parsers
 t_args	lexer(const char *line, char **env);
@@ -71,5 +70,6 @@ char	*expand_env(char *str, char **env);
 t_quotes	init_quote_vars(const char *str, int index);
 void	copy_front(t_quotes *quotes, int index, const char *str);
 void	copy_rest(t_quotes *quotes, const char *str, char type);
+char	*expand_and_join(char *str, char *var_name, char *var_value, int index);
 
 #endif

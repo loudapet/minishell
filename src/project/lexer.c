@@ -6,30 +6,11 @@
 /*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 14:53:16 by plouda            #+#    #+#             */
-/*   Updated: 2023/07/24 10:15:37 by plouda           ###   ########.fr       */
+/*   Updated: 2023/07/24 12:27:14 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	display_env(char **env)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	while (env[i])
-	{
-		j = 0;
-		while (env[i][j])
-		{
-			write(1, &env[i][j], 1);
-			j++;
-		}
-		write(1, "\n", 1);
-		i++;
-	}
-}
 
 char	*get_env_var_name(char *str, int start)
 {
@@ -58,43 +39,6 @@ char	*get_env_var_name(char *str, int start)
 	}
 	name[i] = '\0';
 	return (name);
-}
-
-char	*expand_and_join(char *str, char *var_name, char *var_value, int index)
-{
-	int		i;
-	int		j;
-	int		fin_len;
-	char	*str_exp;
-
-	fin_len = ft_strlen(str) - (ft_strlen(var_name) + 1) + ft_strlen(var_value);
-	str_exp = malloc(fin_len + 1); // protecc
-	j = 0;
-	// copying until $
-	while (j < index)
-	{
-		str_exp[j] = str[j];
-		j++;
-	}
-	// importing value of the variable
-	i = 0;
-	while (var_value != NULL && var_value[i])
-	{
-		str_exp[j] = var_value[i];
-		i++;
-		j++;
-	}
-	// shifting pointer of the original string to the first char behind the variable name, then copying until 0
-	index += ft_strlen(var_name) + 1;
-	while (str[index])
-	{
-		str_exp[j] = str[index];
-		j++;
-		index++;
-	}
-	str_exp[j] = '\0';
-	free(str);
-	return (str_exp);
 }
 
 char	*expand_env(char *str, char **env)
