@@ -6,7 +6,7 @@
 /*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 14:53:16 by plouda            #+#    #+#             */
-/*   Updated: 2023/07/24 12:27:14 by plouda           ###   ########.fr       */
+/*   Updated: 2023/07/25 14:28:08 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ char	*expand_env(char *str, char **env)
 	single_quote = 0;
 	while (str[i])
 	{
-		quote_counter(&str[i], &quote, &single_quote);
+		quote_counter((const char *)&str[i], &quote, &single_quote);
 		if (str[i] == '$' && !(single_quote % 2))
 		{
 			var_name = get_env_var_name(str, i);

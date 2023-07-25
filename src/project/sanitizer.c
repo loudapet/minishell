@@ -6,7 +6,7 @@
 /*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/24 10:11:07 by plouda            #+#    #+#             */
-/*   Updated: 2023/07/24 11:28:04 by plouda           ###   ########.fr       */
+/*   Updated: 2023/07/25 14:29:57 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,8 @@ char	**sanitizer(int ac, char **av, char **env)
 		j = 0;
 		while (av[i][j])
 		{
-			quote_counter(&av[i][j], &san.quote, &san.single_quote);
+			quote_counter((const char *)&av[i][j], \
+				&san.quote, &san.single_quote);
 			index_checker(&san, av, i, &j);
 			j++;
 		}

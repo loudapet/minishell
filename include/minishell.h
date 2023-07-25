@@ -6,7 +6,7 @@
 /*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 10:15:59 by plouda            #+#    #+#             */
-/*   Updated: 2023/07/24 12:27:26 by plouda           ###   ########.fr       */
+/*   Updated: 2023/07/25 14:26:49 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,18 @@ typedef struct s_quotes
 	int		k;
 }				t_quotes;
 
+typedef struct s_minisplit
+{
+	int		i;
+	int		j;
+	int		flag;
+	int		count;
+	int		quote;
+	int		single_quote;
+	int		pos;
+}				t_minisplit;
+
+
 
 //Environment variables handling
 
@@ -65,7 +77,7 @@ char	**minisplit(char const *s, char c);
 // Santitizer
 char	**sanitizer(int ac, char **av, char **env);
 t_sanitizer	reset_sanitizer(void);
-void	quote_counter(char *c, int *quote, int *single_quote);
+void	quote_counter(const char *c, int *quote, int *single_quote);
 char	*expand_env(char *str, char **env);
 t_quotes	init_quote_vars(const char *str, int index);
 void	copy_front(t_quotes *quotes, int index, const char *str);

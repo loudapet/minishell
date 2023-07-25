@@ -6,7 +6,7 @@
 /*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 10:15:35 by plouda            #+#    #+#             */
-/*   Updated: 2023/07/21 15:02:00 by plouda           ###   ########.fr       */
+/*   Updated: 2023/07/25 13:55:35 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,12 +104,12 @@ int	main(int argc, char **argv, char **envp)
 		return (printf("No...\n"), 0);
 	env = create_env(envp);
 	username = get_username(env);
-	hostname = get_hostname();
-	dir = get_directory(env);
-	specs = ft_strjoin(username, hostname);
-	prompt = ft_strjoin(specs, dir);
 	while (1)
 	{
+		hostname = get_hostname();
+		dir = get_directory(env);
+		specs = ft_strjoin(username, hostname);
+		prompt = ft_strjoin(specs, dir);
 		line = readline((const char *)prompt);
 		add_history(line);
 		args = lexer(line, env);
@@ -117,13 +117,17 @@ int	main(int argc, char **argv, char **envp)
 		if (!ft_strncmp(line, "q", ft_strlen(line)))
 			break ;
 		free(line);
+		free(hostname);
+		free(specs);
+		free(dir);
+		free(prompt);
 	}
 	free(line);
-	free(username);
 	free(hostname);
 	free(specs);
 	free(dir);
 	free(prompt);
+	free(username);
 	free_env(env);
 	write(1, "Goodbye!\n", 10);
 	return (0);

@@ -6,7 +6,7 @@
 /*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/24 11:24:43 by plouda            #+#    #+#             */
-/*   Updated: 2023/07/24 11:27:41 by plouda           ###   ########.fr       */
+/*   Updated: 2023/07/25 14:30:37 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ t_sanitizer	reset_sanitizer(void)
 	return (sanitizer);
 }
 
-void	quote_counter(char *c, int *quote, int *single_quote)
+void	quote_counter(const char *c, int *quote, int *single_quote)
 {
 	if (*c == '\'' && !(*quote % 2))
 		(*single_quote)++;

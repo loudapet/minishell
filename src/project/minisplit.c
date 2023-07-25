@@ -6,50 +6,51 @@
 /*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 13:29:48 by plouda            #+#    #+#             */
-/*   Updated: 2023/07/21 12:31:14 by plouda           ###   ########.fr       */
+/*   Updated: 2023/07/25 14:26:28 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+t_minisplit	init_minisplit(void)
+{
+	t_minisplit	minisplit;
+
+	minisplit.i = 0;
+	minisplit.j = 0;
+	minisplit.flag = 0;
+	minisplit.count = 0;
+	minisplit.quote = 0;
+	minisplit.single_quote = 0;
+	minisplit.pos = -1;
+	return (minisplit);
+}
+
 static int	ft_word_count(const char *s, char c)
 {
-	unsigned int	i;
-	unsigned int	flag;
-	unsigned int	count;
-	unsigned int	quote;
-	unsigned int	single_quote;
+	t_minisplit	msplit;
 
-	i = 0;
-	flag = 0;
-	count = 0;
-	quote = 0;
-	single_quote = 0;
-	while (s[i] != 0)
+	msplit = init_minisplit();
+	while (s[msplit.i] != 0)
 	{
-		if (s[i] == '"' && !(single_quote % 2))
-			quote++;
-		if (s[i] == '\'' && !(quote % 2))
-			single_quote++;
-		if (s[i] != c && flag == 0)
+		quote_counter(&s[msplit.i], &msplit.quote, &msplit.single_quote);
+		if (s[msplit.i] != c && msplit.flag == 0)
 		{
-			flag = 1;
-			count++;
+			msplit.flag = 1;
+			msplit.count++;
 		}
-		else if (s[i] == c)
+		else if (s[msplit.i] == c)
 		{
-			if (!(quote % 2) && !(single_quote % 2))
+			if (!(msplit.quote % 2) && !(msplit.single_quote % 2))
 			{
-				flag = 0;
-				quote = 0;
-				single_quote = 0;
+				msplit.flag = 0;
+				msplit.quote = 0;
+				msplit.single_quote = 0;
 			}
 		}
-		//ft_printf("Quote: %i\n", quote);
-		i++;
+		msplit.i++;
 	}
-	//ft_printf("Words: %i\n", count);
-	return (count);
+	return (msplit.count);
 }
 
 static char	*ft_word(const char *s, unsigned int start, unsigned int end)
@@ -71,38 +72,28 @@ static char	*ft_word(const char *s, unsigned int start, unsigned int end)
 
 static char	**ft_fill(char **split, char const *s, char c)
 {
-	unsigned int	i;
-	unsigned int	j;
-	int				pos;
-	int				quote;
-	int				single_quote;
+	t_minisplit	msplit;
 
-	i = 0;
-	j = 0;
-	quote = 0;
-	single_quote = 0;
-	pos = -1;
-	while (i <= ft_strlen(s))
+	msplit = init_minisplit();
+	while (msplit.i <= (int)ft_strlen(s))
 	{
-		if (s[i] == '"' && !(single_quote % 2))
-			quote++;
-		if (s[i] == '\'' && !(quote % 2))
-			single_quote++;
-		if (s[i] != c && pos < 0)
-			pos = i;
-		else if ((s[i] == c || i == ft_strlen(s)) && pos >= 0)
+		quote_counter(&s[msplit.i], &msplit.quote, &msplit.single_quote);
+		if (s[msplit.i] != c && msplit.pos < 0)
+			msplit.pos = msplit.i;
+		else if ((s[msplit.i] == c || msplit.i == (int)ft_strlen(s))
+			&& msplit.pos >= 0)
 		{
-			if (!(quote % 2) && !(single_quote % 2))
+			if (!(msplit.quote % 2) && !(msplit.single_quote % 2))
 			{
-				split[j++] = ft_word(s, pos, i);
-				pos = -1;
-				quote = 0;
-				single_quote = 0;
+				split[msplit.j++] = ft_word(s, msplit.pos, msplit.i);
+				msplit.pos = -1;
+				msplit.quote = 0;
+				msplit.single_quote = 0;
 			}
 		}
-		i++;
+		msplit.i++;
 	}
-	split[j] = 0;
+	split[msplit.j] = 0;
 	return (split);
 }
 
