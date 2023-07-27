@@ -6,7 +6,7 @@
 /*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 11:50:41 by plouda            #+#    #+#             */
-/*   Updated: 2023/01/11 17:16:14 by plouda           ###   ########.fr       */
+/*   Updated: 2023/07/19 13:28:01 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ size_t	ft_strlen(const char *c)
 	size_t	i;
 
 	i = 0;
+	if (c == NULL)
+		return (0);
 	while (c[i] != 0)
 		i++;
 	return (i);

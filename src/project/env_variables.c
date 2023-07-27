@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env_variables.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/07/25 14:31:22 by plouda            #+#    #+#             */
+/*   Updated: 2023/07/25 14:32:09 by plouda           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 char	**create_env(char **env)
@@ -21,7 +33,7 @@ char	**create_env(char **env)
 
 char	*get_env(char *variable, char **env_arr)
 {
-	int	    i;
+	int		i;
 	size_t	l;
 	char	*cpy;
 
@@ -32,7 +44,7 @@ char	*get_env(char *variable, char **env_arr)
 		while (env_arr[i][l] != '=')
 			l++;
 		if (!ft_strncmp(variable, env_arr[i], l) && l == ft_strlen(variable))
-			break;
+			break ;
 		i++;
 	}
 	if (!env_arr[i])
@@ -42,7 +54,7 @@ char	*get_env(char *variable, char **env_arr)
 		cpy++;
 	cpy++;
 	if (*cpy)
-		return cpy;
+		return (cpy);
 	else
 		return (NULL);
 }
