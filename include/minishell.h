@@ -6,7 +6,7 @@
 /*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 10:15:59 by plouda            #+#    #+#             */
-/*   Updated: 2023/07/25 14:26:49 by plouda           ###   ########.fr       */
+/*   Updated: 2023/07/31 16:23:13 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@
 # include <sys/time.h>
 # include <sys/resource.h>
 # include <sys/wait.h>
+# define READ 0
+# define WRITE 1
 
 typedef struct s_args
 {
@@ -61,10 +63,17 @@ typedef struct s_minisplit
 	int		pos;
 }				t_minisplit;
 
+typedef struct s_files
+{
+	char	*infile_path;
+	char	*outfile_path;
+	int		infile_fd;
+	int		outfile_fd;
+}			t_files;
+
 
 
 //Environment variables handling
-
 char	**create_env(char **env);
 char	*get_env(char *variable, char **env_arr);
 void	free_env(char **env);
@@ -83,5 +92,8 @@ t_quotes	init_quote_vars(const char *str, int index);
 void	copy_front(t_quotes *quotes, int index, const char *str);
 void	copy_rest(t_quotes *quotes, const char *str, char type);
 char	*expand_and_join(char *str, char *var_name, char *var_value, int index);
+
+// Pipex
+char	**copy_argv(int argc, char **argv);
 
 #endif

@@ -6,7 +6,7 @@
 #    By: plouda <plouda@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/03 15:05:09 by plouda            #+#    #+#              #
-#    Updated: 2023/07/24 12:27:47 by plouda           ###   ########.fr        #
+#    Updated: 2023/07/31 16:23:38 by plouda           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,8 @@ SRCS =	project/main.c \
 		project/minisplit.c \
 		project/sanitizer.c \
 		project/sanitizer_helpers.c \
-		project/expand_vars.c
+		project/expand_vars.c \
+		pipex/pipex.c
 
 BUILD_DIR = ./obj
 OBJS = $(addprefix $(BUILD_DIR)/, $(SRCS))
@@ -52,6 +53,7 @@ obj/%.o: src/%.c | objdir
 objdir:
 	@mkdir -p obj
 	@mkdir -p obj/project
+	@mkdir -p obj/pipex
 
 clean:
 	@echo "$(YELLOW)Removing object files...$(RESET)"

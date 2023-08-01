@@ -6,7 +6,7 @@
 /*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 10:15:35 by plouda            #+#    #+#             */
-/*   Updated: 2023/07/25 13:55:35 by plouda           ###   ########.fr       */
+/*   Updated: 2023/07/31 16:23:03 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,7 @@ int	main(int argc, char **argv, char **envp)
 		line = readline((const char *)prompt);
 		add_history(line);
 		args = lexer(line, env);
+		copy_argv(args.ac, args.av);
 		free_args(args);
 		if (!ft_strncmp(line, "q", ft_strlen(line)))
 			break ;
