@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
+/*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 10:15:59 by plouda            #+#    #+#             */
-/*   Updated: 2023/07/31 16:23:13 by plouda           ###   ########.fr       */
+/*   Updated: 2023/08/03 10:19:11 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,10 @@
 # include <sys/wait.h>
 # define READ 0
 # define WRITE 1
+# define TRUNC 1;
+# define APPEND 2;
+# define HERE_DOC_VOID 1;
+# define HERE_DOC_IN 2;
 
 typedef struct s_args
 {
@@ -63,13 +67,16 @@ typedef struct s_minisplit
 	int		pos;
 }				t_minisplit;
 
-typedef struct s_files
+typedef struct s_command
 {
 	char	*infile_path;
 	char	*outfile_path;
 	int		infile_fd;
 	int		outfile_fd;
-}			t_files;
+	int		here_doc;
+	int		redirection;
+	char	**cmd_args;
+}			t_command;
 
 
 
@@ -94,6 +101,12 @@ void	copy_rest(t_quotes *quotes, const char *str, char type);
 char	*expand_and_join(char *str, char *var_name, char *var_value, int index);
 
 // Pipex
-char	**copy_argv(int argc, char **argv);
+t_command	command_redirection(int argc, char **argv);
+
+// Files
+void	here_doc(char **argv, int i, t_command *command);
+void	infile(char **argv, int i, t_command *command);
+void	outfile(char **argv, int i, t_command *command);
+void	append(char **argv, int i, t_command *command);
 
 #endif

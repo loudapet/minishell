@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
+/*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 10:15:35 by plouda            #+#    #+#             */
-/*   Updated: 2023/07/31 16:23:03 by plouda           ###   ########.fr       */
+/*   Updated: 2023/08/03 10:18:58 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ char	*get_hostname(void)
 
 	fd = open("/etc/hostname", O_RDONLY);
 	hostname_line = get_next_line(fd);
+	close(fd);
 	hostname_line[ft_strlen(hostname_line) - 1] = '\0'; // newline in prompt fix
 	hostname_raw = ft_substr(hostname_line, 0, get_hostname_len(hostname_line));
 	hostname = ft_strjoin(hostname_raw, ":");
@@ -113,7 +114,7 @@ int	main(int argc, char **argv, char **envp)
 		line = readline((const char *)prompt);
 		add_history(line);
 		args = lexer(line, env);
-		copy_argv(args.ac, args.av);
+		command_redirection(args.ac, args.av);
 		free_args(args);
 		if (!ft_strncmp(line, "q", ft_strlen(line)))
 			break ;
