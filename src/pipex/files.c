@@ -18,8 +18,8 @@ void	here_doc(char **argv, int i, t_command *command)
 {
 	if (command->infile_path != NULL)
 		free(command->infile_path);
-	if (ft_strlen(argv[i]) > 2)
-		command->infile_path = ft_strdup(&argv[i][1]);
+	if (ft_strlen(argv[i]) > 3)
+		command->infile_path = ft_strdup(&argv[i][2]);
 	else if (ft_strlen(argv[i]) == 2)
 		command->infile_path = ft_strdup(argv[i + 1]);
 	command->here_doc = HERE_DOC_IN;
@@ -56,8 +56,8 @@ void	append(char **argv, int i, t_command *command)
 {
 	if (command->outfile_path != NULL)
 		free(command->outfile_path);
-	if (ft_strlen(argv[i]) > 2)
-		command->outfile_path = ft_strdup(&argv[i][1]);
+	if (ft_strlen(argv[i]) > 3)
+		command->outfile_path = ft_strdup(&argv[i][2]);
 	else if (ft_strlen(argv[i]) == 2)
 		command->outfile_path = ft_strdup(argv[i + 1]);
 	command->outfile_fd = open(command->outfile_path, O_CREAT | O_WRONLY | O_APPEND, 00644);

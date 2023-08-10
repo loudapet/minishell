@@ -46,6 +46,51 @@ void	index_checker(t_sanitizer *san, char **av, int i, int *j)
 	}
 }
 
+int	count_something_i_forgot(char *av)
+{
+	int	i;
+	int	k;
+
+	i = 0;
+	k = 0;
+	while (av[i])
+	{
+		if ((av[i] == '<' && (i == 0 || av[i - 1] != '<'))
+			|| (av[i] == '>' && (i == 0 || av[i - 1] != '>')))
+			k++;
+		i++;
+	}
+	return (k);
+}
+
+char	*quote_redi_diffetiator(char *av)
+{
+	int		i;
+	int		j;
+	char	*temp;
+
+	j = 0;
+	i = 0;
+	if (av[i] == '\'' || av[i] == '"')
+		return (av);
+	temp = malloc(ft_strlen(av) + count_something_i_forgot(av) + 1);
+	while (av[i])
+	{
+		if ((av[i] == '<' && (i == 0 || av[i - 1] != '<'))
+			|| (av[i] == '>' && (i == 0 || av[i - 1] != '>')))
+		{
+			temp[j] = '\\';
+			j++;
+		}
+		temp[j] = av[i];
+		j++;
+		i++;
+	}
+	temp[j] = '\0';
+	free(av);
+	return (temp);
+}
+
 // jjj """j"'j'j j'j'j"" "" > should expand to jjj jjj jjj
 char	**sanitizer(int ac, char **av, char **env)
 {
@@ -53,6 +98,12 @@ char	**sanitizer(int ac, char **av, char **env)
 	int			j;
 	t_sanitizer	san;
 
+	i = 0;
+	while (av[i])
+	{
+		av[i] = quote_redi_diffetiator(av[i]);
+		i++;
+	}
 	i = 0;
 	while (av[i] && ac)
 	{
@@ -69,5 +120,6 @@ char	**sanitizer(int ac, char **av, char **env)
 		i++;
 	}
 	av[i] = NULL;
+	av = backslash_splitter(av);
 	return (av);
 }

@@ -17,6 +17,7 @@ SRCS =	project/main.c \
 		project/minisplit.c \
 		project/sanitizer.c \
 		project/sanitizer_helpers.c \
+		project/sanitizer_extra.c \
 		project/expand_vars.c \
 		pipex/command_redirection.c \
 		pipex/files.c

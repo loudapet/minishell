@@ -37,10 +37,17 @@ void	display_argv(char **argv)
 void	get_files(int argc, char **argv, t_command *command)
 {
 	int	i;
+	int	flag;
 
 	i = 0;
+	flag = 0;
 	while (i < argc)
 	{
+		if (argv[i][0] == '\\')
+		{
+			argv[i]++;
+			flag = 1;
+		}
 		if (argv[i][0] == '<')
 		{
 			if (!strncmp(argv[i], "<<", 2))
@@ -54,6 +61,11 @@ void	get_files(int argc, char **argv, t_command *command)
 				append(argv, i, command);
 			else
 				outfile(argv, i, command);
+		}
+		if (flag)
+		{
+			argv[i]--;
+			flag = 0;
 		}
 		i++;
 	}
@@ -91,11 +103,11 @@ char	**get_cmd_args(int argc, char **argv, char **argv_cpy)
 	j = 0;
 	while (i < argc)
 	{
-		while (argv[i][0] == '<' || argv[i][0] == '>')
-		{	
-			if (ft_strlen(argv[i]) > 2)
+		while (argv[i][0] == '\\' || argv[i][0] == '>')
+		{
+			if (ft_strlen(argv[i]) > 3)
 				i++;
-			else if (ft_strlen(argv[i]) == 2 && argv[i][1] != '>' && argv[i][1] != '<')
+			else if (ft_strlen(argv[i]) == 3 && argv[i][2] != '>' && argv[i][2] != '<')
 				i++;
 			else
 				i += 2;

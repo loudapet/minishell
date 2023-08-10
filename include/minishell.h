@@ -99,6 +99,8 @@ t_quotes	init_quote_vars(const char *str, int index);
 void	copy_front(t_quotes *quotes, int index, const char *str);
 void	copy_rest(t_quotes *quotes, const char *str, char type);
 char	*expand_and_join(char *str, char *var_name, char *var_value, int index);
+char	**backslash_splitter(char **av);
+char	*quote_redi_diffetiator(char *av);
 
 // Pipex
 t_command	command_redirection(int argc, char **argv);

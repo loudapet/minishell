@@ -112,5 +112,11 @@ t_args	lexer(const char *line, char **env)
 		i++;
 	}
 	write(1, "\n", 1);
+	args.ac = 0;
+	while (args.av[args.ac])
+	{
+		ft_printf("%s\n", args.av[args.ac]);
+		args.ac++;
+	}
 	return (args);
 }
