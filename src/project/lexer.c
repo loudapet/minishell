@@ -6,7 +6,7 @@
 /*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 14:53:16 by plouda            #+#    #+#             */
-/*   Updated: 2023/08/03 09:26:29 by plouda           ###   ########.fr       */
+/*   Updated: 2023/08/11 12:28:17 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,7 @@ char	*get_env_var_name(char *str, int start)
 
 	i = 0;
 	pos = start + 1;
-	while (str[pos] != '\0' && str[pos] != ' ' && str[pos] != '$'
-		&& str[pos] != '"' && str[pos] != '\'') // upgrade to any metacharacter
+	while (ft_isalnum(str[pos])) // upgrade to any metacharacter
 	{
 		i++;
 		pos++;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   sanitizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
+/*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/24 10:11:07 by plouda            #+#    #+#             */
-/*   Updated: 2023/07/25 14:29:57 by plouda           ###   ########.fr       */
+/*   Updated: 2023/08/11 10:27:19 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,22 +50,22 @@ void	index_checker(t_sanitizer *san, char **av, int i, int *j)
 char	**sanitizer(int ac, char **av, char **env)
 {
 	int			i;
-	int			j;
-	t_sanitizer	san;
+	//int			j;
+	//t_sanitizer	san;
 
 	i = 0;
 	while (av[i] && ac)
 	{
-		san = reset_sanitizer();
+		//san = reset_sanitizer();
 		av[i] = expand_env(av[i], env);
-		j = 0;
+		/* j = 0;
 		while (av[i][j])
 		{
 			quote_counter((const char *)&av[i][j], \
 				&san.quote, &san.single_quote);
 			index_checker(&san, av, i, &j);
 			j++;
-		}
+		} */
 		i++;
 	}
 	av[i] = NULL;
