@@ -120,63 +120,85 @@ int	has_redirection(char *ar)
 char	**split_redirections(char **av, int *ac, int i)
 {
 	char	**temp;
-	// int		i;
 	int		j;
 	int		k;
 	int		state;
+	int		flag;
+	int 	quote;
 
 	// i = 0;
 	k = 0;
+	flag = 0;
+	quote = 0;
 	// while (av[i])
 	// {
 		// ft_printf("%s %d\n", av[i], has_redirection(av[i]));
 	// 	if (has_redirection(av[i]))
 	// 	{
-			temp = malloc(sizeof(char *) * (*ac + has_redirection(av[i])));
-			*ac += has_redirection(av[i]) - 1;
-			i = 0;
-			while (av[i])
-			{
-				if (has_redirection(av[i]) == 0)
-				{
-					temp[k] = ft_strdup(av[i]);
-					k++;
-				}
-				else
-				{
-					// ft_printf("%d\n", k);
-					temp[k] = NULL;
-					j = 0;
-					state = 0;
-					while (av[i][j])
-					{
-						if ((av[i][j] == '>' || av[i][j] == '<') && state == 0)
-							state = 1;
-						else if (state == 0)
-							state = 2;
-						// ft_printf("WHY IS IT TWO %d %c %d\n", state, av[i][j], k);
-						if ((av[i][j] == '>' || av[i][j] == '<') && state == 2)
-						{
-							k++;
-							state = 1;
-						}
-						else if ((av[i][j] != '>' && av[i][j] != '<') && state == 1)
-						{
-							k++;
-							state = 2;
-						}
-						temp[k] = join(temp[k], av[i][j]);
-						// ft_printf("%s %c %d %d\n", temp[k], av[i][j], k, state);
-						j++;
-					}
-					k++;
-				}
-				free(av[i]);
-				i++;
-			}
+			// if (has_redirection(av[i]) == 0)
+			// 	temp = malloc(sizeof(char *) * (*ac + 1));
+			// else
+	// ft_printf("???%d %d\n", *ac, has_redirection(av[i]));
+	temp = malloc(sizeof(char *) * (*ac + has_redirection(av[i])));
+	// ft_printf("HAS_REDIRECTION %d AC %d\n", has_redirection(av[i]), *ac);
+	*ac += has_redirection(av[i]) - 1;
+	i = 0;
+	while (av[i])
+	{
+		if (has_redirection(av[i]) == 0 || flag == 1)
+		{
+			temp[k] = ft_strdup(av[i]);
+			k++;
+		}
+		else
+		{
+			// ft_printf("%s\n", temp[k]);
 			temp[k] = NULL;
-			free(av);
-			return (temp);
+			j = 0;
+			state = 0;
+			while (av[i][j])
+			{
+				ft_printf("%d %s %c\n", k, temp[k], av[i][j]);
+				if (av[i][j] == '\'' && quote == 0)
+					quote = 1;
+				else if (av[i][j] == '\'' && quote == 1)
+					quote = 0;
+				if (av[i][j] == '"' && quote == 0)
+					quote = 2;
+				else if (av[i][j] == '"' && quote == 2)
+					quote = 0;
+				if ((av[i][j] == '>' || av[i][j] == '<') && state == 0)
+					state = 1;
+				else if (state == 0)
+					state = 2;
+				// ft_printf("WHY IS IT TWO %d %c %d\n", state, av[i][j], k);
+				if ((av[i][j] == '>' || av[i][j] == '<') && state == 2 && quote == 0)
+				{
+					k++;
+					temp[k] = NULL;
+					state = 1;
+				}
+				else if ((av[i][j] != '>' && av[i][j] != '<') && state == 1)
+				{
+					k++;
+					temp[k] = NULL;
+					state = 2;
+				}
+				// ft_printf("%d %s %c\n", k, temp[k], av[i][j]);
+				temp[k] = join(temp[k], av[i][j]);
+				// ft_printf("%s %c %d %d\n", temp[k], av[i][j], k, state);
+				j++;
+			}
+			k++;
+			flag = 1;
+		}
+		free(av[i]);
+		i++;
+	}
+	ft_printf("AAAA%d\n", k);
+	temp[k] = NULL;
+	free(av);
+	return (temp);
 			// i = 0;
 	// 	}
 	// 	i++;
@@ -233,5 +255,12 @@ char	**sanitizer(int ac, char **av, char **env)
 	}
 	av[i] = NULL;
 	av = uuh(av, &ac);
+	ft_printf("%d\n", ac);
+	i = 0;
+	while (av[i])
+	{
+		ft_printf("%s\n", av[i]);
+		i++;
+	}
 	return (av);
 }
