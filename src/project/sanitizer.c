@@ -225,7 +225,7 @@ char	**uuh(char **av, int *ac)
 }
 
 // jjj """j"'j'j j'j'j"" "" > should expand to jjj jjj jjj
-char	**sanitizer(int ac, char **av, char **env)
+char	**sanitizer(int *ac, char **av, char **env)
 {
 	int			i;
 	//int			j;
@@ -239,7 +239,7 @@ char	**sanitizer(int ac, char **av, char **env)
 		i++;
 	}
 	i = 0;
-	while (av[i] && ac)
+	while (av[i] && *ac)
 	{
 		//san = reset_sanitizer();
 		av[i] = expand_env(av[i], env);
@@ -254,8 +254,8 @@ char	**sanitizer(int ac, char **av, char **env)
 		i++;
 	}
 	av[i] = NULL;
-	av = uuh(av, &ac);
-	ft_printf("%d\n", ac);
+	av = uuh(av, ac);
+	ft_printf("%d\n", *ac);
 	i = 0;
 	while (av[i])
 	{

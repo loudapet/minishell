@@ -91,7 +91,7 @@ void	free_args(t_args args);
 char	**minisplit(char const *s, char c);
 
 // Santitizer
-char	**sanitizer(int ac, char **av, char **env);
+char	**sanitizer(int *ac, char **av, char **env);
 t_sanitizer	reset_sanitizer(void);
 void	quote_counter(const char *c, int *quote, int *single_quote);
 char	*expand_env(char *str, char **env);

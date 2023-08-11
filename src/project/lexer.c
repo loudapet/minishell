@@ -75,7 +75,7 @@ void	free_args(t_args args)
 	int	i;
 
 	i = 0;
-	while (i < args.ac)
+	while (args.av[i])
 	{
 		free(args.av[i]);
 		i++;
@@ -97,7 +97,7 @@ t_args	lexer(const char *line, char **env)
 	while (av[args.ac])
 		args.ac++;
 	ft_printf("ARGC: %i\n", args.ac);
-	args.av = sanitizer(args.ac, av, env);
+	args.av = sanitizer(&args.ac, av, env);
 	i = 0;
 	while (args.av[i])
 	{
