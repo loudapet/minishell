@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: plouda <plouda@student.42.fr>              +#+  +:+       +#+         #
+#    By: plouda <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/03 15:05:09 by plouda            #+#    #+#              #
-#    Updated: 2023/07/24 12:27:47 by plouda           ###   ########.fr        #
+#    Updated: 2023/08/03 10:19:48 by plouda           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,9 @@ SRCS =	project/main.c \
 		project/minisplit.c \
 		project/sanitizer.c \
 		project/sanitizer_helpers.c \
-		project/expand_vars.c
+		project/expand_vars.c \
+		pipex/command_redirection.c \
+		pipex/files.c
 
 BUILD_DIR = ./obj
 OBJS = $(addprefix $(BUILD_DIR)/, $(SRCS))
@@ -52,6 +54,7 @@ obj/%.o: src/%.c | objdir
 objdir:
 	@mkdir -p obj
 	@mkdir -p obj/project
+	@mkdir -p obj/pipex
 
 clean:
 	@echo "$(YELLOW)Removing object files...$(RESET)"
