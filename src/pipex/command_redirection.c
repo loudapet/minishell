@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.c                                            :+:      :+:    :+:   */
+/*   command_redirection.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/26 11:37:49 by plouda            #+#    #+#             */
-/*   Updated: 2023/08/03 10:18:46 by plouda           ###   ########.fr       */
+/*   Updated: 2023/08/14 12:09:32 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,11 +34,11 @@ void	display_argv(char **argv)
 	write(1, "\n", 1);
 }
 
-void	get_files(int argc, char **argv, t_command *command)
+void	get_files(int argc, char **argv, t_command *command, int *index)
 {
 	int	i;
 
-	i = 0;
+	i = *index;
 	while (i < argc)
 	{
 		if (argv[i][0] == '<')
@@ -55,45 +55,50 @@ void	get_files(int argc, char **argv, t_command *command)
 			else
 				outfile(argv, i, command);
 		}
+		if (argv[i][0] == '|')
+			break ;
 		i++;
 	}
+	*index = i;
 }
 
-int	get_cmd_args_len(int argc, char **argv)
+int	get_cmd_args_len(int argc, char **argv, int *index)
 {
 	int	i;
 	int	len;
 
-	i = 0;
-	len = argc;
+	i = *index;
+	len = 0;
 	while (i < argc)
 	{
-		if (argv[i][0] == '<' || argv[i][0] == '>')
+		len++;
+		if (argv[i][0] == '<' || argv[i][0] == '>'|| argv[i][0] == '|')
 		{
-			if (ft_strlen(argv[i]) > 2)
-				len--;
-			else if (ft_strlen(argv[i]) == 2 && argv[i][1] != '>' && argv[i][1] != '<')
-				len--;
-			else
+			if (argv[i][0] == '<' || argv[i][0] == '>')
 				len -= 2;
+			else if (argv[i][0] == '|')
+			{
+				len--;
+				break ;
+			}
 		}
 		i++;
 	}
 	return (len);
 }
 
-char	**get_cmd_args(int argc, char **argv, char **argv_cpy)
+char	**get_cmd_args(int argc, char **argv, char **argv_cpy, int *index)
 {
 	int	i;
 	int	j;
 
-	i = 0;
+	i = *index;
 	j = 0;
 	while (i < argc)
 	{
-		while (argv[i][0] == '<' || argv[i][0] == '>')
+		while (argv[i][0] == '<' || argv[i][0] == '>' || argv[i][0] == '|')
 		{	
-			if (ft_strlen(argv[i]) > 2)
+			if (argv[i][0] == '<' || argv[i][0] == '>')
 				i++;
 			else if (ft_strlen(argv[i]) == 2 && argv[i][1] != '>' && argv[i][1] != '<')
 				i++;
@@ -112,9 +117,11 @@ char	**get_cmd_args(int argc, char **argv, char **argv_cpy)
 	return (argv_cpy);
 }
 
-t_command	command_redirection(int argc, char **argv)
+// What happens when there is just a redirection, but no command?
+
+t_command	command_redirection(int argc, char **argv, int *i)
 {
-	int		i;
+	//int		i;
 	int		cmd_args_len;
 	t_command	command;
 
@@ -124,20 +131,20 @@ t_command	command_redirection(int argc, char **argv)
 	command.outfile_fd = 1;
 	command.here_doc = 0;
 	command.redirection = 0;
-	cmd_args_len = get_cmd_args_len(argc, argv);
+	cmd_args_len = get_cmd_args_len(argc, argv, i);
 	command.cmd_args = malloc(sizeof(char *) * (cmd_args_len + 1));
 	// handle malloc failure (how?)
-	i = 0;
-	while (i < argc)
-	{
-		get_files(argc, argv, &command);
-		command.cmd_args = get_cmd_args(argc, argv, command.cmd_args);
-		i++;
-	}
+	//i = 0;
+	command.cmd_args = get_cmd_args(argc, argv, command.cmd_args, i);
+	get_files(argc, argv, &command, i);
+	(*i)++;
+	if (*i > argc)
+		*i = argc;
 	ft_printf("Infile: %s\nOutfile: %s\n", command.infile_path, command.outfile_path);
 	ft_printf("Infile fd: %d\nOutfile fd: %d\n", command.infile_fd, command.outfile_fd);
 	ft_printf("Redirection mode (0 no outfile, 1 truncate, 2 append): %d\n", command.redirection);
 	ft_printf("here_doc status (0 none, 1 void, 2 infile): %d\n", command.here_doc);
 	display_argv(command.cmd_args);
+	//ft_printf("Command count: %d\n", command.cmd_count);
 	return (command);
 }

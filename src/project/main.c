@@ -6,7 +6,7 @@
 /*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 10:15:35 by plouda            #+#    #+#             */
-/*   Updated: 2023/08/03 10:18:58 by plouda           ###   ########.fr       */
+/*   Updated: 2023/08/14 12:08:59 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,22 @@ Use this for valgrind suppression
 valgrind -s --leak-check=full --show-reachable=yes --error-limit=no
 --suppressions=minishell.supp --gen-suppressions=all ./minishell
 */
+
+int	get_cmd_count(int argc, char **argv)
+{
+	int	i;
+	int count;
+
+	i = 0;
+	count = 1;
+	while (i < argc)
+	{
+		if (!strncmp(argv[i], "|", 1))
+			count++;
+		i++;
+	}
+	return (count);
+}
 
 size_t	get_hostname_len(char *hostname)
 {
@@ -96,17 +112,24 @@ int	main(int argc, char **argv, char **envp)
 	char	*dir;
 	char	*prompt;
 	char	**env;
+	int		i;
+	int		count;
 	t_args	args;
+	t_command cmd;
+	t_list	**cmds;
+	void	*ptr;
+	//t_command pipex;
 
 	(void)argc;
 	(void)argv;
-
+	
 	if (!getenv("USER"))
 		return (printf("No...\n"), 0);
 	env = create_env(envp);
 	username = get_username(env);
 	while (1)
 	{
+		i = 0;
 		hostname = get_hostname();
 		dir = get_directory(env);
 		specs = ft_strjoin(username, hostname);
@@ -114,7 +137,14 @@ int	main(int argc, char **argv, char **envp)
 		line = readline((const char *)prompt);
 		add_history(line);
 		args = lexer(line, env);
-		command_redirection(args.ac, args.av);
+		count = get_cmd_count(args.ac, args.av);
+		cmds = malloc(sizeof(t_list *) * count);
+		while (i < args.ac)
+		{
+			cmd = command_redirection(args.ac, args.av, &i);
+			ptr = &cmd;
+			ft_lstadd_back(cmds, ft_lstnew(ptr));
+		}
 		free_args(args);
 		if (!ft_strncmp(line, "q", ft_strlen(line)))
 			break ;

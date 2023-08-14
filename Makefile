@@ -6,7 +6,7 @@
 #    By: plouda <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/03 15:05:09 by plouda            #+#    #+#              #
-#    Updated: 2023/08/03 10:19:48 by plouda           ###   ########.fr        #
+#    Updated: 2023/08/14 09:04:40 by plouda           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,8 @@ SRCS =	project/main.c \
 		project/sanitizer_helpers.c \
 		project/expand_vars.c \
 		pipex/command_redirection.c \
-		pipex/files.c
+		pipex/files.c \
+		pipex/pipex.c
 
 BUILD_DIR = ./obj
 OBJS = $(addprefix $(BUILD_DIR)/, $(SRCS))

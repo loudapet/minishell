@@ -6,7 +6,7 @@
 /*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 10:15:59 by plouda            #+#    #+#             */
-/*   Updated: 2023/08/03 10:19:11 by plouda           ###   ########.fr       */
+/*   Updated: 2023/08/14 12:01:37 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ typedef struct s_command
 	int		outfile_fd;
 	int		here_doc;
 	int		redirection;
+	int		cmd_count;
 	char	**cmd_args;
 }			t_command;
 
@@ -101,7 +102,7 @@ void	copy_rest(t_quotes *quotes, const char *str, char type);
 char	*expand_and_join(char *str, char *var_name, char *var_value, int index);
 
 // Pipex
-t_command	command_redirection(int argc, char **argv);
+t_command	command_redirection(int argc, char **argv, int *i);
 
 // Files
 void	here_doc(char **argv, int i, t_command *command);
