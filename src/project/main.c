@@ -129,7 +129,7 @@ int	main(int argc, char **argv, char **envp)
 	int		i;
 	// int		count;
 	t_args	args;
-	t_command cmd;
+	t_command *cmd;
 	t_list	*cmds;
 	// void	*ptr;
 	//t_command pipex;
@@ -159,16 +159,10 @@ int	main(int argc, char **argv, char **envp)
 			// ft_printf("TESTING %d, %s\n", i, cmd.cmd_args[0]);
 			// tesst =
 			// ptr = &cmd;
-			ft_lstadd_back(&cmds, ft_lstnew(&cmd));
+			ft_lstadd_back(&cmds, ft_lstnew(cmd));
 			// ft_printf("TESTING %d, %s\n", i, aaa->cmd_args[0]);
 		}
 		printf_list(cmds);
-		// while (next != NULL)
-		// {
-			// aaa = (t_command*)next->content;
-			// printf("AAA%s\n", aaa->cmd_args[0]);
-		// 	next = next->next;
-		// }
 		free_args(args);
 		if (!ft_strncmp(line, "q", ft_strlen(line)))
 			break ;
