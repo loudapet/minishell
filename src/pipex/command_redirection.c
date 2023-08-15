@@ -97,7 +97,7 @@ char	**get_cmd_args(int argc, char **argv, char **argv_cpy, int *index)
 	while (i < argc)
 	{
 		while (argv[i][0] == '<' || argv[i][0] == '>' || argv[i][0] == '|')
-		{	
+		{
 			if (argv[i][0] == '<' || argv[i][0] == '>')
 				i++;
 			else if (ft_strlen(argv[i]) == 2 && argv[i][1] != '>' && argv[i][1] != '<')
@@ -119,32 +119,33 @@ char	**get_cmd_args(int argc, char **argv, char **argv_cpy, int *index)
 
 // What happens when there is just a redirection, but no command?
 
-t_command	command_redirection(int argc, char **argv, int *i)
+t_command	*command_redirection(int argc, char **argv, int *i)
 {
 	//int		i;
 	int		cmd_args_len;
-	t_command	command;
+	t_command	*command;
 
-	command.infile_path = NULL;
-	command.outfile_path = NULL;
-	command.infile_fd = 0;
-	command.outfile_fd = 1;
-	command.here_doc = 0;
-	command.redirection = 0;
+	command = malloc(sizeof(t_command));
+	command->infile_path = NULL;
+	command->outfile_path = NULL;
+	command->infile_fd = 0;
+	command->outfile_fd = 1;
+	command->here_doc = 0;
+	command->redirection = 0;
 	cmd_args_len = get_cmd_args_len(argc, argv, i);
-	command.cmd_args = malloc(sizeof(char *) * (cmd_args_len + 1));
+	command->cmd_args = malloc(sizeof(char *) * (cmd_args_len + 1000));
 	// handle malloc failure (how?)
 	//i = 0;
-	command.cmd_args = get_cmd_args(argc, argv, command.cmd_args, i);
-	get_files(argc, argv, &command, i);
+	command->cmd_args = get_cmd_args(argc, argv, command->cmd_args, i);
+	get_files(argc, argv, command, i);
 	(*i)++;
 	if (*i > argc)
 		*i = argc;
-	ft_printf("Infile: %s\nOutfile: %s\n", command.infile_path, command.outfile_path);
-	ft_printf("Infile fd: %d\nOutfile fd: %d\n", command.infile_fd, command.outfile_fd);
-	ft_printf("Redirection mode (0 no outfile, 1 truncate, 2 append): %d\n", command.redirection);
-	ft_printf("here_doc status (0 none, 1 void, 2 infile): %d\n", command.here_doc);
-	display_argv(command.cmd_args);
+	ft_printf("Infile: %s\nOutfile: %s\n", command->infile_path, command->outfile_path);
+	ft_printf("Infile fd: %d\nOutfile fd: %d\n", command->infile_fd, command->outfile_fd);
+	ft_printf("Redirection mode (0 no outfile, 1 truncate, 2 append): %d\n", command->redirection);
+	ft_printf("here_doc status (0 none, 1 void, 2 infile): %d\n", command->here_doc);
+	display_argv(command->cmd_args);
 	//ft_printf("Command count: %d\n", command.cmd_count);
 	return (command);
 }
