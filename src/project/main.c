@@ -103,6 +103,20 @@ char	*get_directory(char **env)
 	return (home_dollar);
 }
 
+void	printf_list(t_list *lst)
+{
+	t_list *cur;
+	t_command *con;
+
+	cur = lst;
+	while (cur != NULL)
+	{
+		con = (t_command *)cur->content;
+		ft_printf("AAA%s\n", con->cmd_args[0]);
+		cur = cur->next;
+	}
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	char	*line;
@@ -113,16 +127,16 @@ int	main(int argc, char **argv, char **envp)
 	char	*prompt;
 	char	**env;
 	int		i;
-	int		count;
+	// int		count;
 	t_args	args;
 	t_command cmd;
-	t_list	**cmds;
-	void	*ptr;
+	t_list	*cmds;
+	// void	*ptr;
 	//t_command pipex;
 
 	(void)argc;
 	(void)argv;
-	
+
 	if (!getenv("USER"))
 		return (printf("No...\n"), 0);
 	env = create_env(envp);
@@ -137,14 +151,24 @@ int	main(int argc, char **argv, char **envp)
 		line = readline((const char *)prompt);
 		add_history(line);
 		args = lexer(line, env);
-		count = get_cmd_count(args.ac, args.av);
-		cmds = malloc(sizeof(t_list *) * count);
+		cmds = NULL;
 		while (i < args.ac)
 		{
+			// aaa = cmds->content;
 			cmd = command_redirection(args.ac, args.av, &i);
-			ptr = &cmd;
-			ft_lstadd_back(cmds, ft_lstnew(ptr));
+			// ft_printf("TESTING %d, %s\n", i, cmd.cmd_args[0]);
+			// tesst =
+			// ptr = &cmd;
+			ft_lstadd_back(&cmds, ft_lstnew(&cmd));
+			// ft_printf("TESTING %d, %s\n", i, aaa->cmd_args[0]);
 		}
+		printf_list(cmds);
+		// while (next != NULL)
+		// {
+			// aaa = (t_command*)next->content;
+			// printf("AAA%s\n", aaa->cmd_args[0]);
+		// 	next = next->next;
+		// }
 		free_args(args);
 		if (!ft_strncmp(line, "q", ft_strlen(line)))
 			break ;
