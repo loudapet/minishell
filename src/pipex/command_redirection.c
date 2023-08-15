@@ -6,7 +6,7 @@
 /*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/26 11:37:49 by plouda            #+#    #+#             */
-/*   Updated: 2023/08/14 12:09:32 by plouda           ###   ########.fr       */
+/*   Updated: 2023/08/15 17:15:56 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,9 @@ char	**get_cmd_args(int argc, char **argv, char **argv_cpy, int *index)
 {
 	int	i;
 	int	j;
+	int	flag;
 
+	flag = 0;
 	i = *index;
 	j = 0;
 	while (i < argc)
@@ -102,12 +104,18 @@ char	**get_cmd_args(int argc, char **argv, char **argv_cpy, int *index)
 				i++;
 			else if (ft_strlen(argv[i]) == 2 && argv[i][1] != '>' && argv[i][1] != '<')
 				i++;
+			else if (argv[i][0] == '|')
+			{
+				flag = 1;
+				i++;
+				break ;
+			}
 			else
 				i += 2;
 			if (i >= argc)
 				break ;
 		}
-		if (i >= argc)
+		if (i >= argc || flag)
 			break ;
 		argv_cpy[j] = argv[i];
 		i++;
@@ -133,7 +141,8 @@ t_command	*command_redirection(int argc, char **argv, int *i)
 	command->here_doc = 0;
 	command->redirection = 0;
 	cmd_args_len = get_cmd_args_len(argc, argv, i);
-	command->cmd_args = malloc(sizeof(char *) * (cmd_args_len + 1000));
+	ft_printf("TEEEE DOOOOOO TEEEEE DOOOO\n");
+	command->cmd_args = malloc(sizeof(char *) * cmd_args_len);
 	// handle malloc failure (how?)
 	//i = 0;
 	command->cmd_args = get_cmd_args(argc, argv, command->cmd_args, i);
