@@ -102,12 +102,27 @@ void	copy_rest(t_quotes *quotes, const char *str, char type);
 char	*expand_and_join(char *str, char *var_name, char *var_value, int index);
 
 // Pipex
-t_command	command_redirection(int argc, char **argv, int *i);
+t_command	*command_redirection(int argc, char **argv, int *i);
+void	pipex(t_list *cmds, char ***env);
 
 // Files
 void	here_doc(char **argv, int i, t_command *command);
 void	infile(char **argv, int i, t_command *command);
 void	outfile(char **argv, int i, t_command *command);
 void	append(char **argv, int i, t_command *command);
+
+int	variable_exists(char *arg, char **env);
+
+// Built_ins
+void	builtins(char **argv, char ***env);
+int		echo_built(char **argv);
+int		cd_built(char **argv, char ***env);
+int		set_new_pwd(char **env);
+int		export_built(char **argv, char ***env);
+char	**unset_built(char **arg, char **env);
+char	**unset_single(char *arg, char **env);
+int		env_built(char **env);
+int		pwd_built(char **env);
+void	exit_built(char **argv, char **env);
 
 #endif
