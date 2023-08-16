@@ -6,7 +6,7 @@
 /*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/26 11:37:49 by plouda            #+#    #+#             */
-/*   Updated: 2023/08/15 17:15:56 by plouda           ###   ########.fr       */
+/*   Updated: 2023/08/16 09:22:08 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,9 +101,7 @@ char	**get_cmd_args(int argc, char **argv, char **argv_cpy, int *index)
 		while (argv[i][0] == '<' || argv[i][0] == '>' || argv[i][0] == '|')
 		{
 			if (argv[i][0] == '<' || argv[i][0] == '>')
-				i++;
-			else if (ft_strlen(argv[i]) == 2 && argv[i][1] != '>' && argv[i][1] != '<')
-				i++;
+				i += 2;
 			else if (argv[i][0] == '|')
 			{
 				flag = 1;
@@ -141,8 +139,7 @@ t_command	*command_redirection(int argc, char **argv, int *i)
 	command->here_doc = 0;
 	command->redirection = 0;
 	cmd_args_len = get_cmd_args_len(argc, argv, i);
-	ft_printf("TEEEE DOOOOOO TEEEEE DOOOO\n");
-	command->cmd_args = malloc(sizeof(char *) * cmd_args_len);
+	command->cmd_args = malloc(sizeof(char *) * (cmd_args_len + 1));
 	// handle malloc failure (how?)
 	//i = 0;
 	command->cmd_args = get_cmd_args(argc, argv, command->cmd_args, i);
@@ -150,6 +147,7 @@ t_command	*command_redirection(int argc, char **argv, int *i)
 	(*i)++;
 	if (*i > argc)
 		*i = argc;
+	ft_printf("T--------------------------------------------------T\n");
 	ft_printf("Infile: %s\nOutfile: %s\n", command->infile_path, command->outfile_path);
 	ft_printf("Infile fd: %d\nOutfile fd: %d\n", command->infile_fd, command->outfile_fd);
 	ft_printf("Redirection mode (0 no outfile, 1 truncate, 2 append): %d\n", command->redirection);
