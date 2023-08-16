@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command_redirection.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/26 11:37:49 by plouda            #+#    #+#             */
-/*   Updated: 2023/08/16 09:22:08 by plouda           ###   ########.fr       */
+/*   Updated: 2023/08/16 12:00:45 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,24 @@ void	display_argv(char **argv)
 	write(1, "\n", 1);
 }
 
+void	quote_remover(char **argv, int index)
+{
+	t_sanitizer san;
+	int			i;
+	int			j;
+
+	i = index;
+	san = reset_sanitizer();
+	j = 0;
+	while (argv[i][j])
+	{
+		quote_counter((const char *)&argv[i][j], &san.quote, &san.single_quote);
+		//ft_printf("Quotes: %d\n", san.quote);
+		index_checker(&san, argv, i, &j);
+		j++;
+	}
+}
+
 void	get_files(int argc, char **argv, t_command *command, int *index)
 {
 	int	i;
@@ -43,6 +61,7 @@ void	get_files(int argc, char **argv, t_command *command, int *index)
 	{
 		if (argv[i][0] == '<')
 		{
+			quote_remover(argv, i + 1);
 			if (!strncmp(argv[i], "<<", 2))
 				here_doc(argv, i, command);
 			else
@@ -50,6 +69,7 @@ void	get_files(int argc, char **argv, t_command *command, int *index)
 		}
 		if ((argv[i][0]) == '>')
 		{
+			quote_remover(argv, i + 1);
 			if (!strncmp(argv[i], ">>", 2))
 				append(argv, i, command);
 			else
@@ -116,8 +136,10 @@ char	**get_cmd_args(int argc, char **argv, char **argv_cpy, int *index)
 		if (i >= argc || flag)
 			break ;
 		argv_cpy[j] = argv[i];
+		quote_remover(argv_cpy, j);
 		i++;
 		j++;
+		//ft_printf("Index i: %d, index j: %d\n", i, j);
 	}
 	argv_cpy[j] = NULL;
 	return (argv_cpy);

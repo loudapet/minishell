@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 10:15:59 by plouda            #+#    #+#             */
-/*   Updated: 2023/08/14 12:01:37 by plouda           ###   ########.fr       */
+/*   Updated: 2023/08/16 11:39:14 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,10 +100,11 @@ t_quotes	init_quote_vars(const char *str, int index);
 void	copy_front(t_quotes *quotes, int index, const char *str);
 void	copy_rest(t_quotes *quotes, const char *str, char type);
 char	*expand_and_join(char *str, char *var_name, char *var_value, int index);
+void	index_checker(t_sanitizer *san, char **av, int i, int *j);
 
 // Pipex
 t_command	*command_redirection(int argc, char **argv, int *i);
-void	pipex(t_list *cmds, char ***env);
+//void	pipex(t_list *cmds, char ***env);
 
 // Files
 void	here_doc(char **argv, int i, t_command *command);
