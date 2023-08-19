@@ -20,7 +20,15 @@ SRCS =	project/main.c \
 		project/expand_vars.c \
 		pipex/command_redirection.c \
 		pipex/files.c \
-		pipex/pipex.c
+		pipex/pipex.c \
+		builtins/echo.c \
+		builtins/builtins.c \
+		builtins/cd.c \
+		builtins/export.c \
+		builtins/unset.c \
+		builtins/env.c \
+		builtins/pwd.c \
+		builtins/exit.c
 
 BUILD_DIR = ./obj
 OBJS = $(addprefix $(BUILD_DIR)/, $(SRCS))
@@ -56,6 +64,8 @@ objdir:
 	@mkdir -p obj
 	@mkdir -p obj/project
 	@mkdir -p obj/pipex
+	@mkdir -p obj/builtins
+
 
 clean:
 	@echo "$(YELLOW)Removing object files...$(RESET)"

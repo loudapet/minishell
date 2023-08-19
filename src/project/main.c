@@ -106,14 +106,25 @@ char	*get_directory(char **env)
 void	printf_list(t_list *lst)
 {
 	t_list *cur;
-	t_command *con;
+	// t_command *con;
 
 	cur = lst;
 	while (cur != NULL)
 	{
-		con = (t_command *)cur->content;
-		ft_printf("AAA%s\n", con->cmd_args[0]);
+		// con = (t_command *)cur->content;
+		// ft_printf("AAA%s\n", con->cmd_args[0]);
 		cur = cur->next;
+	}
+}
+
+void	handler(int sig)
+{
+	if (sig == SIGINT)
+	{
+		ioctl(STDIN_FILENO, TIOCSTI, "\n");
+		rl_replace_line("", 0);
+		rl_on_new_line();
+		ft_putstr_fd("\n", 1);
 	}
 }
 
@@ -127,6 +138,7 @@ int	main(int argc, char **argv, char **envp)
 	char	*prompt;
 	char	**env;
 	int		i;
+	int		status;
 	// int		count;
 	t_args	args;
 	t_command *cmd;
@@ -136,11 +148,14 @@ int	main(int argc, char **argv, char **envp)
 
 	(void)argc;
 	(void)argv;
+	status = 0;
 
 	if (!getenv("USER"))
 		return (printf("No...\n"), 0);
+	signal(SIGINT, handler);
 	env = create_env(envp);
 	username = get_username(env);
+	line = "";
 	while (1)
 	{
 		i = 0;
@@ -149,6 +164,17 @@ int	main(int argc, char **argv, char **envp)
 		specs = ft_strjoin(username, hostname);
 		prompt = ft_strjoin(specs, dir);
 		line = readline((const char *)prompt);
+		if (line == NULL)
+			exit (0);
+		if (line[0] == '\0')
+		{
+			free(line);
+			free(hostname);
+			free(specs);
+			free(dir);
+			free(prompt);
+			continue;
+		}
 		add_history(line);
 		args = lexer(line, env);
 		cmds = NULL;
@@ -162,7 +188,8 @@ int	main(int argc, char **argv, char **envp)
 			ft_lstadd_back(&cmds, ft_lstnew(cmd));
 			// ft_printf("TESTING %d, %s\n", i, aaa->cmd_args[0]);
 		}
-		printf_list(cmds);
+		// printf_list(cmds);
+		pipex(cmds, &env, &status);
 		free_args(args);
 		if (!ft_strncmp(line, "q", ft_strlen(line)))
 			break ;

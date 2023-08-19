@@ -73,7 +73,7 @@ char	*join(char *original, char c)
 
 int	has_redirection(char *ar)
 {
-	int	i;
+		int	i;
 	int	quote;
 	int	count;
 
@@ -100,26 +100,27 @@ int	has_redirection(char *ar)
 			else if (quote == 1)
 				quote = 0;
 		}
-		if ((ar[i] == '>' || ar[i] == '<') && quote == 0)
+		if ((ar[i] == '>' || ar[i] == '<' || ar[i] == '|') && quote == 0)
 		{
 			count++;
-			if (ar[i + 1] == '>' || ar[i + 1] == '<')
+			if ((ar[i + 1] == '>' || ar[i + 1] == '<') && ar[i] != '|')
 				i++;
 		}
 		i++;
 	}
 	if (count != 0)
 		count = count * 2 + 1;
-	if (ar[0] == '>' || ar[0] == '<')
+	if (ar[0] == '>' || ar[0] == '<' || ar[0] == '|')
 		count--;
-	if (ar[ft_strlen(ar) - 1] == '>' || ar[ft_strlen(ar) - 1] == '<')
+	if (ar[ft_strlen(ar) - 1] == '>' || ar[ft_strlen(ar) - 1] == '<' || ar[ft_strlen(ar) - 1] == '|')
 		count--;
 	return (count);
 }
 
+
 char	**split_redirections(char **av, int *ac, int i)
 {
-	char	**temp;
+		char	**temp;
 	int		j;
 	int		k;
 	int		state;
@@ -158,7 +159,7 @@ char	**split_redirections(char **av, int *ac, int i)
 			state = 0;
 			while (av[i][j])
 			{
-				ft_printf("%d %s %c\n", k, temp[k], av[i][j]);
+				// ft_printf("%d %s %c\n", k, temp[k], av[i][j]);
 				if (av[i][j] == '\'' && quote == 0)
 					quote = 1;
 				else if (av[i][j] == '\'' && quote == 1)
@@ -167,18 +168,18 @@ char	**split_redirections(char **av, int *ac, int i)
 					quote = 2;
 				else if (av[i][j] == '"' && quote == 2)
 					quote = 0;
-				if ((av[i][j] == '>' || av[i][j] == '<') && state == 0)
+				if ((av[i][j] == '>' || av[i][j] == '<' || av[i][j] == '|') && state == 0)
 					state = 1;
 				else if (state == 0)
 					state = 2;
 				// ft_printf("WHY IS IT TWO %d %c %d\n", state, av[i][j], k);
-				if ((av[i][j] == '>' || av[i][j] == '<') && state == 2 && quote == 0)
+				if ((av[i][j] == '>' || av[i][j] == '<' || av[i][j] == '|') && state == 2 && quote == 0)
 				{
 					k++;
 					temp[k] = NULL;
 					state = 1;
 				}
-				else if ((av[i][j] != '>' && av[i][j] != '<') && state == 1)
+				else if ((av[i][j] != '>' && av[i][j] != '<' && av[i][j] != '|') && state == 1)
 				{
 					k++;
 					temp[k] = NULL;
@@ -195,7 +196,7 @@ char	**split_redirections(char **av, int *ac, int i)
 		free(av[i]);
 		i++;
 	}
-	ft_printf("AAAA%d\n", k);
+	// ft_printf("AAAA%d\n", k);
 	temp[k] = NULL;
 	free(av);
 	return (temp);
@@ -235,7 +236,7 @@ char	**sanitizer(int *ac, char **av, char **env)
 	// ft_printf("%d",)
 	while (av[i])
 	{
-		ft_printf("%s\n", av[i]);
+		// ft_printf("%s\n", av[i]);
 		i++;
 	}
 	i = 0;
@@ -255,11 +256,11 @@ char	**sanitizer(int *ac, char **av, char **env)
 	}
 	av[i] = NULL;
 	av = uuh(av, ac);
-	ft_printf("%d\n", *ac);
+	// ft_printf("%d\n", *ac);
 	i = 0;
 	while (av[i])
 	{
-		ft_printf("%s\n", av[i]);
+		// ft_printf("%s\n", av[i]);
 		i++;
 	}
 	return (av);

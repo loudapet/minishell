@@ -87,29 +87,29 @@ void	free_args(t_args args)
 t_args	lexer(const char *line, char **env)
 {
 	char	**av;
-	int		i;
-	int		j;
+	// int		i;
+	// int		j;
 	t_args	args;
 
 	av = minisplit(line, ' ');
 	args.ac = 0;
-	i = 0;
+	// i = 0;
 	while (av[args.ac])
 		args.ac++;
-	ft_printf("ARGC: %i\n", args.ac);
+	// ft_printf("ARGC: %i\n", args.ac);
 	args.av = sanitizer(&args.ac, av, env);
-	i = 0;
-	while (args.av[i])
-	{
-		j = 0;
-		while (args.av[i][j])
-		{
-			write(1, &args.av[i][j], 1);
-			j++;
-		}
-		write(1, " ", 1);
-		i++;
-	}
-	write(1, "\n", 1);
+	// i = 0;
+	// while (args.av[i])
+	// {
+	// 	j = 0;
+	// 	while (args.av[i][j])
+	// 	{
+	// 		write(1, &args.av[i][j], 1);
+	// 		j++;
+	// 	}
+	// 	write(1, " ", 1);
+	// 	i++;
+	// }
+	// write(1, "\n", 1);
 	return (args);
 }

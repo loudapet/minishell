@@ -27,6 +27,8 @@
 # include <sys/time.h>
 # include <sys/resource.h>
 # include <sys/wait.h>
+# include <fcntl.h>
+# include <sys/ioctl.h>
 # define READ 0
 # define WRITE 1
 # define TRUNC 1;
@@ -100,10 +102,11 @@ t_quotes	init_quote_vars(const char *str, int index);
 void	copy_front(t_quotes *quotes, int index, const char *str);
 void	copy_rest(t_quotes *quotes, const char *str, char type);
 char	*expand_and_join(char *str, char *var_name, char *var_value, int index);
+void	index_checker(t_sanitizer *san, char **av, int i, int *j);
 
 // Pipex
 t_command	*command_redirection(int argc, char **argv, int *i);
-void	pipex(t_list *cmds, char ***env);
+void	pipex(t_list *cmds, char ***env, int *status);
 
 // Files
 void	here_doc(char **argv, int i, t_command *command);
@@ -114,7 +117,7 @@ void	append(char **argv, int i, t_command *command);
 int	variable_exists(char *arg, char **env);
 
 // Built_ins
-void	builtins(char **argv, char ***env);
+void	builtins(char **argv, char ***env, int *status);
 int		echo_built(char **argv);
 int		cd_built(char **argv, char ***env);
 int		set_new_pwd(char **env);
@@ -123,6 +126,6 @@ char	**unset_built(char **arg, char **env);
 char	**unset_single(char *arg, char **env);
 int		env_built(char **env);
 int		pwd_built(char **env);
-void	exit_built(char **argv, char **env);
+void	exit_built(char **argv, char **env, int statu);
 
 #endif
