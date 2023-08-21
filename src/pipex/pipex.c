@@ -34,15 +34,15 @@ int	is_builtin(char *com)
 void	pipex(t_list *cmds, char ***env, int *status)
 {
 	int		i;
+	int		l;
 	pid_t	pid;
 	int		out;
 	int		in;
 	int		stdout;
 	int		stat;
-	int		**fd;//[ft_lstsize(cmds)][2];
+	int		**fd;
 	t_command	*command;
 
-	fd = malloc(sizeof(int*) * ft_lstsize(cmds));
 	i = 0;
 	command = (t_command *)cmds->content;
 	if (ft_lstsize(cmds) == 1 && is_builtin(command->cmd_args[0]))
@@ -60,6 +60,7 @@ void	pipex(t_list *cmds, char ***env, int *status)
 		dup2(stdout, 1);
 		return ;
 	}
+	fd = malloc(sizeof(int*) * ft_lstsize(cmds));
 	while (cmds)
 	{
 		fd[i] = malloc(sizeof(int) * 2);
@@ -98,10 +99,18 @@ void	pipex(t_list *cmds, char ***env, int *status)
 		i++;
 		cmds = cmds->next;
 	}
+	l = 0;
 	while (i > 0)
 	{
 		waitpid(pid, &stat, 0);
 		*status = WEXITSTATUS(stat);
 		i--;
+		l++;
 	}
+	while (l >= 0)
+	{
+		free(fd[l]);
+		l--;
+	}
+	free(fd);
 }

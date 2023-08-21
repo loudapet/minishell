@@ -12,25 +12,23 @@
 
 #include "minishell.h"
 
-int	echo_built(char	**args)
+int	cd_home(char ***env)
 {
-	int	i;
+	char	*pwd;
+	char	**arg;
 
-	if (args[1] && !ft_strncmp(args[1],
-			"-n", ft_strlen(args[1])))
-		i = 2;
-	else
-		i = 1;
-	while (args[i])
-	{
-		ft_putstr_fd(args[i], 1);
-		if (args[i + 1])
-			ft_putstr_fd(" ", 1);
-		i++;
-	}
-	if (!args[1])
-		ft_putchar_fd('\n', 1);
-	else if (ft_strncmp(args[1], "-n", ft_strlen(args[1])))
-		ft_putchar_fd('\n', 1);
+	arg = malloc(sizeof(char *) * 3);
+	pwd = malloc(10000);
+	getcwd(pwd, 10000);
+	arg[0] = ft_strdup("export");
+	arg[1] = ft_strjoin("OLDPWD=", pwd);
+	arg[2] = NULL;
+	chdir(get_env("HOME", *env));
+	if (get_env("OLDPWD", *env))
+		export_built(arg, env);
+	free(arg[1]);
+	free(arg[0]);
+	free(arg);
+	free(pwd);
 	return (0);
 }

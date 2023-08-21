@@ -12,17 +12,27 @@
 
 #include "minishell.h"
 
-int	exec_command(char **argv, char ***env)
+int	has_path(char *arg)
 {
-	char	**path;
+	int	i;
+
+	i = 0;
+	while (arg[i])
+	{
+		if (arg[i] == '/')
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+void	exe_with_path(char **path, char **argv, char ***env)
+{
+	int		i;
 	char	*slash;
 	char	*command_path;
 
-	if (get_env("PATH", *env))
-		path = ft_split(get_env("PATH", *env), ':');
-	else
-		return (0);
-	int i = 0;
+	i = 0;
 	while (path[i])
 	{
 		slash = ft_strjoin(path[i], "/");
@@ -33,6 +43,32 @@ int	exec_command(char **argv, char ***env)
 		free(slash);
 		i++;
 	}
+}
+
+int	exec_command(char **argv, char ***env)
+{
+	char	**path;
+	int		i;
+
+	i = 0;
+	if (has_path(argv[0]))
+	{
+		if (access(argv[0], F_OK) == 0)
+			execve(argv[0], argv, *env);
+		else
+			return (0);
+	}
+	if (get_env("PATH", *env))
+		path = ft_split(get_env("PATH", *env), ':');
+	else
+		return (0);
+	exe_with_path(path, argv, env);
+	while (path[i])
+	{
+		free(path[i]);
+		i++;
+	}
+	free(path);
 	return (0);
 }
 

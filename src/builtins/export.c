@@ -106,10 +106,7 @@ int	export_built(char **argv, char ***env)
 	i = 1;
 	status = 0;
 	if (!argv[1])
-	{
-		show_var(env);
-		return (0);
-	}
+		return (show_var(env), 0);
 	while (argv[i])
 	{
 		if (check_arg(argv[i]) != 0)

@@ -95,12 +95,12 @@ void	free_env(char **env)
 	free(env);
 }
 
-int	set_new_pwd(char **env)
+int	set_new_pwd(char ***env)
 {
 	char	*pwd;
 	char	**arg;
 
-	if (get_env("PWD", env))
+	if (get_env("PWD", *env))
 	{
 		arg = malloc(sizeof(char *) * 3);
 		pwd = malloc(10000);
@@ -108,7 +108,7 @@ int	set_new_pwd(char **env)
 		arg[0] = ft_strdup("export");
 		arg[1] = ft_strjoin("PWD=", pwd);
 		arg[2] = NULL;
-		export_built(arg, &env);
+		export_built(arg, env);
 		free(arg[1]);
 		free(arg[0]);
 		free(arg);
