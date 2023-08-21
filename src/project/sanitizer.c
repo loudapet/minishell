@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   sanitizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/24 10:11:07 by plouda            #+#    #+#             */
-/*   Updated: 2023/08/11 10:27:19 by plouda           ###   ########.fr       */
+/*   Updated: 2023/08/21 09:33:24 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -226,7 +226,7 @@ char	**uuh(char **av, int *ac)
 }
 
 // jjj """j"'j'j j'j'j"" "" > should expand to jjj jjj jjj
-char	**sanitizer(int *ac, char **av, char **env)
+char	**sanitizer(int *ac, char **av, char **env, int status)
 {
 	int			i;
 	//int			j;
@@ -243,7 +243,7 @@ char	**sanitizer(int *ac, char **av, char **env)
 	while (av[i] && *ac)
 	{
 		//san = reset_sanitizer();
-		av[i] = expand_env(av[i], env);
+		av[i] = expand_env(av[i], env, status);
 		/* j = 0;
 		while (av[i][j])
 		{

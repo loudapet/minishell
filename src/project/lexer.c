@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 14:53:16 by plouda            #+#    #+#             */
-/*   Updated: 2023/08/11 12:28:17 by plouda           ###   ########.fr       */
+/*   Updated: 2023/08/21 10:52:59 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ char	*get_env_var_name(char *str, int start)
 	return (name);
 }
 
-char	*expand_env(char *str, char **env)
+char	*expand_env(char *str, char **env, int status)
 {
 	int		i;
 	char	*var_name;
@@ -51,10 +51,28 @@ char	*expand_env(char *str, char **env)
 	i = 0;
 	quote = 0;
 	single_quote = 0;
+	var_name = NULL;
+	var = NULL;
 	while (str[i])
 	{
 		quote_counter((const char *)&str[i], &quote, &single_quote);
-		if (str[i] == '$' && !(single_quote % 2))
+		if (str[i] == '$' && str[i+1] != '?' 
+			&& !ft_isalnum(str[i+1]) && !(single_quote % 2))
+		{
+			i++;
+			continue ;
+		}
+		else if (str[i] == '$' && str[i+1] == '?' && !(single_quote % 2))
+		{
+			var = ft_itoa(status);
+			str = expand_and_join(str, "?", var, i);
+			i = -1;
+			quote = 0;
+			single_quote = 0;
+			//ft_printf("String: %s\n", str);
+			//free(var_name);
+		}
+		else if (str[i] == '$' && !(single_quote % 2))
 		{
 			var_name = get_env_var_name(str, i);
 			var = get_env(var_name, env);
@@ -84,7 +102,7 @@ void	free_args(t_args args)
 }
 
 // norm compliant, just delete helper output loops
-t_args	lexer(const char *line, char **env)
+t_args	lexer(const char *line, char **env, int status)
 {
 	char	**av;
 	// int		i;
@@ -97,7 +115,7 @@ t_args	lexer(const char *line, char **env)
 	while (av[args.ac])
 		args.ac++;
 	// ft_printf("ARGC: %i\n", args.ac);
-	args.av = sanitizer(&args.ac, av, env);
+	args.av = sanitizer(&args.ac, av, env, status);
 	// i = 0;
 	// while (args.av[i])
 	// {

@@ -6,7 +6,7 @@
 /*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/26 11:37:49 by plouda            #+#    #+#             */
-/*   Updated: 2023/08/16 12:00:45 by plouda           ###   ########.fr       */
+/*   Updated: 2023/08/21 09:01:17 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,7 +135,7 @@ char	**get_cmd_args(int argc, char **argv, char **argv_cpy, int *index)
 		}
 		if (i >= argc || flag)
 			break ;
-		argv_cpy[j] = argv[i];
+		argv_cpy[j] = ft_strdup(argv[i]);
 		quote_remover(argv_cpy, j);
 		i++;
 		j++;
