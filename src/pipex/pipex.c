@@ -6,7 +6,7 @@
 /*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 09:04:17 by plouda            #+#    #+#             */
-/*   Updated: 2023/08/22 14:03:42 by plouda           ###   ########.fr       */
+/*   Updated: 2023/08/22 14:04:39 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,7 @@ int	heredoc_exec(t_command *command, int flag)
 	char	*str;
 	char	*delimiter;
 
-<<<<<<< HEAD
-	(void)flag; 
-=======
 	// (void)flag;
->>>>>>> fefc57a (maybe?)
 	temp_pipe = malloc(sizeof(int *) * 2);
 	pipe(temp_pipe);
 	delimiter = command->delimiter;
