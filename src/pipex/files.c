@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   files.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/01 11:44:04 by plouda            #+#    #+#             */
-/*   Updated: 2023/08/03 10:13:41 by plouda           ###   ########.fr       */
+/*   Updated: 2023/08/22 10:49:36 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,13 @@ void	here_doc(char **argv, int i, t_command *command)
 {
 	if (command->infile_path != NULL)
 		free(command->infile_path);
-	if (ft_strlen(argv[i]) > 2)
+	command->infile_path = NULL;
+	/* if (ft_strlen(argv[i]) > 2)
 		command->infile_path = ft_strdup(&argv[i][1]);
 	else if (ft_strlen(argv[i]) == 2)
-		command->infile_path = ft_strdup(argv[i + 1]);
+		command->infile_path = ft_strdup(argv[i + 1]); */
 	command->here_doc = HERE_DOC_IN;
+	command->delimiter = ft_strdup(argv[i + 1]);
 }
 
 void	infile(char **argv, int i, t_command *command)

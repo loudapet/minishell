@@ -6,7 +6,7 @@
 /*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 10:15:59 by plouda            #+#    #+#             */
-/*   Updated: 2023/08/21 09:33:36 by plouda           ###   ########.fr       */
+/*   Updated: 2023/08/22 10:46:08 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,10 @@
 # include <sys/ioctl.h>
 # define READ 0
 # define WRITE 1
-# define TRUNC 1;
-# define APPEND 2;
-# define HERE_DOC_VOID 1;
-# define HERE_DOC_IN 2;
+# define TRUNC 1
+# define APPEND 2
+# define HERE_DOC_VOID 1
+# define HERE_DOC_IN 2
 
 typedef struct s_args
 {
@@ -76,6 +76,7 @@ typedef struct s_command
 	int		infile_fd;
 	int		outfile_fd;
 	int		here_doc;
+	char	*delimiter;
 	int		redirection;
 	int		cmd_count;
 	char	**cmd_args;
