@@ -18,7 +18,11 @@ int	heredoc_exec(t_command *command, int flag)
 	char	*str;
 	char	*delimiter;
 
+<<<<<<< HEAD
 	(void)flag; 
+=======
+	// (void)flag;
+>>>>>>> fefc57a (maybe?)
 	temp_pipe = malloc(sizeof(int *) * 2);
 	pipe(temp_pipe);
 	delimiter = command->delimiter;
@@ -98,7 +102,11 @@ void	pipex(t_list *cmds, char ***env, int *status)
 		{
 			if (i != 0)
 				dup2(fd[i - 1][READ], STDIN_FILENO);
+<<<<<<< HEAD
 			if (cmds->next)
+=======
+			if (cmds->next && (!command->here_doc || command->here_doc == HERE_DOC_VOID))
+>>>>>>> fefc57a (maybe?)
 				dup2(fd[i][WRITE], STDOUT_FILENO);
 			if (command->outfile_path != NULL)
 			{
@@ -108,6 +116,27 @@ void	pipex(t_list *cmds, char ***env, int *status)
 					out = open(command->outfile_path, O_CREAT | O_WRONLY | O_TRUNC, 00644);
 				dup2(out, STDOUT_FILENO);
 			}
+<<<<<<< HEAD
+=======
+			if (command->here_doc)
+			{
+				if (command->here_doc == HERE_DOC_IN)
+				{
+
+					in = heredoc_exec(command, command->here_doc);
+					dup2(in, STDIN_FILENO);
+					if (cmds->next)
+						dup2(fd[i][WRITE], STDOUT_FILENO);
+
+				}
+				else
+				{
+					heredoc_exec(command, command->here_doc);
+					if (cmds->next)
+						dup2(fd[i][WRITE], STDOUT_FILENO);
+				}
+			}
+>>>>>>> fefc57a (maybe?)
 			if (command->infile_path != NULL && (!command->here_doc || command->here_doc == HERE_DOC_VOID))
 			{
 				in = open(command->infile_path, O_RDONLY);
@@ -117,6 +146,7 @@ void	pipex(t_list *cmds, char ***env, int *status)
 					exit (1);
 				}
 				dup2(in, STDIN_FILENO);
+<<<<<<< HEAD
 			}
 			if (command->here_doc)
 			{
@@ -127,7 +157,10 @@ void	pipex(t_list *cmds, char ***env, int *status)
 				}
 				else
 					heredoc_exec(command, command->here_doc);
+=======
+>>>>>>> fefc57a (maybe?)
 			}
+
 			builtins(command->cmd_args, env, status);
 			exit(0);
 		}
