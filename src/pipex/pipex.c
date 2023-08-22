@@ -6,7 +6,7 @@
 /*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 09:04:17 by plouda            #+#    #+#             */
-/*   Updated: 2023/08/22 11:36:16 by plouda           ###   ########.fr       */
+/*   Updated: 2023/08/22 14:03:42 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,11 +102,7 @@ void	pipex(t_list *cmds, char ***env, int *status)
 		{
 			if (i != 0)
 				dup2(fd[i - 1][READ], STDIN_FILENO);
-<<<<<<< HEAD
-			if (cmds->next)
-=======
 			if (cmds->next && (!command->here_doc || command->here_doc == HERE_DOC_VOID))
->>>>>>> fefc57a (maybe?)
 				dup2(fd[i][WRITE], STDOUT_FILENO);
 			if (command->outfile_path != NULL)
 			{
@@ -116,8 +112,6 @@ void	pipex(t_list *cmds, char ***env, int *status)
 					out = open(command->outfile_path, O_CREAT | O_WRONLY | O_TRUNC, 00644);
 				dup2(out, STDOUT_FILENO);
 			}
-<<<<<<< HEAD
-=======
 			if (command->here_doc)
 			{
 				if (command->here_doc == HERE_DOC_IN)
@@ -136,7 +130,6 @@ void	pipex(t_list *cmds, char ***env, int *status)
 						dup2(fd[i][WRITE], STDOUT_FILENO);
 				}
 			}
->>>>>>> fefc57a (maybe?)
 			if (command->infile_path != NULL && (!command->here_doc || command->here_doc == HERE_DOC_VOID))
 			{
 				in = open(command->infile_path, O_RDONLY);
@@ -146,21 +139,7 @@ void	pipex(t_list *cmds, char ***env, int *status)
 					exit (1);
 				}
 				dup2(in, STDIN_FILENO);
-<<<<<<< HEAD
 			}
-			if (command->here_doc)
-			{
-				if (command->here_doc == HERE_DOC_IN)
-				{
-					in = heredoc_exec(command, command->here_doc);
-					dup2(in, STDIN_FILENO);
-				}
-				else
-					heredoc_exec(command, command->here_doc);
-=======
->>>>>>> fefc57a (maybe?)
-			}
-
 			builtins(command->cmd_args, env, status);
 			exit(0);
 		}
