@@ -24,15 +24,16 @@ int	heredoc_exec(t_command *command, int flag)
 	delimiter = command->delimiter;
 	while (command->here_doc_counter > 1 && delimiter[i + 1] != NULL )
 	{
-		write(STDOUT_FILENO, "> ", 2);
-		str = get_next_line(STDIN_FILENO);
+		// write(STDOUT_FILENO, "> ", 2);
+		str = readline("> ");//get_next_line(STDIN_FILENO);
 		if (!str)
 			ft_printf("\nWarning: here-doc delimited by EOF, wanted %s\n", delimiter[i]);
-		while (str && (ft_strncmp(delimiter[i], str, ft_strlen(delimiter[i]))  || ft_strlen(str) != ft_strlen(delimiter[i]) + 1))
+		while (str && (ft_strncmp(delimiter[i], str, ft_strlen(delimiter[i]))  || ft_strlen(str) != ft_strlen(delimiter[i])))
 		{
-			write(STDOUT_FILENO, "> ", 2);
+			// write(STDOUT_FILENO, "> ", 2);
 			free(str);
-			str = get_next_line(STDIN_FILENO);
+			str = readline("> ");
+			// str = get_next_line(STDIN_FILENO);
 			if (!str)
 				ft_printf("\nWarning: here-doc delimited by EOF, wanted %s\n", delimiter[i]);
 		}
@@ -40,17 +41,17 @@ int	heredoc_exec(t_command *command, int flag)
 		if (str)
 			free(str);
 	}
-	write(STDOUT_FILENO, "> ", 2);
-	str = get_next_line(STDIN_FILENO);
+	// write(STDOUT_FILENO, "> ", 2);
+	str = readline("> ");//get_next_line(STDIN_FILENO);
 	if (!str)
 		ft_printf("\nWarning: here-doc delimited by EOF, wanted %s\n", delimiter[i]);
-	while (str && (ft_strncmp(delimiter[i], str, ft_strlen(delimiter[i])) || ft_strlen(str) != ft_strlen(delimiter[i]) + 1))
+	while (str && (ft_strncmp(delimiter[i], str, ft_strlen(delimiter[i])) || ft_strlen(str) != ft_strlen(delimiter[i])))
 	{
-		write(STDOUT_FILENO, "> ", 2);
+		// write(STDOUT_FILENO, "> ", 2);
 		if (flag == HERE_DOC_IN)
 			write(temp_pipe[WRITE], str, ft_strlen(str));
 		free(str);
-		str = get_next_line(STDIN_FILENO);
+		str = readline("> ");//get_next_line(STDIN_FILENO);
 		if (!str)
 			ft_printf("\nWarning: here-doc delimited by EOF, wanted %s\n", delimiter[i]);
 	}
@@ -83,6 +84,7 @@ void	handler2(int sig)
 {
 	if (sig == SIGINT)
 	{
+		ft_printf("\n");
 		exit (130);
 	}
 }
@@ -113,7 +115,13 @@ void	pipex(t_list *cmds, char ***env, int *status)
 		}
 		else
 		{
+			signal(SIGINT, SIG_IGN);
 			waitpid(pid, &stat, 0);
+			if (WEXITSTATUS(stat) == 130)
+			{
+				*status = WEXITSTATUS(stat);
+				return ;
+			}
 			stdout = dup(STDOUT_FILENO);
 			if (command->outfile_path != NULL)
 			{
@@ -122,11 +130,6 @@ void	pipex(t_list *cmds, char ***env, int *status)
 				else
 					out = open(command->outfile_path, O_CREAT | O_WRONLY | O_TRUNC, 00644);
 				dup2(out, STDOUT_FILENO);
-			}
-			if (WEXITSTATUS(stat) == 130)
-			{
-				*status = WEXITSTATUS(stat);
-				return ;
 			}
 			builtins(command->cmd_args, env, status);
 			dup2(stdout, STDOUT_FILENO);
@@ -189,7 +192,10 @@ void	pipex(t_list *cmds, char ***env, int *status)
 			exit(0);
 		}
 		else
+		{
+			signal(SIGINT, SIG_IGN);
 			close(fd[i][WRITE]);
+		}
 		i++;
 		cmds = cmds->next;
 	}

@@ -219,8 +219,6 @@ int	main(int argc, char **argv, char **envp)
 			cmds = cmds->next;
 			free(tmp);
 		}
-		if (!ft_strncmp(line, "q", ft_strlen(line)))
-			break ;
 		free(line);
 		free(hostname);
 		free(specs);
