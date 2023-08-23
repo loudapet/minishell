@@ -83,6 +83,21 @@ typedef struct s_command
 	char	**cmd_args;
 }			t_command;
 
+typedef struct s_freebs
+{
+	char	**line;
+	char	**hostname;
+	char	**specs;
+	char	**dir;
+	char	**prompt;
+	char	**username;
+	char	***env;
+	t_list	**cmds;
+	int		***fd;
+	int		fd_n;
+	char	***args;
+}			t_freebs;
+
 
 
 //Environment variables handling
@@ -108,7 +123,7 @@ void	index_checker(t_sanitizer *san, char **av, int i, int *j);
 
 // Pipex
 t_command	*command_redirection(int argc, char **argv, int *i);
-void	pipex(t_list *cmds, char ***env, int *status);
+void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff);
 
 // Files
 void	here_doc(char **argv, int i, t_command *command);

@@ -138,6 +138,7 @@ int	main(int argc, char **argv, char **envp)
 	char	**env;
 	int		i;
 	int		status;
+	t_freebs	stuff;
 	// int		count;
 	t_args	args;
 	t_command *cmd;
@@ -185,7 +186,16 @@ int	main(int argc, char **argv, char **envp)
 			cmd = command_redirection(args.ac, args.av, &i);
 			ft_lstadd_back(&cmds, ft_lstnew(cmd));
 		}
-		pipex(cmds, &env, &status);
+		stuff.line = &line;
+		stuff.hostname = &hostname;
+		stuff.specs = &specs;
+		stuff.dir = &dir;
+		stuff.prompt = &prompt;
+		stuff.username = &username;
+		stuff.env = &env;
+		stuff.cmds = &cmds;
+		stuff.args = &args.av;
+		pipex(cmds, &env, &status, stuff);
 		free_args(args);
 		t_list * tmp;
 		t_command *tmp_cmd;

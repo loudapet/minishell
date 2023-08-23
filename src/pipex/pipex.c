@@ -89,7 +89,72 @@ void	handler2(int sig)
 	}
 }
 
-void	pipex(t_list *cmds, char ***env, int *status)
+void	free_stuff(t_freebs stuff)
+{
+	int	i;
+
+	i = 0;
+	free(*(stuff.line));
+	free(*(stuff.hostname));
+	free(*(stuff.specs));
+	free(*(stuff.dir));
+	free(*(stuff.prompt));
+	free(*(stuff.username));
+	while ((*(stuff.env))[i])
+	{
+		free(((*(stuff.env))[i]));
+		i++;
+	}
+	free(*(stuff.env));
+	t_list * tmp;
+	t_command *tmp_cmd;
+	int	k;
+	while (*(stuff.cmds) != NULL)
+	{
+		k = 0;
+		tmp_cmd = (t_command *)(*stuff.cmds)->content;
+		while (tmp_cmd->cmd_args[k])
+		{
+			free(tmp_cmd->cmd_args[k]);
+			k++;
+		}
+		k = 0;
+		if (tmp_cmd->delimiter)
+		{
+			while (tmp_cmd->delimiter[k])
+			{
+				free(tmp_cmd->delimiter[k]);
+				k++;
+			}
+			free(tmp_cmd->delimiter);
+		}
+		if (tmp_cmd->outfile_path)
+			free(tmp_cmd->outfile_path);
+		if (tmp_cmd->infile_path)
+			free(tmp_cmd->infile_path);
+		free(tmp_cmd->cmd_args);
+		free(tmp_cmd);
+		tmp = (*stuff.cmds);
+		*(stuff.cmds) = (*stuff.cmds)->next;
+		free(tmp);
+	}
+	i = 0;
+	while (i < stuff.fd_n)
+	{
+		free((*stuff.fd)[i]);
+		i++;
+	}
+	free(*stuff.fd);
+	i = 0;
+	while ((*stuff.args)[i])
+	{
+		free((*stuff.args)[i]);
+		i++;
+	}
+	free(*stuff.args);
+}
+
+void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff)
 {
 	int		i;
 	int		l;
@@ -105,8 +170,9 @@ void	pipex(t_list *cmds, char ***env, int *status)
 	command = (t_command *)cmds->content;
 	if (ft_lstsize(cmds) == 1 && is_builtin(command->cmd_args[0]))
 	{
-		pid = fork();
-		if (pid == 0)
+		if (command->here_doc)
+			pid = fork();
+		if (command->here_doc && pid == 0)
 		{
 			signal(SIGINT, handler2);
 			if (command->here_doc)
@@ -116,11 +182,13 @@ void	pipex(t_list *cmds, char ***env, int *status)
 		else
 		{
 			signal(SIGINT, SIG_IGN);
-			waitpid(pid, &stat, 0);
-			if (WEXITSTATUS(stat) == 130)
-			{
-				*status = WEXITSTATUS(stat);
-				return ;
+			if (command->here_doc)
+			{	waitpid(pid, &stat, 0);
+				if (WEXITSTATUS(stat) == 130)
+				{
+					*status = WEXITSTATUS(stat);
+					return ;
+				}
 			}
 			stdout = dup(STDOUT_FILENO);
 			if (command->outfile_path != NULL)
@@ -137,6 +205,8 @@ void	pipex(t_list *cmds, char ***env, int *status)
 		}
 	}
 	fd = malloc(sizeof(int*) * ft_lstsize(cmds));
+	stuff.fd = &fd;
+	stuff.fd_n = ft_lstsize(cmds);
 	while (cmds)
 	{
 		in = 0;
@@ -189,6 +259,7 @@ void	pipex(t_list *cmds, char ***env, int *status)
 				dup2(in, STDIN_FILENO);
 			}
 			builtins(command->cmd_args, env, status);
+			free_stuff(stuff);
 			exit(0);
 		}
 		else
@@ -207,10 +278,10 @@ void	pipex(t_list *cmds, char ***env, int *status)
 		i--;
 		l++;
 	}
-	while (l >= 0)
+	while (i < l)
 	{
-		free(fd[l]);
-		l--;
+		free(fd[i]);
+		i++;
 	}
 	free(fd);
 }
