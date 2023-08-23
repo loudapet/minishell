@@ -139,12 +139,15 @@ void	free_stuff(t_freebs stuff)
 		free(tmp);
 	}
 	i = 0;
-	while (i < stuff.fd_n)
+	if (stuff.fd_n != 0)
 	{
-		free((*stuff.fd)[i]);
-		i++;
+		while (i < stuff.fd_n)
+		{
+			free((*stuff.fd)[i]);
+			i++;
+		}
+		free(*stuff.fd);
 	}
-	free(*stuff.fd);
 	i = 0;
 	while ((*stuff.args)[i])
 	{
@@ -167,6 +170,7 @@ void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff)
 	t_command	*command;
 
 	i = 0;
+	stuff.fd_n = 0;
 	command = (t_command *)cmds->content;
 	if (ft_lstsize(cmds) == 1 && is_builtin(command->cmd_args[0]))
 	{
@@ -177,6 +181,7 @@ void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff)
 			signal(SIGINT, handler2);
 			if (command->here_doc)
 				heredoc_exec(command, command->here_doc);
+			free_stuff(stuff);
 			exit (0);
 		}
 		else
