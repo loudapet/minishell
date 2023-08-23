@@ -6,7 +6,7 @@
 /*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 09:04:17 by plouda            #+#    #+#             */
-/*   Updated: 2023/08/22 14:06:59 by plouda           ###   ########.fr       */
+/*   Updated: 2023/08/23 11:26:16 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,28 @@ int	heredoc_exec(t_command *command, int flag)
 {
 	int		temp_pipe[2];
 	char	*str;
-	char	*delimiter;
+	char	**delimiter;
+	int		i;
 
-	// (void)flag;
-	//temp_pipe = malloc(sizeof(int *) * 2);
+	i = 0;
 	pipe(temp_pipe);
 	delimiter = command->delimiter;
+	while (command->here_doc_counter > 1 && delimiter[i + 1] != NULL )
+	{
+		write(STDOUT_FILENO, "> ", 2);
+		str = get_next_line(STDIN_FILENO);
+		while (ft_strncmp(delimiter[i], str, ft_strlen(delimiter[i])))
+		{
+			write(STDOUT_FILENO, "> ", 2);
+			free(str);
+			str = get_next_line(STDIN_FILENO);
+		}
+		i++;
+		free(str);
+	}
 	write(STDOUT_FILENO, "> ", 2);
 	str = get_next_line(STDIN_FILENO);
-	while (ft_strncmp(delimiter, str, ft_strlen(delimiter)))
+	while (ft_strncmp(delimiter[i], str, ft_strlen(delimiter[i])))
 	{
 		write(STDOUT_FILENO, "> ", 2);
 		if (flag == HERE_DOC_IN)

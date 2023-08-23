@@ -6,7 +6,7 @@
 /*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 10:15:59 by plouda            #+#    #+#             */
-/*   Updated: 2023/08/22 10:46:08 by plouda           ###   ########.fr       */
+/*   Updated: 2023/08/23 10:16:51 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,8 @@ typedef struct s_command
 	int		infile_fd;
 	int		outfile_fd;
 	int		here_doc;
-	char	*delimiter;
+	int		here_doc_counter;
+	char	**delimiter;
 	int		redirection;
 	int		cmd_count;
 	char	**cmd_args;

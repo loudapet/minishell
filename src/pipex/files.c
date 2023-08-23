@@ -6,7 +6,7 @@
 /*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/01 11:44:04 by plouda            #+#    #+#             */
-/*   Updated: 2023/08/22 10:49:36 by plouda           ###   ########.fr       */
+/*   Updated: 2023/08/23 11:20:14 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,42 @@
 
 void	here_doc(char **argv, int i, t_command *command)
 {
+	int j;
+	char **delimiter_cpy;
+
 	if (command->infile_path != NULL)
 		free(command->infile_path);
 	command->infile_path = NULL;
-	/* if (ft_strlen(argv[i]) > 2)
-		command->infile_path = ft_strdup(&argv[i][1]);
-	else if (ft_strlen(argv[i]) == 2)
-		command->infile_path = ft_strdup(argv[i + 1]); */
 	command->here_doc = HERE_DOC_IN;
-	command->delimiter = ft_strdup(argv[i + 1]);
+	delimiter_cpy = malloc(sizeof(char *) * (command->here_doc_counter + 1));
+	j = 0;
+	while (command->delimiter != NULL && j < command->here_doc_counter)
+	{
+		delimiter_cpy[j] = ft_strdup(command->delimiter[j]);
+		j++;
+	}
+	delimiter_cpy[j] = NULL;
+	command->here_doc_counter++;
+	j = 0;
+	if (command->delimiter != NULL)
+	{
+		while (command->delimiter[j] != NULL)
+		{
+			free(command->delimiter[j]);
+			j++;
+		}
+		free(command->delimiter[j]);
+		free(command->delimiter);
+	}
+	command->delimiter = malloc(sizeof(char *) * (command->here_doc_counter + 1));
+	j = 0;
+	while (delimiter_cpy[j] != NULL)
+	{
+		command->delimiter[j] = ft_strdup(delimiter_cpy[j]);
+		j++;
+	}
+	command->delimiter[j++] = ft_strdup(argv[i + 1]);
+	command->delimiter[j] = NULL;
 }
 
 void	infile(char **argv, int i, t_command *command)
