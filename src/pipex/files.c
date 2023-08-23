@@ -48,8 +48,10 @@ void	here_doc(char **argv, int i, t_command *command)
 	while (delimiter_cpy[j] != NULL)
 	{
 		command->delimiter[j] = ft_strdup(delimiter_cpy[j]);
+		free(delimiter_cpy[j]);
 		j++;
 	}
+	free(delimiter_cpy);
 	command->delimiter[j++] = ft_strdup(argv[i + 1]);
 	command->delimiter[j] = NULL;
 }
