@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lexer.c                                            :+:      :+:    :+:   */
+/*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 14:53:16 by plouda            #+#    #+#             */
-/*   Updated: 2023/07/19 14:08:04 by plouda           ###   ########.fr       */
+/*   Updated: 2023/08/25 10:27:03 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,10 @@ void	exit_built(char **args, char **env, int status)
 	int	i;
 
 	i = 0;
-	args = args;
-	env = env;
+	//args = args;
+	//env = env;
+	(void)args;
+	(void)env;
 	if (args[1] && args[2])
 	{
 		ft_putstr_fd(" too many arguments\n", 2);

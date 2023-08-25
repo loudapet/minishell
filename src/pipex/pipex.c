@@ -6,7 +6,7 @@
 /*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 09:04:17 by plouda            #+#    #+#             */
-/*   Updated: 2023/08/23 11:26:16 by plouda           ###   ########.fr       */
+/*   Updated: 2023/08/25 14:52:49 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,8 @@ int	heredoc_exec(t_command *command, int flag)
 
 int	is_builtin(char *com)
 {
+	if (com == NULL)
+		return (0);
 	if (!ft_strncmp(com, "echo", 5))
 		return (1);
 	else if (!ft_strncmp(com, "cd", 3))
@@ -113,7 +115,7 @@ void	free_stuff(t_freebs stuff)
 	{
 		k = 0;
 		tmp_cmd = (t_command *)(*stuff.cmds)->content;
-		while (tmp_cmd->cmd_args[k])
+		while (tmp_cmd->cmd_args != NULL && tmp_cmd->cmd_args[k])
 		{
 			free(tmp_cmd->cmd_args[k]);
 			k++;
@@ -132,7 +134,8 @@ void	free_stuff(t_freebs stuff)
 			free(tmp_cmd->outfile_path);
 		if (tmp_cmd->infile_path)
 			free(tmp_cmd->infile_path);
-		free(tmp_cmd->cmd_args);
+		if (tmp_cmd->cmd_args != NULL)
+			free(tmp_cmd->cmd_args);
 		free(tmp_cmd);
 		tmp = (*stuff.cmds);
 		*(stuff.cmds) = (*stuff.cmds)->next;
@@ -172,7 +175,7 @@ void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff)
 	i = 0;
 	stuff.fd_n = 0;
 	command = (t_command *)cmds->content;
-	if (ft_lstsize(cmds) == 1 && is_builtin(command->cmd_args[0]))
+	if (command->cmd_args != NULL && ft_lstsize(cmds) == 1 && is_builtin(command->cmd_args[0]))
 	{
 		if (command->here_doc)
 			pid = fork();
@@ -204,7 +207,8 @@ void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff)
 					out = open(command->outfile_path, O_CREAT | O_WRONLY | O_TRUNC, 00644);
 				dup2(out, STDOUT_FILENO);
 			}
-			builtins(command->cmd_args, env, status);
+			if (command->cmd_args != NULL)
+				builtins(command->cmd_args, env, status);
 			dup2(stdout, STDOUT_FILENO);
 			return ;
 		}
@@ -239,12 +243,11 @@ void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff)
 			{
 				if (command->here_doc == HERE_DOC_IN)
 				{
-
+					write(2, "DEBUG\n", 7);
 					in = heredoc_exec(command, command->here_doc);
 					dup2(in, STDIN_FILENO);
 					if (cmds->next)
 						dup2(fd[i][WRITE], STDOUT_FILENO);
-
 				}
 				else
 				{
@@ -263,7 +266,8 @@ void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff)
 				}
 				dup2(in, STDIN_FILENO);
 			}
-			builtins(command->cmd_args, env, status);
+			if (command->cmd_args != NULL)
+				builtins(command->cmd_args, env, status);
 			free_stuff(stuff);
 			exit(0);
 		}

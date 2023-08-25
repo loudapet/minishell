@@ -3,23 +3,23 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: plouda <marvin@42.fr>                      +#+  +:+       +#+         #
+#    By: plouda <plouda@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/03 15:05:09 by plouda            #+#    #+#              #
-#    Updated: 2023/08/14 09:04:40 by plouda           ###   ########.fr        #
+#    Updated: 2023/08/25 11:34:01 by plouda           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 SRCS =	project/main.c \
-		project/env_variables.c \
-		project/lexer.c \
-		project/minisplit.c \
-		project/sanitizer.c \
-		project/sanitizer_helpers.c \
-		project/expand_vars.c \
-		pipex/command_redirection.c \
-		pipex/files.c \
+		lexer/env_variables.c \
+		lexer/lexer.c \
+		lexer/minisplit.c \
+		lexer/expand_vars.c \
+		parser/quote_remover.c \
+		parser/quote_remover_helpers.c \
+		parser/parser.c \
+		parser/files.c \
 		pipex/pipex.c \
 		builtins/echo.c \
 		builtins/builtins.c \
@@ -64,6 +64,8 @@ obj/%.o: src/%.c | objdir
 objdir:
 	@mkdir -p obj
 	@mkdir -p obj/project
+	@mkdir -p obj/lexer
+	@mkdir -p obj/parser
 	@mkdir -p obj/pipex
 	@mkdir -p obj/builtins
 

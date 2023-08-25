@@ -6,7 +6,7 @@
 /*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 10:15:35 by plouda            #+#    #+#             */
-/*   Updated: 2023/08/21 09:16:31 by plouda           ###   ########.fr       */
+/*   Updated: 2023/08/25 14:19:29 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,7 +159,7 @@ int	main(int argc, char **argv, char **envp)
 	while (1)
 	{
 		signal(SIGINT, handler);
-			signal(SIGQUIT, SIG_IGN);
+		signal(SIGQUIT, SIG_IGN);
 
 		i = 0;
 		hostname = get_hostname();
@@ -180,10 +180,11 @@ int	main(int argc, char **argv, char **envp)
 		}
 		add_history(line);
 		args = lexer(line, env, status);
+
 		cmds = NULL;
 		while (i < args.ac)
 		{
-			cmd = command_redirection(args.ac, args.av, &i);
+			cmd = parser(args.ac, args.av, &i);
 			ft_lstadd_back(&cmds, ft_lstnew(cmd));
 		}
 		stuff.line = &line;
@@ -195,8 +196,10 @@ int	main(int argc, char **argv, char **envp)
 		stuff.env = &env;
 		stuff.cmds = &cmds;
 		stuff.args = &args.av;
+
 		pipex(cmds, &env, &status, stuff);
 		free_args(args);
+		
 		t_list * tmp;
 		t_command *tmp_cmd;
 		int	k;
@@ -204,7 +207,7 @@ int	main(int argc, char **argv, char **envp)
 		{
 			k = 0;
 			tmp_cmd = (t_command *)cmds->content;
-			while (tmp_cmd->cmd_args[k])
+			while (tmp_cmd->cmd_args != NULL && tmp_cmd->cmd_args[k])
 			{
 				free(tmp_cmd->cmd_args[k]);
 				k++;
@@ -223,7 +226,8 @@ int	main(int argc, char **argv, char **envp)
 				free(tmp_cmd->outfile_path);
 			if (tmp_cmd->infile_path)
 				free(tmp_cmd->infile_path);
-			free(tmp_cmd->cmd_args);
+			if (tmp_cmd->cmd_args != NULL)
+				free(tmp_cmd->cmd_args);
 			free(tmp_cmd);
 			tmp = cmds;
 			cmds = cmds->next;

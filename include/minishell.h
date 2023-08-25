@@ -6,7 +6,7 @@
 /*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 10:15:59 by plouda            #+#    #+#             */
-/*   Updated: 2023/08/23 10:16:51 by plouda           ###   ########.fr       */
+/*   Updated: 2023/08/25 11:43:13 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,6 @@ void	free_args(t_args args);
 char	**minisplit(char const *s, char c);
 
 // Santitizer
-char	**sanitizer(int *ac, char **av, char **env, int status);
 t_sanitizer	reset_sanitizer(void);
 void	quote_counter(const char *c, int *quote, int *single_quote);
 char	*expand_env(char *str, char **env, int status);
@@ -119,10 +118,10 @@ t_quotes	init_quote_vars(const char *str, int index);
 void	copy_front(t_quotes *quotes, int index, const char *str);
 void	copy_rest(t_quotes *quotes, const char *str, char type);
 char	*expand_and_join(char *str, char *var_name, char *var_value, int index);
-void	index_checker(t_sanitizer *san, char **av, int i, int *j);
+void	sanitize(t_sanitizer *san, char **av, int i, int *j);
 
 // Pipex
-t_command	*command_redirection(int argc, char **argv, int *i);
+t_command	*parser(int argc, char **argv, int *i);
 void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff);
 
 // Files
@@ -144,6 +143,6 @@ char	**unset_built(char **arg, char **env);
 char	**unset_single(char *arg, char **env);
 int		env_built(char **env);
 int		pwd_built(char **env);
-void	exit_built(char **argv, char **env, int statu);
+void	exit_built(char **argv, char **env, int status);
 
 #endif
