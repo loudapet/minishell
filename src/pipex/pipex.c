@@ -130,10 +130,13 @@ int	is_builtin(char *com)
 	return (0);
 }
 
+int	wait_signal = 0;
+
 void	handler2(int sig)
 {
 	if (sig == SIGINT)
 	{
+		wait_signal = SIGINT;
 		ft_printf("\n");
 		exit (130);
 	}
@@ -206,6 +209,17 @@ void	free_stuff(t_freebs stuff)
 		i++;
 	}
 	free(*stuff.args);
+}
+
+
+
+void	waithandler(int sig)
+{
+	if (sig == SIGUSR1)
+	{
+		wait_signal = SIGUSR1;
+		ft_printf("SIGNAL RECIEVED\n");
+	}
 }
 
 void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff)
@@ -298,10 +312,15 @@ void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff)
 			else
 				waitpid(heredoc_pid, NULL, 0);
 		} */
+		int ppid;
+		ppid = getpid();
 		pid = fork();
+		signal(SIGUSR1, waithandler);
+		// wait_signal = 0;
 		if (pid == 0)
 		{
 			signal(SIGINT, handler2);
+			close(fd[i][READ]);
 			if (i != 0 && (!command->here_doc || command->here_doc == HERE_DOC_VOID))
 				dup2(fd[i - 1][READ], STDIN_FILENO);
 			if (cmds->next && (!command->here_doc || command->here_doc == HERE_DOC_VOID))
@@ -325,6 +344,7 @@ void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff)
 						if (cmds->next)
 							dup2(fd[i][WRITE], STDOUT_FILENO);
 					}
+					kill(ppid, SIGUSR1);
 				//	exit(0);
 				//}
 				//else
@@ -340,7 +360,7 @@ void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff)
 			}
 
 			// this is where it heredoc had been before dup fix
-			
+
 			if (command->infile_path != NULL && (!command->here_doc || command->here_doc == HERE_DOC_VOID))
 			{
 				in = open(command->infile_path, O_RDONLY);
@@ -351,15 +371,21 @@ void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff)
 				}
 				dup2(in, STDIN_FILENO);
 			}
+			close(fd[i][READ]);
 			builtins(command->cmd_args, env, status);
 			free_stuff(stuff);
 			exit(0);
 		}
 		else
 		{
-			// will not work with `cat <<heredoc /dev/urandom | head -n 5`
+			wait_signal = 0;
+						// will not work with `cat <<heredoc /dev/urandom | head -n 5`
 			if (command->here_doc)
-				waitpid(pid, NULL, 0);
+			{
+						while (wait_signal == 0)
+					continue;
+			}
+			//waitpid(pid, NULL, 0);
 			//usleep(5000000);
 			signal(SIGINT, SIG_IGN);
 			close(fd[i][WRITE]);
