@@ -6,13 +6,61 @@
 /*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 09:04:17 by plouda            #+#    #+#             */
-/*   Updated: 2023/08/25 14:52:49 by plouda           ###   ########.fr       */
+/*   Updated: 2023/08/28 11:24:03 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 int	heredoc_exec(t_command *command, int flag)
+{
+	int		temp_pipe[2];
+	char	*str;
+	char	**delimiter;
+	int		i;
+
+	i = 0;
+	pipe(temp_pipe);
+	delimiter = command->delimiter;
+	while (command->here_doc_counter > 1 && delimiter[i + 1] != NULL )
+	{
+		write(STDOUT_FILENO, "> ", 2);
+		str = get_next_line(STDIN_FILENO);
+		if (!str)
+			ft_printf("\nWarning: here-doc delimited by EOF, wanted %s\n", delimiter[i]);
+		while ((ft_strncmp(delimiter[i], str, ft_strlen(delimiter[i]))  || ft_strlen(str) != ft_strlen(delimiter[i]) + 1))
+		{
+			write(STDOUT_FILENO, "> ", 2);
+			free(str);
+			str = get_next_line(STDIN_FILENO);
+			if (!str)
+				ft_printf("\nWarning: here-doc delimited by EOF, wanted %s\n", delimiter[i]);
+		}
+		i++;
+		if (str)
+			free(str);
+	}
+	write(STDOUT_FILENO, "> ", 2);
+	str = get_next_line(STDIN_FILENO);
+	if (!str)
+		ft_printf("\n1Warning: here-doc delimited by EOF, wanted %s\n", delimiter[i]);
+	while ((ft_strncmp(delimiter[i], str, ft_strlen(delimiter[i])) || ft_strlen(str) != ft_strlen(delimiter[i]) + 1))
+	{
+		write(STDOUT_FILENO, "> ", 2);
+		if (flag == HERE_DOC_IN)
+			write(temp_pipe[WRITE], str, ft_strlen(str));
+		free(str);
+		str = get_next_line(STDIN_FILENO);
+		if (!str)
+			ft_printf("\n2Warning: here-doc delimited by EOF, wanted %s\n", delimiter[i]);
+	}
+	if (str)
+		free(str);
+	close(temp_pipe[WRITE]);
+	return (temp_pipe[READ]);
+}
+
+/* int	heredoc_exec(t_command *command, int flag)
 {
 	int		temp_pipe[2];
 	char	*str;
@@ -59,7 +107,7 @@ int	heredoc_exec(t_command *command, int flag)
 		free(str);
 	close(temp_pipe[WRITE]);
 	return (temp_pipe[READ]);
-}
+} */
 
 int	is_builtin(char *com)
 {
@@ -170,6 +218,7 @@ void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff)
 	int		stdout;
 	int		stat;
 	int		**fd;
+	//int		heredoc_pid;
 	t_command	*command;
 
 	i = 0;
@@ -223,23 +272,12 @@ void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff)
 		fd[i] = malloc(sizeof(int) * 2);
 		pipe(fd[i]);
 		command = (t_command *)cmds->content;
-		pid = fork();
-		if (pid == 0)
+/* 		if (command->here_doc)
 		{
-			signal(SIGINT, handler2);
 			if (i != 0)
-				dup2(fd[i - 1][READ], STDIN_FILENO);
-			if (cmds->next && (!command->here_doc || command->here_doc == HERE_DOC_VOID))
-				dup2(fd[i][WRITE], STDOUT_FILENO);
-			if (command->outfile_path != NULL)
-			{
-				if (command->redirection == 2)
-					out = open(command->outfile_path, O_CREAT | O_WRONLY | O_APPEND, 00644);
-				else
-					out = open(command->outfile_path, O_CREAT | O_WRONLY | O_TRUNC, 00644);
-				dup2(out, STDOUT_FILENO);
-			}
-			if (command->here_doc)
+				close(fd[i - 1][READ]);
+			heredoc_pid = fork();
+			if (!heredoc_pid)
 			{
 				if (command->here_doc == HERE_DOC_IN)
 				{
@@ -249,13 +287,60 @@ void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff)
 					if (cmds->next)
 						dup2(fd[i][WRITE], STDOUT_FILENO);
 				}
-				else
+				else if (command->here_doc == HERE_DOC_VOID)
 				{
 					heredoc_exec(command, command->here_doc);
 					if (cmds->next)
 						dup2(fd[i][WRITE], STDOUT_FILENO);
 				}
+				exit(0);
 			}
+			else
+				waitpid(heredoc_pid, NULL, 0);
+		} */
+		pid = fork();
+		if (pid == 0)
+		{
+			signal(SIGINT, handler2);
+			if (i != 0 && (!command->here_doc || command->here_doc == HERE_DOC_VOID))
+				dup2(fd[i - 1][READ], STDIN_FILENO);
+			if (cmds->next && (!command->here_doc || command->here_doc == HERE_DOC_VOID))
+				dup2(fd[i][WRITE], STDOUT_FILENO);
+			if (command->here_doc)
+			{
+				//heredoc_pid = fork();
+				//if (!heredoc_pid)
+				//{
+					if (command->here_doc == HERE_DOC_IN)
+					{
+						write(2, "DEBUG\n", 7);
+						in = heredoc_exec(command, command->here_doc);
+						dup2(in, STDIN_FILENO);
+						if (cmds->next)
+							dup2(fd[i][WRITE], STDOUT_FILENO);
+					}
+					else if (command->here_doc == HERE_DOC_VOID)
+					{
+						heredoc_exec(command, command->here_doc);
+						if (cmds->next)
+							dup2(fd[i][WRITE], STDOUT_FILENO);
+					}
+				//	exit(0);
+				//}
+				//else
+				//	waitpid(heredoc_pid, NULL, 0);
+			}
+			if (command->outfile_path != NULL)
+			{
+				if (command->redirection == 2)
+					out = open(command->outfile_path, O_CREAT | O_WRONLY | O_APPEND, 00644);
+				else
+					out = open(command->outfile_path, O_CREAT | O_WRONLY | O_TRUNC, 00644);
+				dup2(out, STDOUT_FILENO);
+			}
+
+			// this is where it heredoc had been before dup fix
+			
 			if (command->infile_path != NULL && (!command->here_doc || command->here_doc == HERE_DOC_VOID))
 			{
 				in = open(command->infile_path, O_RDONLY);
@@ -266,13 +351,16 @@ void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff)
 				}
 				dup2(in, STDIN_FILENO);
 			}
-			if (command->cmd_args != NULL)
-				builtins(command->cmd_args, env, status);
+			builtins(command->cmd_args, env, status);
 			free_stuff(stuff);
 			exit(0);
 		}
 		else
 		{
+			// will not work with `cat <<heredoc /dev/urandom | head -n 5`
+			if (command->here_doc)
+				waitpid(pid, NULL, 0);
+			//usleep(5000000);
 			signal(SIGINT, SIG_IGN);
 			close(fd[i][WRITE]);
 		}
