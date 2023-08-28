@@ -28,7 +28,7 @@ int	heredoc_exec(t_command *command, int flag)
 		str = get_next_line(STDIN_FILENO);
 		if (!str)
 			ft_printf("\nWarning: here-doc delimited by EOF, wanted %s\n", delimiter[i]);
-		while ((ft_strncmp(delimiter[i], str, ft_strlen(delimiter[i]))  || ft_strlen(str) != ft_strlen(delimiter[i]) + 1))
+		while (str && (ft_strncmp(delimiter[i], str, ft_strlen(delimiter[i]))  || ft_strlen(str) != ft_strlen(delimiter[i]) + 1))
 		{
 			write(STDOUT_FILENO, "> ", 2);
 			free(str);
@@ -44,7 +44,7 @@ int	heredoc_exec(t_command *command, int flag)
 	str = get_next_line(STDIN_FILENO);
 	if (!str)
 		ft_printf("\n1Warning: here-doc delimited by EOF, wanted %s\n", delimiter[i]);
-	while ((ft_strncmp(delimiter[i], str, ft_strlen(delimiter[i])) || ft_strlen(str) != ft_strlen(delimiter[i]) + 1))
+	while (str && (ft_strncmp(delimiter[i], str, ft_strlen(delimiter[i])) || ft_strlen(str) != ft_strlen(delimiter[i]) + 1))
 	{
 		write(STDOUT_FILENO, "> ", 2);
 		if (flag == HERE_DOC_IN)
@@ -136,7 +136,7 @@ void	handler2(int sig)
 {
 	if (sig == SIGINT)
 	{
-		wait_signal = SIGINT;
+		ft_printf("SIGNAL RECIEVED\n");
 		ft_printf("\n");
 		exit (130);
 	}
@@ -220,6 +220,8 @@ void	waithandler(int sig)
 		wait_signal = SIGUSR1;
 		ft_printf("SIGNAL RECIEVED\n");
 	}
+	if (sig == SIGINT)
+		wait_signal = SIGINT;
 }
 
 void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff)
@@ -316,7 +318,7 @@ void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff)
 		ppid = getpid();
 		pid = fork();
 		signal(SIGUSR1, waithandler);
-		// wait_signal = 0;
+		wait_signal = 0;
 		if (pid == 0)
 		{
 			signal(SIGINT, handler2);
@@ -379,15 +381,16 @@ void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff)
 		else
 		{
 			wait_signal = 0;
+			signal(SIGINT, SIG_IGN);
 						// will not work with `cat <<heredoc /dev/urandom | head -n 5`
 			if (command->here_doc)
 			{
-						while (wait_signal == 0)
+				signal(SIGINT, waithandler);
+				while (wait_signal == 0)
 					continue;
 			}
 			//waitpid(pid, NULL, 0);
 			//usleep(5000000);
-			signal(SIGINT, SIG_IGN);
 			close(fd[i][WRITE]);
 		}
 		i++;
