@@ -6,7 +6,7 @@
 /*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 09:04:17 by plouda            #+#    #+#             */
-/*   Updated: 2023/08/28 11:24:03 by plouda           ###   ########.fr       */
+/*   Updated: 2023/08/29 11:53:33 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -234,7 +234,6 @@ void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff)
 	int		stdout;
 	int		stat;
 	int		**fd;
-	//int		heredoc_pid;
 	t_command	*command;
 
 	i = 0;
@@ -288,32 +287,6 @@ void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff)
 		fd[i] = malloc(sizeof(int) * 2);
 		pipe(fd[i]);
 		command = (t_command *)cmds->content;
-/* 		if (command->here_doc)
-		{
-			if (i != 0)
-				close(fd[i - 1][READ]);
-			heredoc_pid = fork();
-			if (!heredoc_pid)
-			{
-				if (command->here_doc == HERE_DOC_IN)
-				{
-					write(2, "DEBUG\n", 7);
-					in = heredoc_exec(command, command->here_doc);
-					dup2(in, STDIN_FILENO);
-					if (cmds->next)
-						dup2(fd[i][WRITE], STDOUT_FILENO);
-				}
-				else if (command->here_doc == HERE_DOC_VOID)
-				{
-					heredoc_exec(command, command->here_doc);
-					if (cmds->next)
-						dup2(fd[i][WRITE], STDOUT_FILENO);
-				}
-				exit(0);
-			}
-			else
-				waitpid(heredoc_pid, NULL, 0);
-		} */
 		int ppid;
 		ppid = getpid();
 		pid = fork();
@@ -329,47 +302,48 @@ void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff)
 				dup2(fd[i][WRITE], STDOUT_FILENO);
 			if (command->here_doc)
 			{
-				//heredoc_pid = fork();
-				//if (!heredoc_pid)
-				//{
-					if (command->here_doc == HERE_DOC_IN)
-					{
-						write(2, "DEBUG\n", 7);
-						in = heredoc_exec(command, command->here_doc);
-						dup2(in, STDIN_FILENO);
-						if (cmds->next)
-							dup2(fd[i][WRITE], STDOUT_FILENO);
-					}
-					else if (command->here_doc == HERE_DOC_VOID)
-					{
-						heredoc_exec(command, command->here_doc);
-						if (cmds->next)
-							dup2(fd[i][WRITE], STDOUT_FILENO);
-					}
-					kill(ppid, SIGUSR1);
-				//	exit(0);
-				//}
-				//else
-				//	waitpid(heredoc_pid, NULL, 0);
+				if (command->here_doc == HERE_DOC_IN)
+				{
+					//write(2, "DEBUG\n", 7);
+					in = heredoc_exec(command, command->here_doc);
+					dup2(in, STDIN_FILENO);
+					if (cmds->next)
+						dup2(fd[i][WRITE], STDOUT_FILENO);
+				}
+				else if (command->here_doc == HERE_DOC_VOID)
+				{
+					heredoc_exec(command, command->here_doc);
+					if (cmds->next)
+						dup2(fd[i][WRITE], STDOUT_FILENO);
+				}
+				kill(ppid, SIGUSR1);
 			}
 			if (command->outfile_path != NULL)
 			{
-				if (command->redirection == 2)
+				if (command->redirection == APPEND)
 					out = open(command->outfile_path, O_CREAT | O_WRONLY | O_APPEND, 00644);
 				else
 					out = open(command->outfile_path, O_CREAT | O_WRONLY | O_TRUNC, 00644);
+				if (out < 0)
+				{
+					close(fd[i][READ]);
+					write(2, "msh: ", 5);
+					perror(command->outfile_path);
+					free_stuff(stuff);
+					exit(1);
+				}
 				dup2(out, STDOUT_FILENO);
 			}
-
-			// this is where it heredoc had been before dup fix
-
 			if (command->infile_path != NULL && (!command->here_doc || command->here_doc == HERE_DOC_VOID))
 			{
 				in = open(command->infile_path, O_RDONLY);
-				if (in == -1)
+				if (in < 0)
 				{
-					ft_putstr_fd(" no such file or directory\n", 2);
-					exit (1);
+					close(fd[i][READ]);
+					write(2, "msh: ", 5);
+					perror(command->infile_path);
+					free_stuff(stuff);
+					exit(1);
 				}
 				dup2(in, STDIN_FILENO);
 			}
@@ -382,15 +356,12 @@ void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff)
 		{
 			wait_signal = 0;
 			signal(SIGINT, SIG_IGN);
-						// will not work with `cat <<heredoc /dev/urandom | head -n 5`
 			if (command->here_doc)
 			{
 				signal(SIGINT, waithandler);
 				while (wait_signal == 0)
 					continue;
 			}
-			//waitpid(pid, NULL, 0);
-			//usleep(5000000);
 			close(fd[i][WRITE]);
 		}
 		i++;

@@ -6,7 +6,7 @@
 /*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/26 11:37:49 by plouda            #+#    #+#             */
-/*   Updated: 2023/08/25 14:01:36 by plouda           ###   ########.fr       */
+/*   Updated: 2023/08/29 09:04:20 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,6 +162,7 @@ t_command	*parser(int argc, char **argv, int *i)
 	command->here_doc_counter = 0;
 	command->redirection = 0;
 	command->delimiter = NULL;
+	command->valid = 1;
 	cmd_args_len = get_cmd_args_len(argc, argv, i);
 	command->cmd_args = malloc(sizeof(char *) * (cmd_args_len + 1));
 	// handle malloc failure (how?)

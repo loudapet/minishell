@@ -6,7 +6,7 @@
 /*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 10:15:59 by plouda            #+#    #+#             */
-/*   Updated: 2023/08/25 11:43:13 by plouda           ###   ########.fr       */
+/*   Updated: 2023/08/29 09:09:55 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@
 # include <sys/wait.h>
 # include <fcntl.h>
 # include <sys/ioctl.h>
+# include <errno.h>
 # define READ 0
 # define WRITE 1
 # define TRUNC 1
@@ -81,6 +82,7 @@ typedef struct s_command
 	int		redirection;
 	int		cmd_count;
 	char	**cmd_args;
+	int		valid;
 }			t_command;
 
 typedef struct s_freebs
