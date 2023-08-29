@@ -160,7 +160,6 @@ int	main(int argc, char **argv, char **envp)
 	{
 		signal(SIGINT, handler);
 		signal(SIGQUIT, SIG_IGN);
-
 		i = 0;
 		hostname = get_hostname();
 		dir = get_directory(env);
@@ -195,8 +194,7 @@ int	main(int argc, char **argv, char **envp)
 		stuff.username = &username;
 		stuff.env = &env;
 		stuff.cmds = &cmds;
-		stuff.args = &args.av;
-
+		stuff.args = &args.av;;
 		pipex(cmds, &env, &status, stuff);
 		free_args(args);
 		

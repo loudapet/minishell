@@ -43,6 +43,9 @@ void	exe_with_path(char **path, char **argv, char ***env)
 		free(slash);
 		i++;
 	}
+	ft_putstr_fd(argv[0], 2);
+	ft_putstr_fd(": command not found\n", 2);
+
 }
 
 int	exec_command(char **argv, char ***env)
@@ -53,15 +56,19 @@ int	exec_command(char **argv, char ***env)
 	i = 0;
 	if (has_path(argv[0]))
 	{
-		if (access(argv[0], F_OK) == 0)
-			execve(argv[0], argv, *env);
-		else
-			return (0);
+		execve(argv[0], argv, *env);
+		if (errno == 2)
+		{
+			ft_printf("%s\n", strerror(errno));
+			return (127);
+		}
+		ft_printf("%s\n", strerror(errno));
+		return (126);
 	}
 	if (get_env("PATH", *env))
 		path = ft_split(get_env("PATH", *env), ':');
 	else
-		return (0);
+		return (127);
 	exe_with_path(path, argv, env);
 	while (path[i])
 	{
@@ -69,7 +76,7 @@ int	exec_command(char **argv, char ***env)
 		i++;
 	}
 	free(path);
-	return (0);
+	return (127);
 }
 
 void	builtins(char	**argv, char ***env, int *status)
@@ -89,5 +96,5 @@ void	builtins(char	**argv, char ***env, int *status)
 	else if (!ft_strncmp(argv[0], "exit", 5))
 		exit_built(argv, *env, *status);
 	else
-		exec_command(argv, env);
+		*status =  exec_command(argv, env);
 }

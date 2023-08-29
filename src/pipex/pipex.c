@@ -219,7 +219,6 @@ void	waithandler(int sig)
 	if (sig == SIGUSR1)
 	{
 		wait_signal = SIGUSR1;
-		ft_printf("SIGNAL RECIEVED SIGUSR\n");
 	}
 	if (sig == SIGINT)
 		wait_signal = SIGINT;
@@ -288,8 +287,6 @@ void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff)
 		fd[i] = malloc(sizeof(int) * 2);
 		pipe(fd[i]);
 		command = (t_command *)cmds->content;
-		int ppid;
-		ppid = getpid();
 		pid = fork();
 		signal(SIGUSR1, waithandler);
 		wait_signal = 0;
@@ -319,7 +316,7 @@ void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff)
 					if (cmds->next)
 						dup2(fd[i][WRITE], STDOUT_FILENO);
 				}
-				kill(ppid, SIGUSR1);
+				kill(0, SIGUSR1);
 			}
 			if (command->outfile_path != NULL)
 			{
@@ -342,9 +339,9 @@ void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff)
 				in = open(command->infile_path, O_RDONLY);
 				if (in < 0)
 				{
-					close(fd[i][READ]);
 					write(2, "msh: ", 5);
 					perror(command->infile_path);
+					close(fd[i][READ]);
 					free_stuff(stuff, i);
 					exit(1);
 				}
@@ -353,7 +350,7 @@ void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff)
 			close(fd[i][READ]);
 			builtins(command->cmd_args, env, status);
 			free_stuff(stuff, i);
-			exit(0);
+			exit(*status);
 		}
 		else
 		{
