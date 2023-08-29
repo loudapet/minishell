@@ -20,6 +20,7 @@ int	heredoc_exec(t_command *command, int flag)
 	int		i;
 
 	i = 0;
+	usleep(10000); // to wait for error to print
 	pipe(temp_pipe);
 	delimiter = command->delimiter;
 	while (command->here_doc_counter > 1 && delimiter[i + 1] != NULL )
@@ -136,13 +137,13 @@ void	handler2(int sig)
 {
 	if (sig == SIGINT)
 	{
-		ft_printf("SIGNAL RECIEVED\n");
+		ft_printf("SIGNAL RECIEVED SIGINT\n");
 		ft_printf("\n");
 		exit (130);
 	}
 }
 
-void	free_stuff(t_freebs stuff)
+void	free_stuff(t_freebs stuff, int l)
 {
 	int	i;
 
@@ -195,7 +196,7 @@ void	free_stuff(t_freebs stuff)
 	i = 0;
 	if (stuff.fd_n != 0)
 	{
-		while (i < stuff.fd_n)
+		while (i < l)
 		{
 			free((*stuff.fd)[i]);
 			i++;
@@ -218,7 +219,7 @@ void	waithandler(int sig)
 	if (sig == SIGUSR1)
 	{
 		wait_signal = SIGUSR1;
-		ft_printf("SIGNAL RECIEVED\n");
+		ft_printf("SIGNAL RECIEVED SIGUSR\n");
 	}
 	if (sig == SIGINT)
 		wait_signal = SIGINT;
@@ -248,7 +249,7 @@ void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff)
 			signal(SIGINT, handler2);
 			if (command->here_doc)
 				heredoc_exec(command, command->here_doc);
-			free_stuff(stuff);
+			free_stuff(stuff, 0);
 			exit (0);
 		}
 		else
@@ -296,9 +297,11 @@ void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff)
 		{
 			signal(SIGINT, handler2);
 			close(fd[i][READ]);
+			if (i != 0 && (command->here_doc || (command->infile_path != NULL && command->valid)))
+				close(fd[i - 1][READ]);
 			if (i != 0 && (!command->here_doc || command->here_doc == HERE_DOC_VOID))
 				dup2(fd[i - 1][READ], STDIN_FILENO);
-			if (cmds->next && (!command->here_doc || command->here_doc == HERE_DOC_VOID))
+			if (cmds->next && (!command->here_doc) && command->valid)
 				dup2(fd[i][WRITE], STDOUT_FILENO);
 			if (command->here_doc)
 			{
@@ -329,7 +332,7 @@ void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff)
 					close(fd[i][READ]);
 					write(2, "msh: ", 5);
 					perror(command->outfile_path);
-					free_stuff(stuff);
+					free_stuff(stuff, i);
 					exit(1);
 				}
 				dup2(out, STDOUT_FILENO);
@@ -342,14 +345,14 @@ void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff)
 					close(fd[i][READ]);
 					write(2, "msh: ", 5);
 					perror(command->infile_path);
-					free_stuff(stuff);
+					free_stuff(stuff, i);
 					exit(1);
 				}
 				dup2(in, STDIN_FILENO);
 			}
 			close(fd[i][READ]);
 			builtins(command->cmd_args, env, status);
-			free_stuff(stuff);
+			free_stuff(stuff, i);
 			exit(0);
 		}
 		else
