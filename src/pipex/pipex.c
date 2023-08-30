@@ -6,7 +6,7 @@
 /*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 09:04:17 by plouda            #+#    #+#             */
-/*   Updated: 2023/08/30 10:54:23 by plouda           ###   ########.fr       */
+/*   Updated: 2023/08/30 11:32:36 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -292,7 +292,7 @@ void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff)
 		wait_signal = 0;
 		if (pid == 0)
 		{
-			//signal(SIGINT, handler2);
+			signal(SIGINT, handler2);
 			close(fd[i][READ]);
 			if (i != 0 && (command->here_doc || (command->infile_path != NULL && command->valid)))
 				close(fd[i - 1][READ]);
@@ -349,6 +349,7 @@ void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff)
 					free_stuff(stuff, i);
 					exit(1);
 				}
+				close(command->heredoc_pipe[READ]);
 				dup2(in, STDIN_FILENO);
 			}
 			close(fd[i][READ]);
@@ -359,7 +360,7 @@ void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff)
 		else
 		{
 			//wait_signal = 0;
-			//signal(SIGINT, SIG_IGN);
+			signal(SIGINT, SIG_IGN);
 			/* if (command->here_doc)
 			{
 				//signal(SIGINT, waithandler);
@@ -376,7 +377,7 @@ void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff)
 	l = 0;
 	while (i > 0)
 	{
-		waitpid(pid, &stat, 0);
+		waitpid(-1, &stat, 0);
 		*status = WEXITSTATUS(stat);
 		i--;
 		l++;

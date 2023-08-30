@@ -6,7 +6,7 @@
 /*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/30 09:36:45 by plouda            #+#    #+#             */
-/*   Updated: 2023/08/30 10:56:33 by plouda           ###   ########.fr       */
+/*   Updated: 2023/08/30 11:23:01 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,11 @@ void	heredoc_handler(t_list *cmds)
 			close(command->heredoc_pipe[WRITE]);
 			if (command->here_doc == HERE_DOC_VOID)
 				close(command->heredoc_pipe[READ]);
+		}
+		else
+		{
+			close(command->heredoc_pipe[WRITE]);
+			close(command->heredoc_pipe[READ]);
 		}
 		write(2, "Going next...\n", 15);
 		cmds = cmds->next;
