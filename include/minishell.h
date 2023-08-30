@@ -6,7 +6,7 @@
 /*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 10:15:59 by plouda            #+#    #+#             */
-/*   Updated: 2023/08/29 09:09:55 by plouda           ###   ########.fr       */
+/*   Updated: 2023/08/30 10:57:58 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,7 @@ typedef struct s_command
 	int		cmd_count;
 	char	**cmd_args;
 	int		valid;
+	int		heredoc_pipe[2];
 }			t_command;
 
 typedef struct s_freebs
@@ -125,6 +126,8 @@ void	sanitize(t_sanitizer *san, char **av, int i, int *j);
 // Pipex
 t_command	*parser(int argc, char **argv, int *i);
 void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff);
+void	heredoc_handler(t_list *cmds);
+int		heredoc_exec(t_command *command, int flag);
 
 // Files
 void	here_doc(char **argv, int i, t_command *command);

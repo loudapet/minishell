@@ -6,7 +6,7 @@
 /*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 10:15:35 by plouda            #+#    #+#             */
-/*   Updated: 2023/08/25 14:19:29 by plouda           ###   ########.fr       */
+/*   Updated: 2023/08/30 10:46:22 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,10 +194,10 @@ int	main(int argc, char **argv, char **envp)
 		stuff.username = &username;
 		stuff.env = &env;
 		stuff.cmds = &cmds;
-		stuff.args = &args.av;;
+		stuff.args = &args.av;
+		heredoc_handler(cmds);
 		pipex(cmds, &env, &status, stuff);
 		free_args(args);
-		
 		t_list * tmp;
 		t_command *tmp_cmd;
 		int	k;

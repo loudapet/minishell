@@ -6,13 +6,13 @@
 /*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 09:04:17 by plouda            #+#    #+#             */
-/*   Updated: 2023/08/29 11:53:33 by plouda           ###   ########.fr       */
+/*   Updated: 2023/08/30 10:54:23 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	heredoc_exec(t_command *command, int flag)
+/* int	heredoc_exec(t_command *command, int flag)
 {
 	int		temp_pipe[2];
 	char	*str;
@@ -59,7 +59,7 @@ int	heredoc_exec(t_command *command, int flag)
 		free(str);
 	close(temp_pipe[WRITE]);
 	return (temp_pipe[READ]);
-}
+} */
 
 /* int	heredoc_exec(t_command *command, int flag)
 {
@@ -288,19 +288,21 @@ void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff)
 		pipe(fd[i]);
 		command = (t_command *)cmds->content;
 		pid = fork();
-		signal(SIGUSR1, waithandler);
+		//signal(SIGUSR1, waithandler);
 		wait_signal = 0;
 		if (pid == 0)
 		{
-			signal(SIGINT, handler2);
+			//signal(SIGINT, handler2);
 			close(fd[i][READ]);
 			if (i != 0 && (command->here_doc || (command->infile_path != NULL && command->valid)))
 				close(fd[i - 1][READ]);
 			if (i != 0 && (!command->here_doc || command->here_doc == HERE_DOC_VOID))
 				dup2(fd[i - 1][READ], STDIN_FILENO);
-			if (cmds->next && (!command->here_doc) && command->valid)
+			if (cmds->next)
 				dup2(fd[i][WRITE], STDOUT_FILENO);
-			if (command->here_doc)
+			if (command->here_doc == HERE_DOC_IN)
+				dup2(command->heredoc_pipe[READ], STDIN_FILENO);
+			/* if (command->here_doc)
 			{
 				if (command->here_doc == HERE_DOC_IN)
 				{
@@ -316,8 +318,8 @@ void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff)
 					if (cmds->next)
 						dup2(fd[i][WRITE], STDOUT_FILENO);
 				}
-				kill(0, SIGUSR1);
-			}
+				//kill(0, SIGUSR1);
+			} */
 			if (command->outfile_path != NULL)
 			{
 				if (command->redirection == APPEND)
@@ -327,6 +329,7 @@ void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff)
 				if (out < 0)
 				{
 					close(fd[i][READ]);
+					close(command->heredoc_pipe[READ]);
 					write(2, "msh: ", 5);
 					perror(command->outfile_path);
 					free_stuff(stuff, i);
@@ -339,9 +342,10 @@ void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff)
 				in = open(command->infile_path, O_RDONLY);
 				if (in < 0)
 				{
+					close(command->heredoc_pipe[READ]);
+					close(fd[i][READ]);
 					write(2, "msh: ", 5);
 					perror(command->infile_path);
-					close(fd[i][READ]);
 					free_stuff(stuff, i);
 					exit(1);
 				}
@@ -354,15 +358,17 @@ void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff)
 		}
 		else
 		{
-			wait_signal = 0;
-			signal(SIGINT, SIG_IGN);
-			if (command->here_doc)
+			//wait_signal = 0;
+			//signal(SIGINT, SIG_IGN);
+			/* if (command->here_doc)
 			{
-				signal(SIGINT, waithandler);
+				//signal(SIGINT, waithandler);
 				while (wait_signal == 0)
 					continue;
-			}
+			} */
 			close(fd[i][WRITE]);
+			if (command->here_doc == HERE_DOC_IN)
+				close(command->heredoc_pipe[READ]);
 		}
 		i++;
 		cmds = cmds->next;

@@ -6,7 +6,7 @@
 #    By: plouda <plouda@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/03 15:05:09 by plouda            #+#    #+#              #
-#    Updated: 2023/08/25 11:34:01 by plouda           ###   ########.fr        #
+#    Updated: 2023/08/30 09:37:07 by plouda           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,6 +21,7 @@ SRCS =	project/main.c \
 		parser/parser.c \
 		parser/files.c \
 		pipex/pipex.c \
+		pipex/heredoc.c \
 		builtins/echo.c \
 		builtins/builtins.c \
 		builtins/cd.c \
