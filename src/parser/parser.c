@@ -6,7 +6,7 @@
 /*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/26 11:37:49 by plouda            #+#    #+#             */
-/*   Updated: 2023/08/31 11:07:34 by plouda           ###   ########.fr       */
+/*   Updated: 2023/08/31 11:38:30 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,6 @@ void	get_files(int argc, char **argv, t_command *command, int *index)
 	i = *index;
 	while (i < argc)
 	{
-		ft_printf("%d\n", i);
 		if (argv[i][0] == '<' && i + 1 < argc)
 		{
 			quote_remover(argv, i + 1);
@@ -66,16 +65,18 @@ void	get_files(int argc, char **argv, t_command *command, int *index)
 				here_doc(argv, i, command);
 			else
 				infile(argv, i, command);
+			i++;
 		}
-		if ((argv[i][0]) == '>' && i + 1 < argc)
+		else if ((argv[i][0]) == '>' && i + 1 < argc)
 		{
 			quote_remover(argv, i + 1);
 			if (!strncmp(argv[i], ">>", 2))
 				append(argv, i, command);
 			else
 				outfile(argv, i, command);
+			i++;
 		}
-		if (argv[i][0] == '|')
+		else if (argv[i][0] == '|')
 			break ;
 		i++;
 	}
