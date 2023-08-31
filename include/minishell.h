@@ -37,6 +37,8 @@
 # define HERE_DOC_VOID 1
 # define HERE_DOC_IN 2
 
+extern int	g_signal;
+
 typedef struct s_args
 {
 	char	**av;

@@ -33,7 +33,7 @@ int	is_builtin(char *com)
 	return (0);
 }
 
-int	wait_signal = 0;
+// int	g_signal;
 
 void	handler2(int sig)
 {
@@ -116,15 +116,15 @@ void	free_stuff(t_freebs stuff, int l)
 
 
 
-void	waithandler(int sig)
-{
-	if (sig == SIGUSR1)
-	{
-		wait_signal = SIGUSR1;
-	}
-	if (sig == SIGINT)
-		wait_signal = SIGINT;
-}
+// void	waithandler(int sig)
+// {
+// 	if (sig == SIGUSR1)
+// 	{
+// 		g_signal = SIGUSR1;
+// 	}
+// 	if (sig == SIGINT)
+// 		g_signal = SIGINT;
+// }
 
 void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff)
 {
@@ -190,7 +190,6 @@ void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff)
 			command->here_doc = HERE_DOC_VOID;
 		pid = fork();
 		//signal(SIGUSR1, waithandler);
-		wait_signal = 0;
 		if (pid == 0)
 		{
 			signal(SIGINT, handler2);

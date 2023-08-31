@@ -13,6 +13,8 @@
 
 #include "minishell.h"
 
+int	g_signal = 0;
+
 /*
 Use this for valgrind suppression
 valgrind -s --leak-check=full --show-reachable=yes --error-limit=no
@@ -305,7 +307,8 @@ int	main(int argc, char **argv, char **envp)
 		stuff.cmds = &cmds;
 		stuff.args = &args.av;
 		heredoc_handler(cmds);
-		pipex(cmds, &env, &status, stuff);
+		if (g_signal == 0)
+			pipex(cmds, &env, &status, stuff);
 		free_args(args);
 		t_list * tmp;
 		t_command *tmp_cmd;

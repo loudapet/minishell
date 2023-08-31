@@ -12,6 +12,20 @@
 
 # include "minishell.h"
 
+void	waithandler(int sig)
+{
+	if (sig == SIGUSR2)
+	{
+		g_signal = SIGUSR2;
+		ft_printf("\n");
+	}
+	if (sig == SIGINT)
+	{
+		kill(0, SIGUSR2);
+		exit(0);
+	}
+}
+
 int	heredoc_exec(t_command *command, int flag)
 {
 	int		*temp_pipe;
@@ -43,7 +57,7 @@ int	heredoc_exec(t_command *command, int flag)
 	write(STDOUT_FILENO, "> ", 2);
 	str = get_next_line(STDIN_FILENO);
 	if (!str)
-		ft_printf("\n1Warning: here-doc delimited by EOF, wanted %s\n", delimiter[i]);
+		ft_printf("\nWarning: here-doc delimited by EOF, wanted %s\n", delimiter[i]);
 	while (str && (ft_strncmp(delimiter[i], str, ft_strlen(delimiter[i])) || ft_strlen(str) != ft_strlen(delimiter[i]) + 1))
 	{
 		write(STDOUT_FILENO, "> ", 2);
@@ -52,7 +66,7 @@ int	heredoc_exec(t_command *command, int flag)
 		free(str);
 		str = get_next_line(STDIN_FILENO);
 		if (!str)
-			ft_printf("\n2Warning: here-doc delimited by EOF, wanted %s\n", delimiter[i]);
+			ft_printf("\nWarning: here-doc delimited by EOF, wanted %s\n", delimiter[i]);
 	}
 	if (str)
 		free(str);
@@ -64,6 +78,7 @@ void	heredoc_pipes(t_list *cmds)
 {
 	t_command *command;
 
+	g_signal = 0;
 	while (cmds)
 	{
 		command = (t_command *)cmds->content;
@@ -92,6 +107,8 @@ void	heredoc_handler(t_list *cmds)
 	pid = fork();
 	if (!pid)
 	{
+		signal(SIGINT, waithandler);
+		signal(SIGUSR2, SIG_IGN);
 		while (cmds)
 		{
 			command = (t_command *)cmds->content;
@@ -108,6 +125,8 @@ void	heredoc_handler(t_list *cmds)
 	}
 	else
 	{
+		signal(SIGINT, SIG_IGN);
+		signal(SIGUSR2, waithandler);
 		waitpid(pid, NULL, 0);
 		while (cmds)
 		{
