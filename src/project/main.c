@@ -127,6 +127,82 @@ void	handler(int sig)
 	}
 }
 
+int	is_thingy(char c)
+{
+	if (c == '>' || c == '<' || c == '|')
+		return (1);
+	return (0);
+}
+
+void	move_index(char *line, int *i)
+{
+	if (line[*i] == '>' && line[(*i) + 1] == '>')
+		(*i)++;
+	else if (line[*i] == '<' && line[(*i) + 1] == '<')
+		(*i)++;
+}
+
+int	check_syntax(char *line)
+{
+	int	i;
+	int	quote;
+
+	quote = 0;
+	i = 0;
+	while (line[i])
+	{
+		if (line[i] == '\'' && quote == 0)
+			quote = 1;
+		else if (line[i] == '"' && quote == 0)
+			quote = 2;
+		else if (line[i] == '\'' && quote == 1)
+			quote = 0;
+		else if (line[i] == '"' && quote == 2)
+			quote = 0;
+		if (quote == 0 && is_thingy(line[i]))
+		{
+			move_index(line, &i);
+			i++;
+			while (line[i] == ' ')
+				i++;
+			if (is_thingy(line[i]) || line[i] == '\0')
+			{
+				ft_putstr_fd("Invalid syntax\n", 2);
+				return (0);
+			}
+		}
+		i++;
+	}
+	return (1);
+}
+
+int	check_quotes(char *line)
+{
+	int	i;
+	int	quote;
+
+	quote = 0;
+	i = 0;
+	while (line[i])
+	{
+		if (line[i] == '\'' && quote == 0)
+			quote = 1;
+		else if (line[i] == '"' && quote == 0)
+			quote = 2;
+		else if (line[i] == '\'' && quote == 1)
+			quote = 0;
+		else if (line[i] == '"' && quote == 2)
+			quote = 0;
+		i++;
+	}
+	if (quote != 0)
+	{
+		ft_putstr_fd("Close your quotes! >:C\n", 2);
+		return (0);
+	}
+	return (1);
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	char	*line;
@@ -168,8 +244,10 @@ int	main(int argc, char **argv, char **envp)
 		line = readline((const char *)prompt);
 		if (line == NULL)
 			break ;
-		if (line[0] == '\0')
+		if (line[0] == '\0' || !check_syntax(line) || !check_quotes(line))
 		{
+			if (line[0] != '\0')
+				add_history(line);
 			free(line);
 			free(hostname);
 			free(specs);
