@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
+/*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 10:15:59 by plouda            #+#    #+#             */
-/*   Updated: 2023/08/30 10:57:58 by plouda           ###   ########.fr       */
+/*   Updated: 2023/08/31 10:32:17 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,7 @@ typedef struct s_command
 	char	**cmd_args;
 	int		valid;
 	int		heredoc_pipe[2];
+	pid_t		pid;
 }			t_command;
 
 typedef struct s_freebs
@@ -128,6 +129,7 @@ t_command	*parser(int argc, char **argv, int *i);
 void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff);
 void	heredoc_handler(t_list *cmds);
 int		heredoc_exec(t_command *command, int flag);
+void	waiter(t_list *cmds, int *status);
 
 // Files
 void	here_doc(char **argv, int i, t_command *command);
@@ -149,5 +151,7 @@ char	**unset_single(char *arg, char **env);
 int		env_built(char **env);
 int		pwd_built(char **env);
 void	exit_built(char **argv, char **env, int status);
+
+void	display_argv(char **argv);
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
+/*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/26 11:37:49 by plouda            #+#    #+#             */
-/*   Updated: 2023/08/30 09:41:58 by plouda           ###   ########.fr       */
+/*   Updated: 2023/08/31 11:07:34 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,8 @@ void	get_files(int argc, char **argv, t_command *command, int *index)
 	i = *index;
 	while (i < argc)
 	{
-		if (argv[i][0] == '<')
+		ft_printf("%d\n", i);
+		if (argv[i][0] == '<' && i + 1 < argc)
 		{
 			quote_remover(argv, i + 1);
 			if (!strncmp(argv[i], "<<", 2))
@@ -66,7 +67,7 @@ void	get_files(int argc, char **argv, t_command *command, int *index)
 			else
 				infile(argv, i, command);
 		}
-		if ((argv[i][0]) == '>')
+		if ((argv[i][0]) == '>' && i + 1 < argc)
 		{
 			quote_remover(argv, i + 1);
 			if (!strncmp(argv[i], ">>", 2))
@@ -163,6 +164,7 @@ t_command	*parser(int argc, char **argv, int *i)
 	command->redirection = 0;
 	command->delimiter = NULL;
 	command->valid = 1;
+	command->pid = 0;
 	pipe(command->heredoc_pipe);
 	cmd_args_len = get_cmd_args_len(argc, argv, i);
 	command->cmd_args = malloc(sizeof(char *) * (cmd_args_len + 1));
@@ -180,11 +182,11 @@ t_command	*parser(int argc, char **argv, int *i)
 	if (*i > argc)
 		*i = argc;
 	// ft_printf("T--------------------------------------------------T\n");
-	// ft_printf("Infile: %s\nOutfile: %s\n", command->infile_path, command->outfile_path);
+	// t_printf("Infile: %s\nOutfile: %s\n", command->infile_path, command->outfile_path);
 	// ft_printf("Infile fd: %d\nOutfile fd: %d\n", command->infile_fd, command->outfile_fd);
 	// ft_printf("Redirection mode (0 no outfile, 1 truncate, 2 append): %d\n", command->redirection);
 	// ft_printf("here_doc status (0 none, 1 void, 2 infile): %d\n", command->here_doc);
 	// display_argv(command->cmd_args);
-	//ft_printf("Command count: %d\n", command.cmd_count);
+	// ft_printf("Command count: %d\n", command->cmd_count);
 	return (command);
 }

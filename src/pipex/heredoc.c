@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
+/*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/30 09:36:45 by plouda            #+#    #+#             */
-/*   Updated: 2023/08/30 11:23:01 by plouda           ###   ########.fr       */
+/*   Updated: 2023/08/31 08:50:04 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,10 +62,8 @@ int	heredoc_exec(t_command *command, int flag)
 
 void	heredoc_handler(t_list *cmds)
 {
-	int	i;
 	t_command *command;
 
-	i = 0;
 	while (cmds)
 	{
 		command = (t_command *)cmds->content;
