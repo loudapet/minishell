@@ -16,10 +16,9 @@ int	pwd_built(char **env)
 {
 	char	*cwd;
 
-	//env = env;
 	(void)env;
-	cwd = malloc(1000);
-	getcwd(cwd, 1000);
+	cwd = malloc(PATH_MAX);
+	getcwd(cwd, PATH_MAX);
 	ft_putstr_fd(cwd, 1);
 	ft_putstr_fd("\n", 1);
 	free(cwd);

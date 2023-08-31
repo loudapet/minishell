@@ -12,53 +12,53 @@
 
 #include "minishell.h"
 
-static void	show_var(char ***env)
-{
-	int	i;
-	int	j;
+// static void	show_var(char ***env)
+// {
+// 	int	i;
+// 	int	j;
 
-	i = 0;
-	while ((*env)[i] != NULL)
-	{
-		j = 0;
-		ft_printf("declare -x ");
-		while ((*env)[i][j])
-		{
-			if ((*env)[i][j] == '=' && !((*env)[i][j + 1]))
-				break ;
-			ft_printf("%c", (*env)[i][j]);
-			if ((*env)[i][j] == '=')
-				ft_printf("\"");
-			j++;
-		}
-		if ((*env)[i][j] != '=')
-			ft_printf("\"");
-		ft_printf("\n");
-		i++;
-	}
-}
+// 	i = 0;
+// 	while ((*env)[i] != NULL)
+// 	{
+// 		j = 0;
+// 		ft_printf("declare -x ");
+// 		while ((*env)[i][j])
+// 		{
+// 			if ((*env)[i][j] == '=' && !((*env)[i][j + 1]))
+// 				break ;
+// 			ft_printf("%c", (*env)[i][j]);
+// 			if ((*env)[i][j] == '=')
+// 				ft_printf("\"");
+// 			j++;
+// 		}
+// 		if ((*env)[i][j] != '=')
+// 			ft_printf("\"");
+// 		ft_printf("\n");
+// 		i++;
+// 	}
+// }
 
-static char	**set_new_env(char *arg, char **env)
-{
-	char	**temp;
-	int		i;
+// static char	**set_new_env(char *arg, char **env)
+// {
+// 	char	**temp;
+// 	int		i;
 
-	i = 0;
-	while (env[i])
-		i++;
-	temp = malloc(sizeof(char *) * (i + 2));
-	i = 0;
-	while (env[i] != NULL)
-	{
-		temp[i] = ft_strdup(env[i]);
-		free(env[i]);
-		i++;
-	}
-	temp[i] = ft_strdup(arg);
-	temp[i + 1] = NULL;
-	free(env);
-	return (temp);
-}
+// 	i = 0;
+// 	while (env[i])
+// 		i++;
+// 	temp = malloc(sizeof(char *) * (i + 2));
+// 	i = 0;
+// 	while (env[i] != NULL)
+// 	{
+// 		temp[i] = ft_strdup(env[i]);
+// 		free(env[i]);
+// 		i++;
+// 	}
+// 	temp[i] = ft_strdup(arg);
+// 	temp[i + 1] = NULL;
+// 	free(env);
+// 	return (temp);
+// }
 
 static int	check_arg(char *arg)
 {
@@ -97,16 +97,12 @@ char	*get_env_name(char *arg)
 	return (name);
 }
 
-int	export_built(char **argv, char ***env)
+void	export_extend(char **argv, char ***env, int *status)
 {
 	char	*name;
 	int		i;
-	int		status;
 
 	i = 1;
-	status = 0;
-	if (!argv[1])
-		return (show_var(env), 0);
 	while (argv[i])
 	{
 		if (check_arg(argv[i]) != 0)
@@ -120,10 +116,20 @@ int	export_built(char **argv, char ***env)
 		}
 		else
 		{
-			status = 1;
+			*status = 1;
 			ft_putstr_fd(" not a valid identifier\n", 2);
 		}
 		i++;
 	}
-	return (status);
+}
+
+void	export_built(char **argv, char ***env, int *status)
+{
+	*status = 0;
+	if (!argv[1])
+	{
+		show_var(env);
+		return ;
+	}
+	export_extend(argv, env, status);
 }

@@ -29,6 +29,7 @@
 # include <sys/wait.h>
 # include <fcntl.h>
 # include <sys/ioctl.h>
+# include <limits.h>
 # include <errno.h>
 # define READ 0
 # define WRITE 1
@@ -146,9 +147,11 @@ int	variable_exists(char *arg, char **env);
 void	builtins(char **argv, char ***env, int *status);
 int		echo_built(char **argv);
 int		cd_built(char **argv, char ***env);
-int	cd_home(char ***env);
+int		cd_home(char ***env);
 int		set_new_pwd(char ***env);
-int		export_built(char **argv, char ***env);
+void	export_built(char **argv, char ***env, int *status);
+void	show_var(char ***env);
+char	**set_new_env(char *arg, char **env);
 char	**unset_built(char **arg, char **env);
 char	**unset_single(char *arg, char **env);
 int		env_built(char **env);

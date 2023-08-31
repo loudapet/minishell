@@ -28,6 +28,7 @@ SRCS =	project/main.c \
 		builtins/cd.c \
 		builtins/cd_extra.c \
 		builtins/export.c \
+		builtins/export2.c \
 		builtins/unset.c \
 		builtins/env.c \
 		builtins/pwd.c \

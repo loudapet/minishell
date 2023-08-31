@@ -38,8 +38,6 @@ void	exit_built(char **args, char **env, int status)
 	int	i;
 
 	i = 0;
-	//args = args;
-	//env = env;
 	(void)args;
 	(void)env;
 	if (args[1] && args[2])
