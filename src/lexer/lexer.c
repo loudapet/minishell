@@ -80,6 +80,13 @@ int	has_redirection(char *ar)
 		count--;
 	if (ar[ft_strlen(ar) - 1] == '>' || ar[ft_strlen(ar) - 1] == '<' || ar[ft_strlen(ar) - 1] == '|')
 		count--;
+	i = 0;
+	while (ar[i])
+	{
+		if (ar[i] == '|' && (ar[i + 1] == '>' || ar[i + 1] == '<'))
+				count--;
+		i++;
+	}
 	return (count);
 }
 
@@ -151,6 +158,12 @@ char	**split_redirections(char **av, int *ac, int i)
 					temp[k] = NULL;
 					state = 2;
 				}
+				else if (av[i][j-1] == '|' && (av[i][j] == '>' || av[i][j] == '<') && state == 1)
+				{
+					k++;
+					temp[k] = NULL;
+					state = 1;
+				}
 				// ft_printf("%d %s %c\n", k, temp[k], av[i][j]);
 				temp[k] = join(temp[k], av[i][j]);
 				// ft_printf("%s %c %d %d\n", temp[k], av[i][j], k, state);
@@ -162,7 +175,6 @@ char	**split_redirections(char **av, int *ac, int i)
 		free(av[i]);
 		i++;
 	}
-	// ft_printf("AAAA%d\n", k);
 	temp[k] = NULL;
 	free(av);
 	return (temp);
@@ -182,7 +194,9 @@ char	**slice_redirections(char **av, int *ac)
 	{
 		if (has_redirection(av[i]) != 0)
 		{
+			// ft_printf("%s\n", av[i]);
 			av = split_redirections(av, ac, i);
+			// ft_printf("%s\n", av[i]);
 			i = 0;
 			continue ;
 		}
@@ -235,7 +249,7 @@ char	*expand_env(char *str, char **env, int status)
 	while (str[i])
 	{
 		quote_counter((const char *)&str[i], &quote, &single_quote);
-		if (str[i] == '$' && str[i+1] != '?' 
+		if (str[i] == '$' && str[i+1] != '?'
 			&& !ft_isalnum(str[i+1]) && !(single_quote % 2))
 		{
 			i++;
@@ -298,6 +312,6 @@ t_args	lexer(const char *line, char **env, int status)
 		i++;
 	}
 	av[i] = NULL;
-	args.av = slice_redirections(av, &args.ac);	
+	args.av = slice_redirections(av, &args.ac);
 	return (args);
 }

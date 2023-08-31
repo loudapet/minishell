@@ -127,10 +127,19 @@ void	handler(int sig)
 	}
 }
 
-int	is_thingy(char c)
+int	is_thingy(char c, int *pipe)
 {
 	if (c == '>' || c == '<' || c == '|')
+	{
+		if (c == '|')
+			*pipe = 1;
+		else if (*pipe == 1)
+		{
+			*pipe = 0;
+			return (0);
+		}
 		return (1);
+	}
 	return (0);
 }
 
@@ -146,9 +155,18 @@ int	check_syntax(char *line)
 {
 	int	i;
 	int	quote;
+	int	pipe;
 
 	quote = 0;
 	i = 0;
+	pipe = 0;
+	while (line[i] == ' ')
+		i++;
+	if (line[i] == '|')
+	{
+		ft_putstr_fd("Invalid syntax\n", 2);
+		return (0);
+	}
 	while (line[i])
 	{
 		if (line[i] == '\'' && quote == 0)
@@ -159,13 +177,13 @@ int	check_syntax(char *line)
 			quote = 0;
 		else if (line[i] == '"' && quote == 2)
 			quote = 0;
-		if (quote == 0 && is_thingy(line[i]))
+		if (quote == 0 && is_thingy(line[i], &pipe))
 		{
 			move_index(line, &i);
 			i++;
 			while (line[i] == ' ')
 				i++;
-			if (is_thingy(line[i]) || line[i] == '\0')
+			if (is_thingy(line[i], &pipe) || line[i] == '\0')
 			{
 				ft_putstr_fd("Invalid syntax\n", 2);
 				return (0);
@@ -257,7 +275,6 @@ int	main(int argc, char **argv, char **envp)
 		}
 		add_history(line);
 		args = lexer(line, env, status);
-
 		cmds = NULL;
 		while (i < args.ac)
 		{
