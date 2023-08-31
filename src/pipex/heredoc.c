@@ -6,7 +6,7 @@
 /*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/30 09:36:45 by plouda            #+#    #+#             */
-/*   Updated: 2023/08/31 08:50:04 by plouda           ###   ########.fr       */
+/*   Updated: 2023/08/31 11:51:53 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,25 +63,34 @@ int	heredoc_exec(t_command *command, int flag)
 void	heredoc_handler(t_list *cmds)
 {
 	t_command *command;
+	pid_t	pid;
 
-	while (cmds)
+	pid = fork();
+	if (!pid)
 	{
-		command = (t_command *)cmds->content;
-		if (command->here_doc)
+		while (cmds)
 		{
-			if (command->here_doc == HERE_DOC_IN && !command->valid)
-				command->here_doc = HERE_DOC_VOID;
-			heredoc_exec(command, command->here_doc);
-			close(command->heredoc_pipe[WRITE]);
-			if (command->here_doc == HERE_DOC_VOID)
+			command = (t_command *)cmds->content;
+			if (command->here_doc)
+			{
+				if (command->here_doc == HERE_DOC_IN && !command->valid)
+					command->here_doc = HERE_DOC_VOID;
+				heredoc_exec(command, command->here_doc);
+				close(command->heredoc_pipe[WRITE]);
+				if (command->here_doc == HERE_DOC_VOID)
+					close(command->heredoc_pipe[READ]);
+			}
+			else
+			{
+				close(command->heredoc_pipe[WRITE]);
 				close(command->heredoc_pipe[READ]);
+			}
+			cmds = cmds->next;
 		}
-		else
-		{
-			close(command->heredoc_pipe[WRITE]);
-			close(command->heredoc_pipe[READ]);
-		}
-		write(2, "Going next...\n", 15);
-		cmds = cmds->next;
+		exit(0);
+	}
+	else
+	{
+		waitpid(pid, NULL, 0);
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 10:15:59 by plouda            #+#    #+#             */
-/*   Updated: 2023/08/31 10:32:17 by plouda           ###   ########.fr       */
+/*   Updated: 2023/08/31 15:10:18 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,7 @@ void	free_env(char **env);
 t_args	lexer(const char *line, char **env, int status);
 void	free_args(t_args args);
 char	**minisplit(char const *s, char c);
+char	**slice_redirections(char **av, int *ac);
 
 // Santitizer
 t_sanitizer	reset_sanitizer(void);

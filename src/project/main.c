@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
+/*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 10:15:35 by plouda            #+#    #+#             */
-/*   Updated: 2023/08/30 10:46:22 by plouda           ###   ########.fr       */
+/*   Updated: 2023/08/31 15:39:05 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,20 @@ Use this for valgrind suppression
 valgrind -s --leak-check=full --show-reachable=yes --error-limit=no
 --suppressions=minishell.supp --gen-suppressions=all ./minishell
 */
+
+// maybe consider redoing this for argv[i] != NULL
+void	free_args(t_args args)
+{
+	int	i;
+
+	i = 0;
+	while (args.av[i])
+	{
+		free(args.av[i]);
+		i++;
+	}
+	free(args.av);
+}
 
 int	get_cmd_count(int argc, char **argv)
 {

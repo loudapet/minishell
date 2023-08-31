@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: plouda <plouda@student.42.fr>              +#+  +:+       +#+         #
+#    By: plouda <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/03 15:05:09 by plouda            #+#    #+#              #
-#    Updated: 2023/08/30 09:37:07 by plouda           ###   ########.fr        #
+#    Updated: 2023/08/31 14:44:53 by plouda           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,6 +16,7 @@ SRCS =	project/main.c \
 		lexer/lexer.c \
 		lexer/minisplit.c \
 		lexer/expand_vars.c \
+		lexer/slicer.c \
 		parser/quote_remover.c \
 		parser/quote_remover_helpers.c \
 		parser/parser.c \
