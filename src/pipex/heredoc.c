@@ -6,7 +6,7 @@
 /*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/30 09:36:45 by plouda            #+#    #+#             */
-/*   Updated: 2023/08/31 11:51:53 by plouda           ###   ########.fr       */
+/*   Updated: 2023/08/31 16:48:36 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,11 +60,35 @@ int	heredoc_exec(t_command *command, int flag)
 	return (temp_pipe[READ]);
 }
 
+void	heredoc_pipes(t_list *cmds)
+{
+	t_command *command;
+
+	while (cmds)
+	{
+		command = (t_command *)cmds->content;
+		if (command->here_doc)
+		{
+			if (command->here_doc == HERE_DOC_IN && !command->valid)
+				command->here_doc = HERE_DOC_VOID;
+			if (command->here_doc == HERE_DOC_VOID)
+				close(command->heredoc_pipe[READ]);
+		}
+		else
+		{
+			close(command->heredoc_pipe[WRITE]);
+			close(command->heredoc_pipe[READ]);
+		}
+		cmds = cmds->next;
+	}
+}
+
 void	heredoc_handler(t_list *cmds)
 {
 	t_command *command;
 	pid_t	pid;
 
+	heredoc_pipes(cmds);
 	pid = fork();
 	if (!pid)
 	{
@@ -73,17 +97,8 @@ void	heredoc_handler(t_list *cmds)
 			command = (t_command *)cmds->content;
 			if (command->here_doc)
 			{
-				if (command->here_doc == HERE_DOC_IN && !command->valid)
-					command->here_doc = HERE_DOC_VOID;
 				heredoc_exec(command, command->here_doc);
 				close(command->heredoc_pipe[WRITE]);
-				if (command->here_doc == HERE_DOC_VOID)
-					close(command->heredoc_pipe[READ]);
-			}
-			else
-			{
-				close(command->heredoc_pipe[WRITE]);
-				close(command->heredoc_pipe[READ]);
 			}
 			cmds = cmds->next;
 		}
@@ -92,5 +107,11 @@ void	heredoc_handler(t_list *cmds)
 	else
 	{
 		waitpid(pid, NULL, 0);
+		while (cmds)
+		{
+			command = (t_command *)cmds->content;
+			close(command->heredoc_pipe[WRITE]);
+			cmds = cmds->next;
+		}
 	}
 }

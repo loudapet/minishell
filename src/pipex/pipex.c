@@ -6,7 +6,7 @@
 /*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 09:04:17 by plouda            #+#    #+#             */
-/*   Updated: 2023/08/31 10:23:13 by plouda           ###   ########.fr       */
+/*   Updated: 2023/08/31 16:28:55 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,6 +186,8 @@ void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff)
 		fd[i] = malloc(sizeof(int) * 2);
 		pipe(fd[i]);
 		command = (t_command *)cmds->content;
+		if (command->here_doc == HERE_DOC_IN && !command->valid)
+			command->here_doc = HERE_DOC_VOID;
 		pid = fork();
 		//signal(SIGUSR1, waithandler);
 		wait_signal = 0;
@@ -233,21 +235,13 @@ void	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff)
 				close(command->heredoc_pipe[READ]);
 				dup2(in, STDIN_FILENO);
 			}
-			//close(fd[i][READ]);
 			builtins(command->cmd_args, env, status);
 			free_stuff(stuff, i);
 			exit(*status);
 		}
 		else
 		{
-			//wait_signal = 0;
 			signal(SIGINT, SIG_IGN);
-			/* if (command->here_doc)
-			{
-				//signal(SIGINT, waithandler);
-				while (wait_signal == 0)
-					continue;
-			} */
 			close(fd[i][WRITE]);
 			if (i != 0)
 				close(fd[i - 1][READ]);
