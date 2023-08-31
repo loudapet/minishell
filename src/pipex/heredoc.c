@@ -6,7 +6,7 @@
 /*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/30 09:36:45 by plouda            #+#    #+#             */
-/*   Updated: 2023/08/31 16:48:36 by plouda           ###   ########.fr       */
+/*   Updated: 2023/08/31 16:55:16 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,8 @@ void	heredoc_handler(t_list *cmds)
 		while (cmds)
 		{
 			command = (t_command *)cmds->content;
+			if (command->here_doc == HERE_DOC_IN)
+				close(command->heredoc_pipe[READ]);
 			if (command->here_doc)
 			{
 				heredoc_exec(command, command->here_doc);
