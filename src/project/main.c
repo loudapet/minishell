@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "minishell.h"
 
 int	g_signal = 0;
@@ -182,7 +181,7 @@ void	quote_state(char *line, int *quote, int i)
 		*quote = 0;
 }
 
-int	check_syntax(char *line)
+int	syn_ch(char *line)
 {
 	int	i;
 	int	quote;
@@ -207,7 +206,7 @@ int	check_syntax(char *line)
 	return (1);
 }
 
-int	check_quotes(char *line)
+int	quot_ch(char *line)
 {
 	int	i;
 	int	quote;
@@ -297,7 +296,7 @@ void	free_after_commands(t_prompt_variables *pr_var, t_list *cmds)
 	free(pr_var->prompt);
 }
 
-void	assing_freeables(t_freebs *stuff, t_prompt_variables *pr_var,
+void	adding_freeables(t_freebs *stuff, t_prompt_variables *pr_var,
 		char ***env, t_list **cmds)
 {
 	stuff->line = &pr_var->line;
@@ -324,43 +323,49 @@ void	innit_loop(t_prompt_variables *pr_var, char **env)
 	pr_var->line = readline((const char *)pr_var->prompt);
 }
 
-void	innit_start_values(int argc, char **argv,
-		t_prompt_variables *pr_var, char **env)
+void	innit_start_values(t_prompt_variables *pr_var, char **env, int *status)
 {
-	(void)argc;
-	(void)argv;
 	g_signal = 0;
 	pr_var->username = get_username(env);
 	pr_var->line = "";
+	*status = 0;
 }
 
-int	main(int argc, char **argv, char **envp)
+void	minishell_runner_2(t_freebs stuff,
+	t_prompt_variables pr_var, char **env, t_list *cmds)
 {
-	t_prompt_variables	pr_var;
-	char				**env;
+	adding_freeables(&stuff, &pr_var, &env, &cmds);
+	heredoc_handler(cmds, stuff);
+	if (g_signal == 0)
+		pipex(cmds, &env, &pr_var.status, stuff);
+	free_after_commands(&pr_var, cmds);
+}
+
+int	check_for_empty(t_prompt_variables pr_var)
+{
+	if (pr_var.line == NULL)
+		return (0);
+	if (pr_var.line[0] != '\0')
+		add_history(pr_var.line);
+	return (1);
+}
+
+int	minishell_runner(char **env, t_prompt_variables pr_var)
+{
 	t_freebs			stuff;
 	t_command			*cmd;
 	t_list				*cmds;
 
-	if (!getenv("USER"))
-		return (printf("No...\n"), 0);
-	env = create_env(envp);
-	innit_start_values(argc, argv, &pr_var, env);
-	pr_var.status = 0;
 	while (1)
 	{
 		innit_loop(&pr_var, env);
-		if (pr_var.line == NULL)
+		if (!check_for_empty(pr_var))
 			break ;
-		if (pr_var.line[0] == '\0' || !check_syntax(pr_var.line)
-			|| !check_quotes(pr_var.line))
+		if (!pr_var.line[0] || !syn_ch(pr_var.line) || !quot_ch(pr_var.line))
 		{
-			if (pr_var.line[0] != '\0')
-				add_history(pr_var.line);
 			free_exit_or_empty(&pr_var, env, 1);
 			continue ;
 		}
-		add_history(pr_var.line);
 		pr_var.args = lexer(pr_var.line, env, pr_var.status);
 		cmds = NULL;
 		while (pr_var.i < pr_var.args.ac)
@@ -368,11 +373,22 @@ int	main(int argc, char **argv, char **envp)
 			cmd = parser(pr_var.args.ac, pr_var.args.av, &pr_var.i);
 			ft_lstadd_back(&cmds, ft_lstnew(cmd));
 		}
-		assing_freeables(&stuff, &pr_var, &env, &cmds);
-		heredoc_handler(cmds, stuff);
-		if (g_signal == 0)
-			pipex(cmds, &env, &pr_var.status, stuff);
-		free_after_commands(&pr_var, cmds);
+		minishell_runner_2(stuff, pr_var, env, cmds);
 	}
-	return (free_exit_or_empty(&pr_var, env, 0), 0);
+	return (free_exit_or_empty(&pr_var, env, 0), pr_var.status);
+}
+
+int	main(int argc, char **argv, char **envp)
+{
+	char				**env;
+	t_prompt_variables	pr_var;
+
+	(void)argc;
+	(void)argv;
+	if (!getenv("USER"))
+		return (printf("No...\n"), 0);
+	env = create_env(envp);
+	innit_start_values(&pr_var, env, &pr_var.status);
+	minishell_runner(env, pr_var);
+	return (pr_var.status);
 }
