@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: ehasalu <ehasalu@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 10:15:35 by plouda            #+#    #+#             */
-/*   Updated: 2023/08/31 15:39:05 by plouda           ###   ########.fr       */
+/*   Updated: 2023/09/01 15:37:10 by ehasalu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -331,13 +331,14 @@ void	innit_start_values(t_prompt_variables *pr_var, char **env, int *status)
 	*status = 0;
 }
 
-void	minishell_runner_2(t_freebs stuff,
-	t_prompt_variables pr_var, char **env, t_list *cmds)
+void	minishell_runner_2(t_prompt_variables pr_var, char ***env, t_list *cmds)
 {
-	adding_freeables(&stuff, &pr_var, &env, &cmds);
+	t_freebs			stuff;
+
+	adding_freeables(&stuff, &pr_var, env, &cmds);
 	heredoc_handler(cmds, stuff);
 	if (g_signal == 0)
-		pipex(cmds, &env, &pr_var.status, stuff);
+		pipex(cmds, env, &pr_var.status, stuff);
 	free_after_commands(&pr_var, cmds);
 }
 
@@ -350,32 +351,31 @@ int	check_for_empty(t_prompt_variables pr_var)
 	return (1);
 }
 
-int	minishell_runner(char **env, t_prompt_variables pr_var)
+int	minishell_runner(char ***env, t_prompt_variables pr_var)
 {
-	t_freebs			stuff;
 	t_command			*cmd;
 	t_list				*cmds;
 
 	while (1)
 	{
-		innit_loop(&pr_var, env);
+		innit_loop(&pr_var, *env);
 		if (!check_for_empty(pr_var))
 			break ;
 		if (!pr_var.line[0] || !syn_ch(pr_var.line) || !quot_ch(pr_var.line))
 		{
-			free_exit_or_empty(&pr_var, env, 1);
+			free_exit_or_empty(&pr_var, *env, 1);
 			continue ;
 		}
-		pr_var.args = lexer(pr_var.line, env, pr_var.status);
+		pr_var.args = lexer(pr_var.line, *env, pr_var.status);
 		cmds = NULL;
 		while (pr_var.i < pr_var.args.ac)
 		{
 			cmd = parser(pr_var.args.ac, pr_var.args.av, &pr_var.i);
 			ft_lstadd_back(&cmds, ft_lstnew(cmd));
 		}
-		minishell_runner_2(stuff, pr_var, env, cmds);
+		minishell_runner_2(pr_var, env, cmds);
 	}
-	return (free_exit_or_empty(&pr_var, env, 0), pr_var.status);
+	return (free_exit_or_empty(&pr_var, *env, 0), pr_var.status);
 }
 
 int	main(int argc, char **argv, char **envp)
@@ -389,6 +389,6 @@ int	main(int argc, char **argv, char **envp)
 		return (printf("No...\n"), 0);
 	env = create_env(envp);
 	innit_start_values(&pr_var, env, &pr_var.status);
-	minishell_runner(env, pr_var);
+	minishell_runner(&env, pr_var);
 	return (pr_var.status);
 }
