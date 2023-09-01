@@ -153,7 +153,7 @@ void		sanitize(t_sanitizer *san, char **av, int i, int *j);
 // Pipex
 t_command	*parser(int argc, char **argv, int *i);
 int			pipex(t_list *cmds, char ***env, int *status, t_freebs stuff);
-void		heredoc_handler(t_list *cmds);
+void		heredoc_handler(t_list *cmds, t_freebs stuff);
 int			heredoc_exec(t_command *command, int flag);
 void		waiter(t_list *cmds, int *status);
 void		handler2(int sig);
@@ -166,13 +166,13 @@ void		free_cmd(t_freebs stuff);
 void		free_files(t_command *tmp_cmd);
 
 // Forking and Things
-void		forked_processes(t_pipe_variables var, 
+void		forked_processes(t_pipe_variables var,
 				t_freebs stuff, int **fd, t_list *cmds);
 void		pipe_waiter(t_pipe_variables var, int *status, int **fd);
 void		pipe_parent(t_list *cmds, t_pipe_variables var, int **fd);
-void		pipe_child(t_pipe_variables var, 
+void		pipe_child(t_pipe_variables var,
 				t_freebs st, int **fd, t_list *cmds);
-void		no_pipe(t_list *cmds, t_pipe_variables var, 
+void		no_pipe(t_list *cmds, t_pipe_variables var,
 				char ***env, int *status);
 
 // Duping
@@ -184,7 +184,7 @@ void		dup_outfile(t_command *cmd,
 // Files
 void		here_doc(char **argv, int i, t_command *command);
 void		str_stuff(char **str, int mode, char *delimiter);
-void		fake_heredoc(t_command *command, char *str, 
+void		fake_heredoc(t_command *command, char *str,
 				char **delimiter, int *i);
 void		infile(char **argv, int i, t_command *command);
 void		outfile(char **argv, int i, t_command *command);

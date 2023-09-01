@@ -81,13 +81,14 @@ void	free_stuff(t_freebs stuff, int l)
 	free(*(stuff.dir));
 	free(*(stuff.prompt));
 	free(*(stuff.username));
+	free_cmd(stuff);
 	while ((*(stuff.env))[i])
 		free(((*(stuff.env))[i++]));
 	free(*(stuff.env));
 	i = 0;
 	if (stuff.fd_n != 0)
 	{
-		while (i < l)
+		while (i <= l)
 			free((*stuff.fd)[i++]);
 		free(*stuff.fd);
 	}

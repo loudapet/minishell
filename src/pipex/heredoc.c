@@ -97,10 +97,9 @@ void	here_child(t_list *cmds)
 		}
 		cmds = cmds->next;
 	}
-	exit(0);
 }
 
-void	heredoc_handler(t_list *cmds)
+void	heredoc_handler(t_list *cmds, t_freebs stuff)
 {
 	t_command	*command;
 	pid_t		pid;
@@ -108,7 +107,11 @@ void	heredoc_handler(t_list *cmds)
 	heredoc_pipes(cmds);
 	pid = fork();
 	if (!pid)
+	{
 		here_child(cmds);
+		free_stuff(stuff, 0);
+		exit (0);
+	}
 	else
 	{
 		signal(SIGINT, SIG_IGN);

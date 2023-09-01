@@ -297,7 +297,7 @@ void	free_after_commands(t_prompt_variables *pr_var, t_list *cmds)
 	free(pr_var->prompt);
 }
 
-void	assing_freeables(t_freebs *stuff, t_prompt_variables *pr_var, 
+void	assing_freeables(t_freebs *stuff, t_prompt_variables *pr_var,
 		char ***env, t_list **cmds)
 {
 	stuff->line = &pr_var->line;
@@ -309,6 +309,7 @@ void	assing_freeables(t_freebs *stuff, t_prompt_variables *pr_var,
 	stuff->env = env;
 	stuff->cmds = cmds;
 	stuff->args = &pr_var->args.av;
+	stuff->fd_n = 0;
 }
 
 void	innit_loop(t_prompt_variables *pr_var, char **env)
@@ -323,7 +324,7 @@ void	innit_loop(t_prompt_variables *pr_var, char **env)
 	pr_var->line = readline((const char *)pr_var->prompt);
 }
 
-void	innit_start_values(int argc, char **argv, 
+void	innit_start_values(int argc, char **argv,
 		t_prompt_variables *pr_var, char **env)
 {
 	(void)argc;
@@ -351,7 +352,7 @@ int	main(int argc, char **argv, char **envp)
 		innit_loop(&pr_var, env);
 		if (pr_var.line == NULL)
 			break ;
-		if (pr_var.line[0] == '\0' || !check_syntax(pr_var.line) 
+		if (pr_var.line[0] == '\0' || !check_syntax(pr_var.line)
 			|| !check_quotes(pr_var.line))
 		{
 			if (pr_var.line[0] != '\0')
@@ -368,7 +369,7 @@ int	main(int argc, char **argv, char **envp)
 			ft_lstadd_back(&cmds, ft_lstnew(cmd));
 		}
 		assing_freeables(&stuff, &pr_var, &env, &cmds);
-		heredoc_handler(cmds);
+		heredoc_handler(cmds, stuff);
 		if (g_signal == 0)
 			pipex(cmds, &env, &pr_var.status, stuff);
 		free_after_commands(&pr_var, cmds);
