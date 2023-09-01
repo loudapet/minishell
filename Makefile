@@ -21,6 +21,8 @@ SRCS =	project/main.c \
 		lexer/minisplit.c \
 		lexer/expand_vars.c \
 		lexer/slicer.c \
+		lexer/slicer2.c \
+		lexer/slicer3.c \
 		parser/quote_remover.c \
 		parser/quote_remover_helpers.c \
 		parser/parser.c \

@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void	no_pipe(t_list *cmds, t_pipe_variables var, char ***env, int *status)
+void	no_pipe(t_list *cmds, t_pipe_variables var, char ***env, t_freebs stuff)
 {
 	int					norm_stdout;
 	t_command			*cmd;
@@ -31,7 +31,7 @@ void	no_pipe(t_list *cmds, t_pipe_variables var, char ***env, int *status)
 		dup2(var.out, STDOUT_FILENO);
 	}
 	if (cmd->args != NULL)
-		builtins(cmd->args, env, status);
+		builtins(cmd->args, env, stuff.status, stuff);
 	dup2(norm_stdout, STDOUT_FILENO);
 }
 
@@ -58,7 +58,9 @@ void	pipe_child(t_pipe_variables var,
 	if (cmd->infile_path != NULL && (!cmd->here_doc 
 			|| cmd->here_doc == HERE_DOC_VOID))
 		dup_infile(cmd, var, st, fd);
-	builtins(cmd->args, st.env, st.status);
+	if (var.i != 0)
+		st.fd_n = var.i;
+	builtins(cmd->args, st.env, st.status, st);
 	free_stuff(st, var.i);
 	exit(*(st.status));
 }

@@ -42,7 +42,7 @@ int	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff)
 	stuff.status = status;
 	cmd = (t_command *)cmds->content;
 	if (cmd->args != NULL && ft_lstsize(cmds) == 1 && is_b(cmd->args[0]))
-		return (no_pipe(cmds, var, env, status), 0);
+		return (no_pipe(cmds, var, env, stuff), 0);
 	fd = malloc(sizeof(int *) * ft_lstsize(cmds));
 	stuff.fd = &fd;
 	stuff.fd_n = ft_lstsize(cmds);

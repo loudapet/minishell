@@ -108,7 +108,7 @@ void	export_extend(char **argv, char ***env, int *status)
 		if (check_arg(argv[i]) != 0)
 		{
 			if (check_arg(argv[i]) == 2)
-				argv[i] = ft_strjoin(argv[i], "=");
+				argv[i] = ft_strjoin_custom(argv[i], "=");
 			name = get_env_name(argv[i]);
 			*env = unset_single(name, *env);
 			*env = set_new_env(argv[i], *env);

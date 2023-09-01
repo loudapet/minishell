@@ -12,8 +12,10 @@
 
 #include "minishell.h"
 
-void	exit_norm(char **args, int i)
+void	exit_norm(char **args, int i, t_freebs stuff)
 {
+	int	exit_s;
+
 	if (args[1])
 	{
 		if (args[1][0] == '-' || args[1][0] == '+')
@@ -29,11 +31,13 @@ void	exit_norm(char **args, int i)
 		}
 		if (args[1][0] == '-')
 			exit(156);
-		exit(ft_atoi(args[1]));
+		exit_s = ft_atoi(args[1]);
+		free_stuff(stuff, stuff.fd_n);
+		exit(exit_s);
 	}
 }
 
-void	exit_built(char **args, char **env, int status)
+void	exit_built(char **args, char **env, int status, t_freebs stuff)
 {
 	int	i;
 
@@ -45,6 +49,7 @@ void	exit_built(char **args, char **env, int status)
 		ft_putstr_fd(" too many arguments\n", 2);
 		return ;
 	}
-	exit_norm(args, i);
+	exit_norm(args, i, stuff);
+	free_stuff(stuff, stuff.fd_n);
 	exit(status);
 }

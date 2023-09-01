@@ -115,7 +115,7 @@ typedef struct s_pipe_variables
 	int		stat;
 }				t_pipe_variables;
 
-typedef struct 	s_prompt_variables
+typedef struct s_prompt_variables
 {
 	char	*line;
 	char	*username;
@@ -128,7 +128,7 @@ typedef struct 	s_prompt_variables
 	int		i;
 }				t_prompt_variables;
 
-typedef struct 	s_lexer_var
+typedef struct s_lexer_var
 {
 	int		state;
 	int		flag;
@@ -161,18 +161,17 @@ int			quot_ch(char *line);
 
 // Freeing main loop c
 void		adding_freeables(t_freebs *stuff, t_prompt_variables *pr_var,
-			char ***env, t_list **cmds);
+				char ***env, t_list **cmds);
 void		free_after_commands(t_prompt_variables *pr_var, t_list *cmds);
-void		free_exit_or_empty(t_prompt_variables *pr_var, char **env, int flag);
+void		free_exit_or_empty(t_prompt_variables *pr_var, 
+				char **env, int flag);
 void		free_list(t_list *cmds);
 void		free_files_and_args(t_command *tmp_cmd);
-
 
 //Environment variables handling
 char		**create_env(char **env);
 char		*get_env(char *variable, char **env_arr);
 void		free_env(char **env);
-
 
 // Parsers
 t_args		lexer(const char *line, char **env, int status);
@@ -184,6 +183,16 @@ char		**slice_redirections(char **av, int *ac);
 void		display_argv(char **argv);
 void		quote_remover(char **argv, int index);
 void		get_files(int argc, char **argv, t_command *command, int *i);
+
+// Slicer2.c
+char		*join(char *original, char c);
+void		has_redirection_loop(char *ar, int *quote, int *i, int *count);
+void		has_redirection_end(char *ar, int *count);
+int			has_redirection(char *ar);
+
+// Slicer3.c
+void		quote_changer(char **av, int i, int j, int *quote);
+void		state_changer(char **av, int i, int j, int *state);
 
 // Santitizer
 t_sanitizer	reset_sanitizer(void);
@@ -219,7 +228,7 @@ void		pipe_parent(t_list *cmds, t_pipe_variables var, int **fd);
 void		pipe_child(t_pipe_variables var,
 				t_freebs st, int **fd, t_list *cmds);
 void		no_pipe(t_list *cmds, t_pipe_variables var,
-				char ***env, int *status);
+				char ***env, t_freebs stuff);
 
 // Duping
 void		dup_infile(t_command *cmd,
@@ -239,7 +248,7 @@ void		append(char **argv, int i, t_command *command);
 int			variable_exists(char *arg, char **env);
 
 // Built_ins
-void		builtins(char **argv, char ***env, int *status);
+void		builtins(char **argv, char ***env, int *status, t_freebs stuff);
 int			echo_built(char **argv);
 int			cd_built(char **argv, char ***env);
 int			cd_home(char ***env);
@@ -251,7 +260,7 @@ char		**unset_built(char **arg, char **env);
 char		**unset_single(char *arg, char **env);
 int			env_built(char **env);
 int			pwd_built(char **env);
-void		exit_built(char **argv, char **env, int status);
+void		exit_built(char **argv, char **env, int status, t_freebs stuff);
 void		display_argv(char **argv);
 
 #endif
