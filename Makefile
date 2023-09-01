@@ -6,12 +6,16 @@
 #    By: ehasalu <ehasalu@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/03 15:05:09 by plouda            #+#    #+#              #
-#    Updated: 2023/09/01 15:30:02 by ehasalu          ###   ########.fr        #
+#    Updated: 2023/09/01 17:02:52 by ehasalu          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 SRCS =	project/main.c \
+		project/main2.c \
+		project/main_init.c \
+		project/main_checkers.c \
+		project/freeing_main_loop.c \
 		lexer/env_variables.c \
 		lexer/lexer.c \
 		lexer/minisplit.c \
@@ -20,6 +24,7 @@ SRCS =	project/main.c \
 		parser/quote_remover.c \
 		parser/quote_remover_helpers.c \
 		parser/parser.c \
+		parser/parser2.c \
 		parser/files.c \
 		pipex/pipex.c \
 		pipex/duping.c \

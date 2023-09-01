@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: ehasalu <ehasalu@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 10:15:59 by plouda            #+#    #+#             */
-/*   Updated: 2023/08/31 15:10:18 by plouda           ###   ########.fr       */
+/*   Updated: 2023/09/01 17:27:28 by ehasalu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,16 +128,62 @@ typedef struct 	s_prompt_variables
 	int		i;
 }				t_prompt_variables;
 
+typedef struct 	s_lexer_var
+{
+	int		state;
+	int		flag;
+	int		quote;
+	int		j;
+	int		k;
+	int		i;
+}				t_lexer_var;
+
+// Main2
+void		innit_loop(t_prompt_variables *pr_var, char **env);
+void		quote_state(char *line, int *quote, int i);
+int			space_mover_pipe_checker(char *line, int *i, int *quote, int *pipe);
+void		move_index(char *line, int *i);
+int			is_thingy(char c, int *pipe);
+
+// Main Init
+char		*get_directory(char **env);
+char		*get_username(char **env);
+char		*get_hostname(void);
+size_t		get_hostname_len(char *hostname);
+int			get_cmd_count(int argc, char **argv);
+
+// Main Checkers
+void		handler(int sig);
+int			error_returner(void);
+void		free_args(t_args args);
+int			syn_ch(char *line);
+int			quot_ch(char *line);
+
+// Freeing main loop c
+void		adding_freeables(t_freebs *stuff, t_prompt_variables *pr_var,
+			char ***env, t_list **cmds);
+void		free_after_commands(t_prompt_variables *pr_var, t_list *cmds);
+void		free_exit_or_empty(t_prompt_variables *pr_var, char **env, int flag);
+void		free_list(t_list *cmds);
+void		free_files_and_args(t_command *tmp_cmd);
+
+
 //Environment variables handling
 char		**create_env(char **env);
 char		*get_env(char *variable, char **env_arr);
 void		free_env(char **env);
+
 
 // Parsers
 t_args		lexer(const char *line, char **env, int status);
 void		free_args(t_args args);
 char		**minisplit(char const *s, char c);
 char		**slice_redirections(char **av, int *ac);
+
+// Parser2.c
+void		display_argv(char **argv);
+void		quote_remover(char **argv, int index);
+void		get_files(int argc, char **argv, t_command *command, int *i);
 
 // Santitizer
 t_sanitizer	reset_sanitizer(void);
