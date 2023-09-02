@@ -41,9 +41,9 @@ int	space_mover_pipe_checker(char *line, int *i, int *quote, int *pipe)
 	*i = 0;
 	*quote = 0;
 	*pipe = 0;
-	while (line[*i] == ' ')
-		i++;
-	if (line[*i] == '|')
+	while (line[*i] && line[*i] == ' ')
+		(*i)++;
+	if (line [*i] && line[*i] == '|')
 	{
 		ft_putstr_fd("Invalid syntax\n", 2);
 		return (0);

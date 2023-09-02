@@ -145,6 +145,8 @@ int			space_mover_pipe_checker(char *line, int *i, int *quote, int *pipe);
 void		move_index(char *line, int *i);
 int			is_thingy(char c, int *pipe);
 
+int			only_space(char *line);
+
 // Main Init
 char		*get_directory(char **env);
 char		*get_username(char **env);
@@ -163,7 +165,7 @@ int			quot_ch(char *line);
 void		adding_freeables(t_freebs *stuff, t_prompt_variables *pr_var,
 				char ***env, t_list **cmds);
 void		free_after_commands(t_prompt_variables *pr_var, t_list *cmds);
-void		free_exit_or_empty(t_prompt_variables *pr_var, 
+void		free_exit_or_empty(t_prompt_variables *pr_var,
 				char **env, int flag);
 void		free_list(t_list *cmds);
 void		free_files_and_args(t_command *tmp_cmd);

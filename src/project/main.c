@@ -30,15 +30,16 @@ void	innit_start_values(t_prompt_variables *pr_var, char **env, int *status)
 	*status = 0;
 }
 
-void	minishell_runner_2(t_prompt_variables pr_var, char ***env, t_list *cmds)
+void	minishell_runner_2(t_prompt_variables *pr_var,
+		char ***env, t_list *cmds)
 {
 	t_freebs			stuff;
 
-	adding_freeables(&stuff, &pr_var, env, &cmds);
+	adding_freeables(&stuff, pr_var, env, &cmds);
 	heredoc_handler(cmds, stuff);
 	if (g_signal == 0)
-		pipex(cmds, env, &pr_var.status, stuff);
-	free_after_commands(&pr_var, cmds);
+		pipex(cmds, env, &pr_var->status, stuff);
+	free_after_commands(pr_var, cmds);
 }
 
 int	check_for_empty(t_prompt_variables pr_var)
@@ -60,7 +61,8 @@ int	minishell_runner(char ***env, t_prompt_variables pr_var)
 		innit_loop(&pr_var, *env);
 		if (!check_for_empty(pr_var))
 			break ;
-		if (!pr_var.line[0] || !syn_ch(pr_var.line) || !quot_ch(pr_var.line))
+		if (!pr_var.line[0] || !only_space(pr_var.line)
+			|| !syn_ch(pr_var.line) || !quot_ch(pr_var.line))
 		{
 			free_exit_or_empty(&pr_var, *env, 1);
 			continue ;
@@ -72,7 +74,7 @@ int	minishell_runner(char ***env, t_prompt_variables pr_var)
 			cmd = parser(pr_var.args.ac, pr_var.args.av, &pr_var.i);
 			ft_lstadd_back(&cmds, ft_lstnew(cmd));
 		}
-		minishell_runner_2(pr_var, env, cmds);
+		minishell_runner_2(&pr_var, env, cmds);
 	}
 	return (free_exit_or_empty(&pr_var, *env, 0), pr_var.status);
 }

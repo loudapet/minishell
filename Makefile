@@ -16,6 +16,7 @@ SRCS =	project/main.c \
 		project/main_init.c \
 		project/main_checkers.c \
 		project/freeing_main_loop.c \
+		project/space_check.c \
 		lexer/env_variables.c \
 		lexer/lexer.c \
 		lexer/minisplit.c \

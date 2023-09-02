@@ -23,10 +23,10 @@ void	no_pipe(t_list *cmds, t_pipe_variables var, char ***env, t_freebs stuff)
 	if (cmd->outfile_path != NULL)
 	{
 		if (cmd->redirection == 2)
-			var.out = open(cmd->outfile_path, 
+			var.out = open(cmd->outfile_path,
 					O_CREAT | O_WRONLY | O_APPEND, 00644);
 		else
-			var.out = open(cmd->outfile_path, 
+			var.out = open(cmd->outfile_path,
 					O_CREAT | O_WRONLY | O_TRUNC, 00644);
 		dup2(var.out, STDOUT_FILENO);
 	}
@@ -35,7 +35,7 @@ void	no_pipe(t_list *cmds, t_pipe_variables var, char ***env, t_freebs stuff)
 	dup2(norm_stdout, STDOUT_FILENO);
 }
 
-void	pipe_child(t_pipe_variables var, 
+void	pipe_child(t_pipe_variables var,
 	t_freebs st, int **fd, t_list *cmds)
 {
 	t_command	*cmd;
@@ -43,10 +43,10 @@ void	pipe_child(t_pipe_variables var,
 	cmd = (t_command *)cmds->content;
 	close(fd[var.i][READ]);
 	signal(SIGINT, handler2);
-	if (var.i != 0 && (cmd->here_doc || (cmd->infile_path 
+	if (var.i != 0 && (cmd->here_doc || (cmd->infile_path
 				!= NULL && cmd->valid)))
 		close(fd[var.i - 1][READ]);
-	if (var.i != 0 && (!cmd->here_doc 
+	if (var.i != 0 && (!cmd->here_doc
 			|| cmd->here_doc == HERE_DOC_VOID))
 		dup2(fd[var.i - 1][READ], STDIN_FILENO);
 	if (cmds->next)
@@ -55,7 +55,7 @@ void	pipe_child(t_pipe_variables var,
 		dup2(cmd->heredoc_pipe[READ], STDIN_FILENO);
 	if (cmd->outfile_path != NULL)
 		dup_outfile(cmd, var, st, fd);
-	if (cmd->infile_path != NULL && (!cmd->here_doc 
+	if (cmd->infile_path != NULL && (!cmd->here_doc
 			|| cmd->here_doc == HERE_DOC_VOID))
 		dup_infile(cmd, var, st, fd);
 	if (var.i != 0)
@@ -97,7 +97,7 @@ void	pipe_waiter(t_pipe_variables var, int *status, int **fd)
 	free(fd);
 }
 
-void	forked_processes(t_pipe_variables var, 
+void	forked_processes(t_pipe_variables var,
 	t_freebs stuff, int **fd, t_list *cmds)
 {
 	pid_t	pid;
