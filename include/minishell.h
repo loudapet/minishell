@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ehasalu <ehasalu@student.42.fr>            +#+  +:+       +#+        */
+/*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 10:15:59 by plouda            #+#    #+#             */
-/*   Updated: 2023/09/01 17:27:28 by ehasalu          ###   ########.fr       */
+/*   Updated: 2023/09/04 08:48:44 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,7 +212,6 @@ t_command	*parser(int argc, char **argv, int *i);
 int			pipex(t_list *cmds, char ***env, int *status, t_freebs stuff);
 void		heredoc_handler(t_list *cmds, t_freebs stuff);
 int			heredoc_exec(t_command *command, int flag);
-void		waiter(t_list *cmds, int *status);
 void		handler2(int sig);
 
 // Freeing and Checks

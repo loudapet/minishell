@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.c                                            :+:      :+:    :+:   */
+/*   forking_and_things.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 09:04:17 by plouda            #+#    #+#             */
-/*   Updated: 2023/08/31 16:28:55 by plouda           ###   ########.fr       */
+/*   Updated: 2023/09/04 08:34:21 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,6 @@ void	pipe_waiter(t_pipe_variables var, int *status, int **fd)
 	var.l = 0;
 	while (var.i > 0)
 	{
-		write(2, "Waiting...\n", 12);
 		waitpid(-1, &(var.stat), 0);
 		*status = WEXITSTATUS(var.stat);
 		var.i--;

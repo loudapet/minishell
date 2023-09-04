@@ -6,7 +6,7 @@
 /*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 09:04:17 by plouda            #+#    #+#             */
-/*   Updated: 2023/09/04 08:30:36 by plouda           ###   ########.fr       */
+/*   Updated: 2023/09/04 08:46:37 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,10 @@ void	dup_outfile(t_command *cmd, t_pipe_variables var, t_freebs st, int **fd)
 				| O_WRONLY | O_TRUNC, 00644);
 	if (var.out < 0)
 	{
+		write(2, "msh: ", 5);
 		perror(cmd->outfile_path);
 		close(fd[var.i][READ]);
 		close(cmd->heredoc_pipe[READ]);
-		write(2, "msh: ", 5);
 		free_stuff(st, var.i);
 		exit(1);
 	}
@@ -37,10 +37,10 @@ void	dup_infile(t_command *cmd, t_pipe_variables var, t_freebs st, int **fd)
 	var.in = open(cmd->infile_path, O_RDONLY);
 	if (var.in < 0)
 	{
+		write(2, "msh: ", 5);
 		perror(cmd->infile_path);
 		close(cmd->heredoc_pipe[READ]);
 		close(fd[var.i][READ]);
-		write(2, "msh: ", 5);
 		free_stuff(st, var.i);
 		exit(1);
 	}

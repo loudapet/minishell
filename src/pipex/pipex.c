@@ -6,7 +6,7 @@
 /*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 09:04:17 by plouda            #+#    #+#             */
-/*   Updated: 2023/08/31 16:28:55 by plouda           ###   ########.fr       */
+/*   Updated: 2023/09/04 08:57:54 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ void	handler2(int sig)
 {
 	if (sig == SIGINT)
 	{
-		ft_printf("SIGNAL RECIEVED SIGINT\n");
 		ft_printf("\n");
 		exit (130);
 	}
@@ -56,20 +55,4 @@ int	pipex(t_list *cmds, char ***env, int *status, t_freebs stuff)
 		cmds = cmds->next;
 	}
 	return (pipe_waiter(var, status, fd), 0);
-}
-
-void	waiter(t_list *cmds, int *status)
-{
-	t_command	*command;
-	int			stat;
-
-	command = (t_command *)cmds->content;
-	while (cmds)
-	{
-		write(2, "Waiting...\n", 12);
-		ft_putnbr_fd(command->pid, 2);
-		waitpid(command->pid, &stat, 0);
-		*status = WEXITSTATUS(stat);
-		cmds = cmds->next;
-	}
 }

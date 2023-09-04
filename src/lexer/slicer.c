@@ -6,7 +6,7 @@
 /*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/31 14:43:42 by plouda            #+#    #+#             */
-/*   Updated: 2023/09/04 08:30:46 by plouda           ###   ########.fr       */
+/*   Updated: 2023/09/04 08:54:22 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,6 @@ char	**split_redirections(char **av, int *ac, int i)
 	t_lexer_var	var;
 
 	init_vars(&var);
-	ft_printf("%d", has_redirection(av[i]));
 	temp = malloc(sizeof(char *) * (*ac + has_redirection(av[i])));
 	*ac += has_redirection(av[i]) - 1;
 	while (av[var.i])
