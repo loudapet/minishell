@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.c                                            :+:      :+:    :+:   */
+/*   duping.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 09:04:17 by plouda            #+#    #+#             */
-/*   Updated: 2023/08/31 16:28:55 by plouda           ###   ########.fr       */
+/*   Updated: 2023/09/04 08:30:36 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,10 @@
 void	dup_outfile(t_command *cmd, t_pipe_variables var, t_freebs st, int **fd)
 {
 	if (cmd->redirection == APPEND)
-		var.out = open(cmd->outfile_path, O_CREAT 
+		var.out = open(cmd->outfile_path, O_CREAT
 				| O_WRONLY | O_APPEND, 00644);
 	else
-		var.out = open(cmd->outfile_path, O_CREAT 
+		var.out = open(cmd->outfile_path, O_CREAT
 				| O_WRONLY | O_TRUNC, 00644);
 	if (var.out < 0)
 	{

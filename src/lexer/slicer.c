@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   slicer.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ehasalu <ehasalu@student.42.fr>            +#+  +:+       +#+        */
+/*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/31 14:43:42 by plouda            #+#    #+#             */
-/*   Updated: 2023/09/01 17:49:52 by ehasalu          ###   ########.fr       */
+/*   Updated: 2023/09/04 08:30:46 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	split_redirection2(char **av, t_lexer_var *var, int *k, char **temp)
 		temp[*k] = NULL;
 		var->state = 2;
 	}
-	else if (var->j != 0 && av[var->i][var->j - 1] == '|' 
+	else if (var->j != 0 && av[var->i][var->j - 1] == '|'
 		&& (av[var->i][var->j] == '>'
 		|| av[var->i][var->j] == '<') && var->state == 1)
 	{
