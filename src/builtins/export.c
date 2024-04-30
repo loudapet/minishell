@@ -108,7 +108,7 @@ void	export_extend(char **argv, char ***env, int *status)
 		if (check_arg(argv[i]) != 0)
 		{
 			if (check_arg(argv[i]) == 2)
-				argv[i] = ft_strjoin(argv[i], "=");
+				argv[i] = ft_strjoin_custom(argv[i], "=");
 			name = get_env_name(argv[i]);
 			*env = unset_single(name, *env);
 			*env = set_new_env(argv[i], *env);
@@ -123,13 +123,16 @@ void	export_extend(char **argv, char ***env, int *status)
 	}
 }
 
-void	export_built(char **argv, char ***env, int *status)
+int	export_built(char **argv, char ***env)
 {
-	*status = 0;
+	int	status;
+
+	status = 0;
 	if (!argv[1])
 	{
 		show_var(env);
-		return ;
+		return (status);
 	}
-	export_extend(argv, env, status);
+	export_extend(argv, env, &status);
+	return (status);
 }

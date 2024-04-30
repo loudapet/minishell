@@ -3,85 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: plouda <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: ehasalu <ehasalu@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/26 11:37:49 by plouda            #+#    #+#             */
-/*   Updated: 2023/08/31 11:38:30 by plouda           ###   ########.fr       */
+/*   Updated: 2023/09/01 16:59:34 by ehasalu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// Test: <infile1 << infile2 cmd args > outfile1 >outfile2 args2 >> outfile2 < infile3
-
-void	display_argv(char **argv)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	while (argv[i])
-	{
-		j = 0;
-		while (argv[i][j])
-		{
-			write(1, &argv[i][j], 1);
-			j++;
-		}
-		write(1, " ", 1);
-		i++;
-	}
-	write(1, "\n", 1);
-}
-
-void	quote_remover(char **argv, int index)
-{
-	t_sanitizer san;
-	int			i;
-	int			j;
-
-	i = index;
-	san = reset_sanitizer();
-	j = 0;
-	while (argv[i][j])
-	{
-		quote_counter((const char *)&argv[i][j], &san.quote, &san.single_quote);
-		sanitize(&san, argv, i, &j);
-		j++;
-	}
-}
-
-void	get_files(int argc, char **argv, t_command *command, int *index)
-{
-	int	i;
-
-	i = *index;
-	while (i < argc)
-	{
-		if (argv[i][0] == '<' && i + 1 < argc)
-		{
-			quote_remover(argv, i + 1);
-			if (!strncmp(argv[i], "<<", 2))
-				here_doc(argv, i, command);
-			else
-				infile(argv, i, command);
-			i++;
-		}
-		else if ((argv[i][0]) == '>' && i + 1 < argc)
-		{
-			quote_remover(argv, i + 1);
-			if (!strncmp(argv[i], ">>", 2))
-				append(argv, i, command);
-			else
-				outfile(argv, i, command);
-			i++;
-		}
-		else if (argv[i][0] == '|')
-			break ;
-		i++;
-	}
-	*index = i;
-}
+// Test: <infile1 << infile2 cmd args >
+//outfile1 >outfile2 args2 >> outfile2 < infile3
 
 int	get_cmd_args_len(int argc, char **argv, int *index)
 {
@@ -93,7 +25,7 @@ int	get_cmd_args_len(int argc, char **argv, int *index)
 	while (i < argc)
 	{
 		len++;
-		if (argv[i][0] == '<' || argv[i][0] == '>'|| argv[i][0] == '|')
+		if (argv[i][0] == '<' || argv[i][0] == '>' || argv[i][0] == '|')
 		{
 			if (argv[i][0] == '<' || argv[i][0] == '>')
 				len -= 2;
@@ -108,39 +40,41 @@ int	get_cmd_args_len(int argc, char **argv, int *index)
 	return (len);
 }
 
-char	**get_cmd_args(int argc, char **argv, char **argv_cpy, int *index)
+void	get_cmd_args_2(char **argv, int argc, int *i, int *flag)
 {
-	int	i;
+	while (argv[*i][0] == '<' || argv[*i][0] == '>' || argv[*i][0] == '|')
+	{
+		if (argv[*i][0] == '<' || argv[*i][0] == '>')
+			*i += 2;
+		else if (argv[*i][0] == '|')
+		{
+			*flag = 1;
+			(*i)++;
+			break ;
+		}
+		else
+			*i += 2;
+		if (*i >= argc)
+			break ;
+	}
+}
+
+char	**get_cmd_args(int argc, char **argv, char **argv_cpy, int i)
+{
 	int	j;
 	int	flag;
 
 	flag = 0;
-	i = *index;
 	j = 0;
 	while (i < argc && argv != NULL)
 	{
-		while (argv[i][0] == '<' || argv[i][0] == '>' || argv[i][0] == '|')
-		{
-			if (argv[i][0] == '<' || argv[i][0] == '>')
-				i += 2;
-			else if (argv[i][0] == '|')
-			{
-				flag = 1;
-				i++;
-				break ;
-			}
-			else
-				i += 2;
-			if (i >= argc)
-				break ;
-		}
+		get_cmd_args_2(argv, argc, &i, &flag);
 		if (i >= argc || flag)
 			break ;
 		argv_cpy[j] = ft_strdup(argv[i]);
 		quote_remover(argv_cpy, j);
 		i++;
 		j++;
-		//ft_printf("Index i: %d, index j: %d\n", i, j);
 	}
 	if (argv != NULL)
 		argv_cpy[j] = NULL;
@@ -149,13 +83,8 @@ char	**get_cmd_args(int argc, char **argv, char **argv_cpy, int *index)
 
 // What happens when there is just a redirection, but no command?
 
-t_command	*parser(int argc, char **argv, int *i)
+void	command_init(t_command *command)
 {
-	//int		i;
-	int		cmd_args_len;
-	t_command	*command;
-
-	command = malloc(sizeof(t_command));
 	command->infile_path = NULL;
 	command->outfile_path = NULL;
 	command->infile_fd = 0;
@@ -166,28 +95,28 @@ t_command	*parser(int argc, char **argv, int *i)
 	command->delimiter = NULL;
 	command->valid = 1;
 	command->pid = 0;
+}
+
+t_command	*parser(int argc, char **argv, int *i)
+{
+	int			cmd_args_len;
+	t_command	*command;
+
+	command = malloc(sizeof(t_command));
+	command_init(command);
 	pipe(command->heredoc_pipe);
 	cmd_args_len = get_cmd_args_len(argc, argv, i);
-	command->cmd_args = malloc(sizeof(char *) * (cmd_args_len + 1));
-	// handle malloc failure (how?)
-	//i = 0;
+	command->args = malloc(sizeof(char *) * (cmd_args_len + 1));
 	if (cmd_args_len == 0)
 	{
-		free(command->cmd_args);
-		command->cmd_args = NULL;
+		free(command->args);
+		command->args = NULL;
 	}
 	else
-		command->cmd_args = get_cmd_args(argc, argv, command->cmd_args, i);
+		command->args = get_cmd_args(argc, argv, command->args, *i);
 	get_files(argc, argv, command, i);
 	(*i)++;
 	if (*i > argc)
 		*i = argc;
-	// ft_printf("T--------------------------------------------------T\n");
-	// t_printf("Infile: %s\nOutfile: %s\n", command->infile_path, command->outfile_path);
-	// ft_printf("Infile fd: %d\nOutfile fd: %d\n", command->infile_fd, command->outfile_fd);
-	// ft_printf("Redirection mode (0 no outfile, 1 truncate, 2 append): %d\n", command->redirection);
-	// ft_printf("here_doc status (0 none, 1 void, 2 infile): %d\n", command->here_doc);
-	// display_argv(command->cmd_args);
-	// ft_printf("Command count: %d\n", command->cmd_count);
 	return (command);
 }

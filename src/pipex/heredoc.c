@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "minishell.h"
+#include "minishell.h"
 
 void	waithandler(int sig)
 {
@@ -33,50 +33,31 @@ int	heredoc_exec(t_command *command, int flag)
 	char	**delimiter;
 	int		i;
 
-	i = 0;
+	str = NULL;
 	temp_pipe = command->heredoc_pipe;
 	delimiter = command->delimiter;
-	while (command->here_doc_counter > 1 && delimiter[i + 1] != NULL )
-	{
-		write(STDOUT_FILENO, "> ", 2);
-		str = get_next_line(STDIN_FILENO);
-		if (!str)
-			ft_printf("\nWarning: here-doc delimited by EOF, wanted %s\n", delimiter[i]);
-		while (str && (ft_strncmp(delimiter[i], str, ft_strlen(delimiter[i]))  || ft_strlen(str) != ft_strlen(delimiter[i]) + 1))
-		{
-			write(STDOUT_FILENO, "> ", 2);
-			free(str);
-			str = get_next_line(STDIN_FILENO);
-			if (!str)
-				ft_printf("\nWarning: here-doc delimited by EOF, wanted %s\n", delimiter[i]);
-		}
-		i++;
-		if (str)
-			free(str);
-	}
+	fake_heredoc(command, str, delimiter, &i);
 	write(STDOUT_FILENO, "> ", 2);
 	str = get_next_line(STDIN_FILENO);
-	if (!str)
-		ft_printf("\nWarning: here-doc delimited by EOF, wanted %s\n", delimiter[i]);
-	while (str && (ft_strncmp(delimiter[i], str, ft_strlen(delimiter[i])) || ft_strlen(str) != ft_strlen(delimiter[i]) + 1))
+	str_stuff(&str, 0, delimiter[i]);
+	while (str && (ft_strncmp(delimiter[i], str, ft_strlen(delimiter[i]))
+			|| ft_strlen(str) != ft_strlen(delimiter[i]) + 1))
 	{
 		write(STDOUT_FILENO, "> ", 2);
 		if (flag == HERE_DOC_IN)
 			write(temp_pipe[WRITE], str, ft_strlen(str));
 		free(str);
 		str = get_next_line(STDIN_FILENO);
-		if (!str)
-			ft_printf("\nWarning: here-doc delimited by EOF, wanted %s\n", delimiter[i]);
+		str_stuff(&str, 0, delimiter[i]);
 	}
 	if (str)
 		free(str);
-	//close(temp_pipe[WRITE]);
 	return (temp_pipe[READ]);
 }
 
 void	heredoc_pipes(t_list *cmds)
 {
-	t_command *command;
+	t_command	*command;
 
 	g_signal = 0;
 	while (cmds)
@@ -98,30 +79,38 @@ void	heredoc_pipes(t_list *cmds)
 	}
 }
 
-void	heredoc_handler(t_list *cmds)
+void	here_child(t_list *cmds)
 {
-	t_command *command;
-	pid_t	pid;
+	t_command	*command;
+
+	signal(SIGINT, waithandler);
+	signal(SIGUSR2, SIG_IGN);
+	while (cmds)
+	{
+		command = (t_command *)cmds->content;
+		if (command->here_doc == HERE_DOC_IN)
+			close(command->heredoc_pipe[READ]);
+		if (command->here_doc)
+		{
+			heredoc_exec(command, command->here_doc);
+			close(command->heredoc_pipe[WRITE]);
+		}
+		cmds = cmds->next;
+	}
+}
+
+void	heredoc_handler(t_list *cmds, t_freebs stuff)
+{
+	t_command	*command;
+	pid_t		pid;
 
 	heredoc_pipes(cmds);
 	pid = fork();
 	if (!pid)
 	{
-		signal(SIGINT, waithandler);
-		signal(SIGUSR2, SIG_IGN);
-		while (cmds)
-		{
-			command = (t_command *)cmds->content;
-			if (command->here_doc == HERE_DOC_IN)
-				close(command->heredoc_pipe[READ]);
-			if (command->here_doc)
-			{
-				heredoc_exec(command, command->here_doc);
-				close(command->heredoc_pipe[WRITE]);
-			}
-			cmds = cmds->next;
-		}
-		exit(0);
+		here_child(cmds);
+		free_stuff(stuff, 0);
+		exit (0);
 	}
 	else
 	{

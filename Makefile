@@ -3,26 +3,38 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: plouda <marvin@42.fr>                      +#+  +:+       +#+         #
+#    By: ehasalu <ehasalu@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/03 15:05:09 by plouda            #+#    #+#              #
-#    Updated: 2023/08/31 14:44:53 by plouda           ###   ########.fr        #
+#    Updated: 2023/09/01 17:02:52 by ehasalu          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 SRCS =	project/main.c \
+		project/main2.c \
+		project/main_init.c \
+		project/main_checkers.c \
+		project/freeing_main_loop.c \
+		project/space_check.c \
 		lexer/env_variables.c \
 		lexer/lexer.c \
 		lexer/minisplit.c \
 		lexer/expand_vars.c \
 		lexer/slicer.c \
+		lexer/slicer2.c \
+		lexer/slicer3.c \
 		parser/quote_remover.c \
 		parser/quote_remover_helpers.c \
 		parser/parser.c \
+		parser/parser2.c \
 		parser/files.c \
 		pipex/pipex.c \
+		pipex/duping.c \
+		pipex/forking_and_things.c \
+		pipex/freeing_and_checks.c \
 		pipex/heredoc.c \
+		pipex/heredoc2.c \
 		builtins/echo.c \
 		builtins/builtins.c \
 		builtins/cd.c \

@@ -74,14 +74,16 @@ int	exec_command(char **argv, char ***env)
 	return (127);
 }
 
-void	builtins(char	**argv, char ***env, int *status)
+void	builtins(char **argv, char ***env, int *status, t_freebs stuff)
 {
+	if (!argv || !argv[0])
+		return ;
 	if (!ft_strncmp(argv[0], "echo", 5))
 		*status = echo_built(argv);
 	else if (!ft_strncmp(argv[0], "cd", 3))
 		*status = cd_built(argv, env);
 	else if (!ft_strncmp(argv[0], "export", 7))
-		export_built(argv, env, status);
+		*status = export_built(argv, env);
 	else if (!ft_strncmp(argv[0], "unset", 6))
 		*env = unset_built(argv, *env);
 	else if (!ft_strncmp(argv[0], "env", 4))
@@ -89,7 +91,7 @@ void	builtins(char	**argv, char ***env, int *status)
 	else if (!ft_strncmp(argv[0], "pwd", 4))
 		pwd_built(*env);
 	else if (!ft_strncmp(argv[0], "exit", 5))
-		exit_built(argv, *env, *status);
+		exit_built(argv, *env, *status, stuff);
 	else
 		*status = exec_command(argv, env);
 }
