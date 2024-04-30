@@ -6,7 +6,7 @@
 /*   By: plouda <plouda@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 13:29:48 by plouda            #+#    #+#             */
-/*   Updated: 2023/07/25 14:26:28 by plouda           ###   ########.fr       */
+/*   Updated: 2023/08/25 09:46:16 by plouda           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,8 @@ static char	*ft_word(const char *s, unsigned int start, unsigned int end)
 
 	i = 0;
 	word = malloc((end - start + 1) * sizeof(char));
+	if (!word)
+		return (NULL);
 	while (start < end)
 	{
 		word[i] = s[start];

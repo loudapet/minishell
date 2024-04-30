@@ -6,20 +6,33 @@
 #    By: plouda <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/03 15:05:09 by plouda            #+#    #+#              #
-#    Updated: 2023/08/03 10:19:48 by plouda           ###   ########.fr        #
+#    Updated: 2023/08/31 14:44:53 by plouda           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 SRCS =	project/main.c \
-		project/env_variables.c \
-		project/lexer.c \
-		project/minisplit.c \
-		project/sanitizer.c \
-		project/sanitizer_helpers.c \
-		project/expand_vars.c \
-		pipex/command_redirection.c \
-		pipex/files.c
+		lexer/env_variables.c \
+		lexer/lexer.c \
+		lexer/minisplit.c \
+		lexer/expand_vars.c \
+		lexer/slicer.c \
+		parser/quote_remover.c \
+		parser/quote_remover_helpers.c \
+		parser/parser.c \
+		parser/files.c \
+		pipex/pipex.c \
+		pipex/heredoc.c \
+		builtins/echo.c \
+		builtins/builtins.c \
+		builtins/cd.c \
+		builtins/cd_extra.c \
+		builtins/export.c \
+		builtins/export2.c \
+		builtins/unset.c \
+		builtins/env.c \
+		builtins/pwd.c \
+		builtins/exit.c
 
 BUILD_DIR = ./obj
 OBJS = $(addprefix $(BUILD_DIR)/, $(SRCS))
@@ -54,7 +67,11 @@ obj/%.o: src/%.c | objdir
 objdir:
 	@mkdir -p obj
 	@mkdir -p obj/project
+	@mkdir -p obj/lexer
+	@mkdir -p obj/parser
 	@mkdir -p obj/pipex
+	@mkdir -p obj/builtins
+
 
 clean:
 	@echo "$(YELLOW)Removing object files...$(RESET)"
